@@ -1,0 +1,9 @@
+ISSUE #2: multiple selector in one sweeper still not support
+	
+	such as:
+	{
+		selector: 'a,.link,.button',
+		:
+		:
+		:
+	}

@@ -1,0 +1,19 @@
+ISSUE #1: the jQuery.one() with multiple types have a problem on Google Chrome
+	
+	// this statements will call handler more than one time
+	var types = 'webkitTransitionEnd mozTransitionEnd MSTransitionEnd otransitionend transitionend';
+	$('selector').one(types,handler);
+	
+ISSUE #1 SOLVED: avoid using jQuery.one with multiple types(single type is allowed) and then use jQuery.on instead
+	
+	// this statements are sure to call handler one time
+	var	types = 'webkitTransitionEnd mozTransitionEnd MSTransitionEnd otransitionend transitionend',
+		handler = function(){
+			
+			// off it first
+			$(this).off(types);
+		
+			// TODO: start your script here ...
+		
+		};
+	$('selector').on(types,handler);

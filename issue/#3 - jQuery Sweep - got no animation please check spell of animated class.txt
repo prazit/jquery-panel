@@ -1,0 +1,4 @@
+
+ISSUE #3: jQuery Sweep - got no animation, that means you using the system unknow animated class.
+
+SOLVED: animated class must be exists with corrected spell
