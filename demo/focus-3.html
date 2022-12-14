@@ -9,114 +9,6 @@
     <link rel="stylesheet" type="text/css" href="http://localhost/scbs/css/sym-fa.css" media="all"/>
     <link rel="stylesheet" type="text/css" href="http://localhost/scbs/css/ani-anicss.css"/>
 
-    <!-- animation A -->
-    <style>
-        @keyframes ani-a-comeIn {
-            0%, 55% {
-                opacity: 0;
-                transform: scale3d(2.5, 2.5, 2.5);
-                top: 0px;
-            }
-            65% {
-                opacity: 1;
-                transform: scale3d(2.5, 2.5, 2.5);
-                top: 0px;
-            }
-            100% {
-                opacity: 1;
-                transform: scale3d(0.01, 0.01, 1);
-                top: -100px;
-            }
-        }
-
-        @keyframes ani-a-goOut {
-            0% {
-                opacity: 1;
-                transform: scale3d(0.01, 0.01, 1);
-                top: -100px;
-            }
-            50% {
-                opacity: 1;
-                transform: scale3d(2.5, 2.5, 2.5);
-                top: 0px;
-            }
-            60%, 100% {
-                opacity: 0;
-                transform: scale3d(2.5, 2.5, 2.5);
-                top: 0px;
-            }
-        }
-
-        .ani-a-comeIn {
-            -webkit-animation-name: ani-a-comeIn;
-            animation-name: ani-a-comeIn;
-        }
-
-        .ani-a-goOut {
-            -webkit-animation-name: ani-a-goOut;
-            animation-name: ani-a-goOut;
-        }
-
-        .ani-a-normal {
-            transform: scale3d(0.01, 0.01, 1);
-            top: -100px;
-        }
-    </style>
-
-    <!-- animation B -->
-    <style>
-        @keyframes ani-b-comeIn {
-            0%, 55% {
-                opacity: 0;
-                transform: scale3d(2, 2, 2);
-                top: 0px;
-            }
-            65% {
-                opacity: 1;
-                transform: scale3d(2, 2, 2);
-                top: 0px;
-            }
-            100% {
-                opacity: 1;
-                transform: scale3d(0, 0, 1);
-                top: -200px;
-            }
-        }
-
-        @keyframes ani-b-goOut {
-            0% {
-                opacity: 1;
-                transform: scale3d(0, 0, 1);
-                top: -200px;
-            }
-            50% {
-                opacity: 1;
-                transform: scale3d(2, 2, 2);
-                top: 0px;
-            }
-            60%, 100% {
-                opacity: 0;
-                transform: scale3d(2, 2, 2);
-                top: 0px;
-            }
-        }
-
-        .ani-b-comeIn {
-            -webkit-animation-name: ani-b-comeIn;
-            animation-name: ani-b-comeIn;
-        }
-
-        .ani-b-goOut {
-            -webkit-animation-name: ani-b-goOut;
-            animation-name: ani-b-goOut;
-        }
-
-        .ani-b-normal {
-            transform: scale3d(0, 0, 1);
-            top: -200px;
-        }
-    </style>
-
     <!-- animation C -->
     <style>
 
@@ -259,7 +151,7 @@
 </div>
 
 <div class="on-center text--x2 center-text top-padding--x20">
-    <h1 class="speed number hidden middle text--x6 text--c3 text-shadow--x5">
+    <h1 class="speed number hidden middle text--x6 text--c3 text-shadow--x5 center-text">
         1
     </h1>
 </div>
@@ -402,10 +294,16 @@
     </div>
 
     <!-- animation selector -->
-    <div class="css-trans rounded--x50 opacity--x0 opacity--x100--at margin--x20">
-        <span class="ani-a button left-child fcBackground background--c1 background--c0--at padding--x10 symbol text--c3">Ani1</span>
-        <span class="ani-b button side-child fcBackground background--c1 background--c0--at padding--x10 symbol text--c3">Ani2</span>
-        <span class="ani-c button right-child fcBackground background--c1 background--c0--at padding--x10 symbol text--c3">Ani3</span>
+    <div class="css-trans opacity--x0 opacity--x100--at margin--x20" style="display: inline-block">
+        <div class="rounded--x50 center-text">
+            <span class="ani-a button left-child fcBackground background--c1 background--c0--at padding--x10 symbol text--c3">Ani1</span>
+            <span class="ani-b button side-child fcBackground background--c1 background--c0--at padding--x10 symbol text--c3">Ani2</span>
+            <span class="ani-c button right-child fcBackground background--c1 background--c0--at padding--x10 symbol text--c3">Ani3</span>
+        </div>
+        <div class="rounded--x50 center-text">
+            <span class="counter-1 button left-child fcBackground background--c1 background--c0--at padding--x10 symbol text--c3" title="count up to max">Counter 1</span>
+            <span class="counter-2 button right-child fcBackground background--c1 background--c0--at padding--x10 symbol text--c3" title="count up to last-max and increase last-max every loop">Counter 2</span>
+        </div>
     </div>
 
     <!-- player control -->
@@ -491,7 +389,7 @@
 <!-- JS -->
 <script type="text/javascript" src="http://localhost/jquery/1.11/jquery.js"></script>
 <script type="text/javascript" src="../dist/jquery.panel.suite.min.js"></script>
-<script type="text/javascript" src="focus-3.js?refresh=74"></script>
+<script type="text/javascript" src="focus-3.js?refresh=82"></script>
 
 </body>
 </html>
