@@ -101,11 +101,9 @@ Appanel({
                     number++;
                 }
 
-                focus.lastMax = max;
-                focus.number = number;
-
                 focus.debugFunc.call(this);
 
+                focus.setLastMax(max);
                 focus.set(number);
                 focus.initCircle(number);
 
@@ -173,8 +171,11 @@ Appanel({
 
         setAnimationIndex: function (animationIndex, counterIndex) {
             this.animationIndex = animationIndex;
-            if (counterIndex === undefined) counterIndex = 0;
             this.counterIndex = counterIndex;
+
+            $('.ani-' + animationIndex).addClass('border--c3');
+            $('.counter-' + counterIndex).addClass('border--c3');
+            Appanel.fcBorder.element = $(Appanel.fcBorder.element.selector);
 
             /**
              * css.animation-timing-function:
@@ -309,10 +310,14 @@ Appanel({
 
         speedElement: $('.speed-number')[0],
 
-        setMaxNumber: function (max, last) {
+        setMaxNumber: function (max) {
             this.max = max;
             $(".max-number").html(max);
+        },
+
+        setLastMax: function (last) {
             this.lastMax = last;
+            $(".last-max").html(last);
         },
 
         setZeroNumber: function (number) {
@@ -368,7 +373,8 @@ Appanel({
                     /*if (this.getState() !== 'playing')*/
                     this.set(profile.startNumber);
                     this.setZeroNumber(profile.zeroNumber);
-                    this.setMaxNumber(profile.max, profile.lastMax);
+                    this.setMaxNumber(profile.max);
+                    this.setLastMax(profile.lastMax);
                     this.setSpeedX(profile.speed);
                     this.setOutNumber(profile.out);
                     this.setAfterOutNumber(profile.afterOut);
@@ -488,6 +494,7 @@ Appanel({
             var durations = profile.out + '|' + profile.afterOut + '|' + profile.in + '|' + profile.afterIn;
             $numbers.find('.number-durations')[0].innerText = durations;
             $numbers.find('.number-range')[0].innerText = profile.zeroNumber + '|' + profile.startNumber + '|' + profile.max;
+            $numbers.find('.number-indexes')[0].innerText = profile.animationIndex + '|' + profile.counterIndex;
             $numbers.css('zoom', 1 - (durations.length * 0.03));
         },
 
@@ -653,7 +660,8 @@ Appanel({
                     config.call(Appanel.focus);
                 }],
                 [".zero", "click", function () {
-                    Appanel.focus.number = Appanel.focus.zeroNumber;
+                    Appanel.focus.number = Appanel.focus.zeroNumber - 1;
+                    Appanel.focus.setLastMax(Appanel.focus.zeroNumber);
                     config.call(Appanel.focus);
                 }],
                 [".zero-number", "click", function () {
@@ -684,27 +692,27 @@ Appanel({
                         config.call(Appanel.focus);
                     }
                 }],
-                [$(".ani-a").sweep(speed), "click", function () {
+                [$(".ani-0").sweep(speed), "click", function () {
                     Appanel.focus.setAnimationIndex(0, Appanel.focus.counterIndex);
                     config.call(Appanel.focus);
                     refresh();
                 }],
-                [$(".ani-b").sweep(speed), "click", function () {
+                [$(".ani-1").sweep(speed), "click", function () {
                     Appanel.focus.setAnimationIndex(1, Appanel.focus.counterIndex);
                     config.call(Appanel.focus);
                     refresh();
                 }],
-                [$(".ani-c").sweep(speed), "click", function () {
+                [$(".ani-2").sweep(speed), "click", function () {
                     Appanel.focus.setAnimationIndex(2, Appanel.focus.counterIndex);
                     config.call(Appanel.focus);
                     refresh();
                 }],
-                [$(".counter-1").sweep(speed), "click", function () {
+                [$(".counter-0").sweep(speed), "click", function () {
                     Appanel.focus.setAnimationIndex(Appanel.focus.animationIndex, 0);
                     config.call(Appanel.focus);
                     refresh();
                 }],
-                [$(".counter-2").sweep(speed), "click", function () {
+                [$(".counter-1").sweep(speed), "click", function () {
                     Appanel.focus.setAnimationIndex(Appanel.focus.animationIndex, 1);
                     config.call(Appanel.focus);
                     refresh();
