@@ -386,29 +386,29 @@ Appanel({
                 if (loadColors) {
                     Appanel.back.set(profile.colorBack);
                     Appanel.number.set(profile.colorNumber);
-                    Appanel.circle0.set(profile.colorCircle1);
                     Appanel.circle1.set(profile.colorCircle1);
                     Appanel.circle2.set(profile.colorCircle2);
 
-                    Appanel.fcForeground.set(profile.colorNumber);
-                    Appanel.fcBackgroundHover.set(profile.colorCircle1);
-                    Appanel.fcBackground.set(profile.colorCircle2);
-                    Appanel.fcBorder.set(profile.colorCircle1);
+                    Appanel.fcBackgroundHover.element.off('mousein mouseout')
+                        .each(function (i, e) {
+                            var $e = $(e);
+                            $e
+                                .on('mouseover', {element: $e, color: Appanel.fcBackgroundHover}, function (ev) {
+                                    ev.data.element.css('background-color', ev.data.color.get());
+                                })
+                                .on('mouseout', {element: $e, color: Appanel.fcBackground}, function (ev) {
+                                    ev.data.element.css('background-color', ev.data.color.get());
+                                })
+                        });
 
-                    Appanel.fcBackgroundHover.element.off('mousein mouseout').each(function (i, e) {
-                        var $e = $(e);
-                        $e
-                            .on('mouseover', {element: $e, color: Appanel.fcBackgroundHover.color}, function (ev) {
-                                ev.data.element.css('background-color', ev.data.color);
-                            })
-                            .on('mouseout', {element: $e, color: Appanel.fcBackground.color}, function (ev) {
-                                ev.data.element.css('background-color', ev.data.color);
-                            })
-                    });
+                    $(Appanel.fcBackgroundHover).off('setcolor')
+                        .on('setcolor', {color: Appanel.fcBackground}, function (ev) {
+                            ev.data.color.set(ev.data.color.get());
+                        });
                 }
 
                 if (!defaultProfile) {
-                    Appanel.chains($(".profile-" + profileIndex), 'ani-c-goOut');
+                    Appanel.chains($(".profile-" + profileIndex), 'ani-c-comeIn,ani-c-goOut');
                     Appanel.focus.saveDefaultProfile();
                     if (loadNumbers) refresh();
                 }
@@ -482,7 +482,7 @@ Appanel({
                 return;
             }
 
-            Appanel.chains($profile, 'ani-c-goOut');
+            Appanel.chains($profile, 'ani-c-comeIn,ani-c-goOut');
 
             $profile.find('.color-back').css('background-color', profile.colorBack);
             $profile.find('.color-number').css('background-color', profile.colorNumber);
@@ -727,45 +727,75 @@ Appanel({
             if (color) {
                 this.color = color;
                 this.element.css(this.prop, color);
+                for (var i in this.child) {
+                    this.child[i].set(color);
+                }
+                $(this).triggerHandler('setcolor');
             }
         },
         get: function () {
             return this.color;
         },
         handle: function () {
-            var i, color, element,
+            if (this.sourceColor !== undefined) return;
+
+            var i,
+                color,
+                element,
                 colors = ["black", "gray", "silver", "white", "red", "orange", "yellow"];
+
             for (var i in colors) {
                 color = colors[i];
                 element = $("." + color + "-" + this.name);
-                element.on("click", {control: this, color: color, element: element}, function (ev) {
-                    Appanel.chains(ev.data.element, 'ani-c-comeIn');
-                    ev.data.control.set(ev.data.color);
-                    Appanel.focus
-                        .saveDefaultProfile()
-                        .loadProfile(0);
-                });
+                element
+                    .attr('title', this.name + ' color to ' + color)
+                    .on("click", {control: this, color: color, element: element}, function (ev) {
+                        Appanel.chains(ev.data.element, 'ani-c-comeIn,ani-c-goOut');
+                        ev.data.control.set(ev.data.color);
+                        Appanel.focus.saveDefaultProfile();
+                    });
             }
+
+            $('.' + this.name + '-color')
+                .attr('title', this.name + ' color')
+                .on("click", {control: this}, function (ev) {
+                    var control = ev.data.control;
+                    Appanel.chains($(ev.currentTarget), 'ani-c-comeIn,ani-c-goOut');
+                    Appanel.focus.inputNumber(control.name + ' color', control.get(), function (color) {
+                        control.set(color);
+                        Appanel.focus.saveDefaultProfile();
+                    });
+                });
         },
-        stamp: function (name, prop, target) {
+        stamp: function (name, prop, target, sourceColor) {
             Appanel[name] = $.extend({}, this, {
                 name: name,
                 prop: prop,
-                element: target
+                element: target,
+                sourceColor: sourceColor,
+                child: []
             });
             Appanel[name].handle();
+            if (sourceColor !== undefined) {
+                Appanel[sourceColor].child.push(Appanel[name]);
+            }
         },
         init: function () {
             this.stamp("back", "background-color", $("body"));
             this.stamp("number", "color", $(".number"));
-            this.stamp("circle0", "stroke", $(".circle"));
             this.stamp("circle1", "stroke", $(".circle1"));
             this.stamp("circle2", "stroke", $(".circle2"));
 
-            this.stamp("fcForeground", "color", $(".symbol--c3,.symbol--c3--at,.text--c3"));
-            this.stamp("fcBackground", "background-color", $(".fcBackground"));
-            this.stamp("fcBackgroundHover", "background-color", $(".background--c0--at"));
-            this.stamp("fcBorder", "border-color", $(".border--c3"));
+            this.stamp("circle0", "stroke", $(".circle"), "circle1");
+            this.stamp("fcForeground", "color", $(".symbol--c3,.symbol--c3--at,.text--c3"), "number");
+            this.stamp("fcBackgroundHover", "background-color", $(".background--c0--at"), "circle1");
+            this.stamp("fcBackground", "background-color", $(".fcBackground"), "circle2");
+            this.stamp("fcBorder", "border-color", $(".border--c3"), "circle1");
+
+            this.stamp("backColor", "background-color", $(".back-color"), "back");
+            this.stamp("numberColor", "background-color", $(".number-color"), "number");
+            this.stamp("circle1Color", "background-color", $(".circle1-color"), "circle1");
+            this.stamp("circle2Color", "background-color", $(".circle2-color"), "circle2");
         }
     },
 
