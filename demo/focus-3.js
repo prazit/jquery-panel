@@ -83,11 +83,11 @@ Appanel({
 
         theme: {
             colors: [],
-            refresh: function() {
+            refresh: function () {
                 var color;
                 for (var i in this.colors) {
                     color = this.colors[i];
-                    if(color.sourceColor !== undefined) continue;
+                    if (color.sourceColor !== undefined) continue;
                     color.set(color.get());
                 }
             },
@@ -104,8 +104,7 @@ Appanel({
         debugPad: $(".debug-pad"),
 
         debugFunc: function () {
-            var msg = "Sweep Label:" + this.label + " play:" + this.play + " timing:" + this.timing + " duration:" + this.duration + "s";
-            Appanel.focus.debugPad[0].innerText = msg;
+            Appanel.focus.debugPad[0].innerText = "play:" + this.play + " timing:" + this.timing + " duration:" + this.duration + "s";
         },
 
         nextNumber: [
@@ -118,15 +117,16 @@ Appanel({
                 focus.initCircle(number);
 
                 // update config
+                if (focus.targetMax !== focus.max) focus.targetMax = focus.max;
                 focus.saveDefaultProfile();
             },
-            function (/* 1: count up from zeroNumber to (lastMax + 1) when lastMax reach the max value then reset it to zeroNumber */) {
+            function (/* 1: count up from zeroNumber to (targetMax + 1) when targetMax reach the max value then reset it to zeroNumber */) {
                 var focus = Appanel.focus,
-                    max = focus.lastMax === undefined ? focus.zeroNumber : focus.lastMax,
+                    max = focus.targetMax === undefined ? focus.zeroNumber + 1 : focus.targetMax,
                     number = focus.number;
 
-                if (number > max) {
-                    max = number >= focus.max ? focus.zeroNumber : number;
+                if (number >= max) {
+                    max = number >= focus.max ? focus.zeroNumber + 1 : number + 1;
                     number = focus.zeroNumber;
                 } else {
                     number++;
@@ -134,7 +134,7 @@ Appanel({
 
                 focus.debugFunc.call(this);
 
-                focus.setLastMax(max);
+                focus.setTargetMax(max);
                 focus.set(number);
                 focus.initCircle(number);
 
@@ -142,6 +142,26 @@ Appanel({
                 focus.saveDefaultProfile();
             }
         ],
+
+        maxTick: 0,
+
+        ticktock: $('.circle-tick'),
+
+        nextTick: function () {
+            var focus = Appanel.focus,
+                tick,
+                maxTick = focus.maxTick;
+
+            if (maxTick === 0) {
+                maxTick = 2 * Math.PI * focus.ticktock.attr('r');
+                focus.maxTick = maxTick;
+                focus.ticktock.css('stroke-dasharray', focus.maxTick);
+                focus.ticktock.css('stroke-dashoffset', 0);
+            }
+
+            tick = focus.number / focus.targetMax * maxTick;
+            focus.ticktock.css('stroke-dashoffset', -tick);
+        },
 
         inputNumber: function (title, defaultNumber, handler) {
             var $maxValuePanel = $('.max-number-input-panel');
@@ -199,6 +219,7 @@ Appanel({
             this.number = number;
             this.mon1.html(number);
             this.mon2.html(number);
+            if (number === this.zeroNumber) this.maxTick = 0;
         },
 
         setAnimationIndex: function (animationIndex, counterIndex) {
@@ -272,6 +293,7 @@ Appanel({
                                         duration: this.in + this.afterIn,
                                         timing: "linear",
                                         play: 'ani-c-circle-show',
+                                        run: this.nextTick,
                                         seep: []
                                     }]
                                 }]
@@ -345,11 +367,12 @@ Appanel({
         setMaxNumber: function (max) {
             this.max = max;
             $(".max-number").html(max);
+            this.maxTick = 0;
         },
 
-        setLastMax: function (last) {
-            this.lastMax = last;
-            $(".last-max").html(last);
+        setTargetMax: function (targetMax) {
+            this.targetMax = targetMax;
+            $(".last-max").html(targetMax);
         },
 
         setZeroNumber: function (number) {
@@ -440,14 +463,14 @@ Appanel({
             this.profileCount++;
             Appanel.set('focus:profiles', this.profileCount);
             this.handleProfile();
-            this.loadProfile(0,'colors');
+            this.loadProfile(0, 'colors');
         },
 
         removeProfile: function () {
             this.profileCount--;
             Appanel.set('focus:profiles', this.profileCount);
             this.handleProfile();
-            this.loadProfile(0,'colors');
+            this.loadProfile(0, 'colors');
         },
 
         loadProfile: function (profileIndex, options) {
@@ -482,7 +505,7 @@ Appanel({
                     this.set(profile.startNumber);
                     this.setZeroNumber(profile.zeroNumber);
                     this.setMaxNumber(profile.max);
-                    this.setLastMax(profile.lastMax);
+                    this.setTargetMax(profile.targetMax);
                     this.setSpeedX(profile.speed);
                 }
 
@@ -536,7 +559,7 @@ Appanel({
                     speed: this.speed,
                     zeroNumber: this.zeroNumber,
                     max: this.max,
-                    lastMax: this.lastMax,
+                    targetMax: this.targetMax,
                     startNumber: this.number,
 
                     animationIndex: this.animationIndex,
@@ -764,7 +787,7 @@ Appanel({
                 }],
                 [".zero", "click", function () {
                     Appanel.focus.number = Appanel.focus.zeroNumber - 1;
-                    Appanel.focus.setLastMax(Appanel.focus.zeroNumber);
+                    Appanel.focus.setTargetMax(Appanel.focus.zeroNumber);
                     config.call(Appanel.focus);
                 }],
                 [".zero-number", "click", function () {
@@ -891,6 +914,8 @@ Appanel({
             this.stamp("circle2", "stroke", $(".circle2"));
 
             this.stamp("circle0", "stroke", $(".circle"), "circle1");
+            this.stamp("circleInside", "stroke", $(".circle-inside"), "circle1");
+            this.stamp("circleTick", "stroke", $(".circle-tick"), "back");
             this.stamp("fcForeground", "color", $(".symbol--c3,.symbol--c3--at,.text--c3"), "number");
             this.stamp("fcBackgroundHover", "background-color", $(".background--c0--at"), "circle1");
             this.stamp("fcBackground", "background-color", $(".fcBackground"), "circle2");
