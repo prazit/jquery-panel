@@ -83,13 +83,21 @@ Appanel({
 
         theme: {
             colors: [],
+            refresh: function() {
+                var color;
+                for (var i in this.colors) {
+                    color = this.colors[i];
+                    if(color.sourceColor !== undefined) continue;
+                    color.set(color.get());
+                }
+            },
             updateElement: function () {
                 var color;
                 for (var i in this.colors) {
                     color = this.colors[i];
                     color.updateElement();
-                    color.set(color.get());
                 }
+                this.refresh();
             }
         },
 
@@ -432,12 +440,14 @@ Appanel({
             this.profileCount++;
             Appanel.set('focus:profiles', this.profileCount);
             this.handleProfile();
+            this.loadProfile(0,'colors');
         },
 
         removeProfile: function () {
             this.profileCount--;
             Appanel.set('focus:profiles', this.profileCount);
             this.handleProfile();
+            this.loadProfile(0,'colors');
         },
 
         loadProfile: function (profileIndex, options) {
@@ -647,9 +657,13 @@ Appanel({
             Appanel.chains($profile, 'ani-c-comeIn,ani-c-goOut');
 
             $profile.find('.color-back').css('background-color', profile.colorBack);
-            $profile.find('.color-number').css('background-color', profile.colorNumber);
-            $profile.find('.color-light-circle').css('background-color', profile.colorCircle1);
-            $profile.find('.color-dark-circle').css('background-color', profile.colorCircle2);
+            $profile.find('.color-number').css('color', profile.colorNumber)[0].innerText = profileIndex;
+            $profile.find('.color-circle')
+                .css('background-color', profile.colorBack)
+                .css('border-right-color', profile.colorCircle1)
+                .css('border-bottom-color', profile.colorCircle1)
+                .css('border-left-color', profile.colorCircle2)
+                .css('border-top-color', profile.colorCircle1);
 
             $profile.find('.load').attr('title', '-- profile ' + profileIndex + ' --\n' + JSON.stringify(profile).substr(1).replace('}', '').replaceAll(',"', '\n"'));
 
