@@ -24,6 +24,17 @@ function hasParam(name) {
     return false;
 }
 
+function toPrecision(number) {
+    number = Math.abs(number);
+    var zero = number < 1,
+        string = '' + number,
+        indexOfDot = string.indexOf('.'),
+        precision = 2;
+    if (indexOfDot < 0) indexOfDot = 0;
+    else if (zero) precision--;
+    return Number(Math.abs(string).toPrecision(indexOfDot + precision));
+}
+
 Appanel({
     focus: {
 
@@ -57,7 +68,7 @@ Appanel({
                         var focus = Appanel.focus;
                         if (focus.stateText == null) {
                             var x = focus.playButton.sweep("speedx");
-                            this.$.html(x.toPrecision(x > 1 ? 2 : 1) + "x");
+                            this.$.html(toPrecision(x) + "x");
                         } else {
                             this.$[0].innerText = '' + focus.stateText;
                             focus.stateText = null;
@@ -142,7 +153,8 @@ Appanel({
                 [dialogue, 'selection:closed', function (ev, button) {
                     if (button.button === 'OK') {
                         var number = $(ev.target).find('.max-number-input')[0].value;
-                        handler(number);
+
+                        handler(isNaN(number) ? number : Math.abs(number));
 
                         // update config
                         ev.data.saveDefaultProfile.call(ev.data);
@@ -339,9 +351,9 @@ Appanel({
         },
 
         setSpeedX: function (speed) {
-            this.speed = speed;
-            this.speedElement.innerText = speed + 'x';
-            this.playButton.sweep("speedx", speed);
+            this.speed = toPrecision(speed);
+            this.speedElement.innerText = this.speed + 'x';
+            this.playButton.sweep("speedx", this.speed);
         },
 
         setOutNumber: function (number) {
@@ -367,215 +379,6 @@ Appanel({
             number = Math.abs(number);
             this.afterIn = number;
             $('.after-in-number')[0].innerText = number;
-        },
-
-        loadProfile: function (profileIndex, options) {
-            var profile = Appanel.get("focus:profile-" + profileIndex);
-            if (profile) {
-                var loadNumbers, loadColors, defaultProfile = profileIndex === 0;
-                if (options === undefined) {
-                    loadNumbers = true;
-                    loadColors = true;
-                } else {
-                    loadNumbers = options === 'numbers';
-                    loadColors = options === 'colors';
-                }
-
-                if (loadNumbers) {
-                    /*if (this.getState() !== 'playing')*/
-                    this.set(profile.startNumber);
-                    this.setZeroNumber(profile.zeroNumber);
-                    this.setMaxNumber(profile.max);
-                    this.setLastMax(profile.lastMax);
-                    this.setSpeedX(profile.speed);
-                    this.setOutNumber(profile.out);
-                    this.setAfterOutNumber(profile.afterOut);
-                    this.setInNumber(profile.in);
-                    this.setAfterInNumber(profile.afterIn);
-                    this.setAnimationIndex(profile.animationIndex, profile.counterIndex);
-                }
-
-                if (loadColors) {
-                    Appanel.back.set(profile.colorBack);
-                    Appanel.number.set(profile.colorNumber);
-                    Appanel.circle1.set(profile.colorCircle1);
-                    Appanel.circle2.set(profile.colorCircle2);
-
-                    Appanel.fcBackgroundHover.element.off('mousein mouseout')
-                        .each(function (i, e) {
-                            var $e = $(e);
-                            $e
-                                .on('mouseover', {element: $e, color: Appanel.fcBackgroundHover}, function (ev) {
-                                    ev.data.element.css('background-color', ev.data.color.get());
-                                })
-                                .on('mouseout', {element: $e, color: Appanel.fcBackground}, function (ev) {
-                                    ev.data.element.css('background-color', ev.data.color.get());
-                                })
-                        });
-
-                    $(Appanel.fcBackgroundHover).off('setcolor')
-                        .on('setcolor', {color: Appanel.fcBackground}, function (ev) {
-                            ev.data.color.set(ev.data.color.get());
-                        });
-                }
-
-                if (!defaultProfile) {
-                    Appanel.chains($(".profile-" + profileIndex), 'ani-c-comeIn,ani-c-goOut');
-                    Appanel.focus.saveDefaultProfile();
-                    if (loadNumbers) refresh();
-                }
-            }
-        },
-
-        lastSaved: null,
-
-        saveProfile: function (profileIndex) {
-            if (Appanel.back.get() === undefined) return;
-
-            var profile = {
-                    out: this.out,
-                    afterOut: this.afterOut,
-                    in: this.in,
-                    afterIn: this.afterIn,
-
-                    speed: this.speed,
-                    zeroNumber: this.zeroNumber,
-                    max: this.max,
-                    lastMax: this.lastMax,
-                    startNumber: this.number,
-
-                    animationIndex: this.animationIndex,
-                    counterIndex: this.counterIndex,
-
-                    colorBack: Appanel.back.get(),
-                    colorNumber: Appanel.number.get(),
-                    colorCircle1: Appanel.circle1.get(),
-                    colorCircle2: Appanel.circle2.get()
-                },
-                json = profileIndex + JSON.stringify(profile);
-            if (json === this.lastSaved) return;
-            this.lastSaved = json;
-
-            Appanel.set("focus:profile-" + profileIndex, profile);
-            this.initProfile(profileIndex);
-
-            console.info('Appanel.set("focus:profile-' + profileIndex + '", ' + json + ');');
-        },
-
-        initProfile: function (profileIndex) {
-            var $profile = $(".profile-" + (profileIndex === 0 ? 1 : profileIndex)),
-                $numbers = $profile.find('.numbers'),
-                profile = Appanel.get("focus:profile-" + profileIndex);
-
-            if (!profile) {
-                profile = {
-                    out: 1,
-                    afterOut: 1,
-                    in: 1,
-                    afterIn: 1,
-
-                    speed: 1,
-                    zeroNumber: 0,
-                    max: 9,
-                    startNumber: 0,
-
-                    animationIndex: 2,
-                    counterIndex: 0,
-
-                    colorBack: 'black',
-                    colorNumber: 'yellow',
-                    colorCircle1: 'black',
-                    colorCircle2: 'black'
-                };
-            }
-
-            if (profileIndex === 0) {
-                $profile.find('.color-back').attr('title', '-- profile 0 --\n' + JSON.stringify(profile).substr(1).replace('}', '').replaceAll(',"', '\n"'));
-                return;
-            }
-
-            Appanel.chains($profile, 'ani-c-comeIn,ani-c-goOut');
-
-            $profile.find('.color-back').css('background-color', profile.colorBack);
-            $profile.find('.color-number').css('background-color', profile.colorNumber);
-            $profile.find('.color-light-circle').css('background-color', profile.colorCircle1);
-            $profile.find('.color-dark-circle').css('background-color', profile.colorCircle2);
-
-            $profile.find('.load').attr('title', '-- profile ' + profileIndex + ' --\n' + JSON.stringify(profile).substr(1).replace('}', '').replaceAll(',"', '\n"'));
-
-            var durations = profile.out + '|' + profile.afterOut + '|' + profile.in + '|' + profile.afterIn;
-            $numbers.find('.number-durations')[0].innerText = durations;
-            $numbers.find('.number-range')[0].innerText = profile.zeroNumber + '|' + profile.startNumber + '|' + profile.max;
-            $numbers.find('.number-indexes')[0].innerText = profile.animationIndex + '|' + profile.counterIndex;
-            $numbers.css('zoom', 1 - (durations.length * 0.03));
-        },
-
-        removeProfile: function () {
-            this.profileCount--;
-            Appanel.set('focus:profiles', this.profileCount);
-            this.handleProfile();
-        },
-
-        addProfile: function () {
-            this.profileCount++;
-            Appanel.set('focus:profiles', this.profileCount);
-            this.handleProfile();
-        },
-
-        handleProfile: function () {
-            var count = this.profileCount === undefined ? Appanel.get('focus:profiles') : this.profileCount,
-                $container = $('.profiles'),
-                $profile;
-
-            if (this.profileTemplate === undefined) this.profileTemplate = $container[0].innerHTML;
-
-            if (!count) count = 6;
-            this.profileCount = count;
-            $container[0].innerHTML = "";
-
-            for (var i = 1; i <= count; i++) {
-                $container.append(this.profileTemplate.replace('profile-number', i).replace('profile-count', count));
-                console.debug($container);
-
-                $profile = $(".profile-" + i);
-                if (i < count) {
-                    $profile.find('.actions')[0].remove();
-                } else {
-                    $profile.find('.actions .add').on("click", function (ev) {
-                        Appanel.focus.addProfile();
-                    });
-                    $profile.find('.actions .remove').on("click", function (ev) {
-                        Appanel.focus.removeProfile();
-                    });
-                }
-
-                $profile.find('.load').on("click", {control: this, index: i}, function (ev) {
-                    ev.data.control.loadProfile(ev.data.index);
-                });
-                $profile.find('.numbers').on("click", {control: this, index: i}, function (ev) {
-                    ev.data.control.loadProfile(ev.data.index, 'numbers');
-                });
-                $profile.find('.colors').on("click", {control: this, index: i}, function (ev) {
-                    ev.data.control.loadProfile(ev.data.index, 'colors');
-                });
-                $profile.find('.save').on("click", {control: this, index: i}, function (ev) {
-                    ev.data.control.saveProfile(ev.data.index);
-                });
-
-                this.initProfile(i);
-            }
-
-            this.theme.updateElement();
-        },
-
-        /**
-         * save config
-         * usage: config.call(Appanel.focus);
-         * this = Appanel.focus
-         */
-        saveDefaultProfile: function () {
-            this.saveProfile(0);
-            return this;
         },
 
         togglePlay: function () {
@@ -623,6 +426,243 @@ Appanel({
             } else if (!this.playButton.hasClass('hidden')) {
                 return 'initialized';
             }
+        },
+
+        addProfile: function () {
+            this.profileCount++;
+            Appanel.set('focus:profiles', this.profileCount);
+            this.handleProfile();
+        },
+
+        removeProfile: function () {
+            this.profileCount--;
+            Appanel.set('focus:profiles', this.profileCount);
+            this.handleProfile();
+        },
+
+        loadProfile: function (profileIndex, options) {
+            var profile = Appanel.get("focus:profile-" + profileIndex);
+            if (profile) {
+                var loadNumbers, loadDurations, loadRange, loadIndexes, loadColors, defaultProfile = profileIndex === 0;
+                if (options === undefined) {
+                    loadNumbers = true;
+                    loadColors = true;
+                } else {
+                    loadNumbers = options === 'numbers';
+                    loadColors = options === 'colors';
+                }
+                if (loadNumbers) {
+                    loadDurations = true;
+                    loadRange = true;
+                    loadIndexes = true;
+                } else {
+                    loadDurations = options === 'durations';
+                    loadRange = options === 'range';
+                    loadIndexes = options === 'indexes' || loadDurations;
+                }
+
+                if (loadDurations) {
+                    this.setOutNumber(profile.out);
+                    this.setAfterOutNumber(profile.afterOut);
+                    this.setInNumber(profile.in);
+                    this.setAfterInNumber(profile.afterIn);
+                }
+
+                if (loadRange) {
+                    this.set(profile.startNumber);
+                    this.setZeroNumber(profile.zeroNumber);
+                    this.setMaxNumber(profile.max);
+                    this.setLastMax(profile.lastMax);
+                    this.setSpeedX(profile.speed);
+                }
+
+                if (loadIndexes) {
+                    this.setAnimationIndex(profile.animationIndex, profile.counterIndex);
+                }
+
+                if (loadColors) {
+                    Appanel.back.set(profile.colorBack);
+                    Appanel.number.set(profile.colorNumber);
+                    Appanel.circle1.set(profile.colorCircle1);
+                    Appanel.circle2.set(profile.colorCircle2);
+
+                    Appanel.fcBackgroundHover.element.off('mousein mouseout')
+                        .each(function (i, e) {
+                            var $e = $(e);
+                            $e
+                                .on('mouseover', {element: $e, color: Appanel.fcBackgroundHover}, function (ev) {
+                                    ev.data.element.css('background-color', ev.data.color.get());
+                                })
+                                .on('mouseout', {element: $e, color: Appanel.fcBackground}, function (ev) {
+                                    ev.data.element.css('background-color', ev.data.color.get());
+                                })
+                        });
+
+                    $(Appanel.fcBackgroundHover).off('setcolor')
+                        .on('setcolor', {color: Appanel.fcBackground}, function (ev) {
+                            ev.data.color.set(ev.data.color.get());
+                        });
+                }
+
+                if (!defaultProfile) {
+                    Appanel.chains($(".profile-" + profileIndex), 'ani-c-comeIn,ani-c-goOut');
+                    Appanel.focus.saveDefaultProfile();
+                    if (loadIndexes) refresh();
+                }
+            }
+        },
+
+        lastSaved: null,
+
+        saveProfile: function (profileIndex) {
+            if (Appanel.back.get() === undefined) return;
+
+            var profile = {
+                    out: this.out,
+                    afterOut: this.afterOut,
+                    in: this.in,
+                    afterIn: this.afterIn,
+
+                    speed: this.speed,
+                    zeroNumber: this.zeroNumber,
+                    max: this.max,
+                    lastMax: this.lastMax,
+                    startNumber: this.number,
+
+                    animationIndex: this.animationIndex,
+                    counterIndex: this.counterIndex,
+
+                    colorBack: Appanel.back.get(),
+                    colorNumber: Appanel.number.get(),
+                    colorCircle1: Appanel.circle1.get(),
+                    colorCircle2: Appanel.circle2.get()
+                },
+                json = profileIndex + JSON.stringify(profile);
+            if (json === this.lastSaved) return;
+            this.lastSaved = json;
+
+            Appanel.set("focus:profile-" + profileIndex, profile);
+            this.initProfile(profileIndex);
+
+            console.info('Appanel.set("focus:profile-' + profileIndex + '", ' + json + ');');
+        },
+
+        /**
+         * save config
+         * usage: config.call(Appanel.focus);
+         * this = Appanel.focus
+         */
+        saveDefaultProfile: function () {
+            this.saveProfile(0);
+            return this;
+        },
+
+        handleProfile: function () {
+            var count = this.profileCount === undefined ? Appanel.get('focus:profiles') : this.profileCount,
+                $container = $('.profiles'),
+                $profile;
+
+            if (this.profileTemplate === undefined) this.profileTemplate = $container[0].innerHTML;
+
+            if (!count) count = 6;
+            this.profileCount = count;
+            $container[0].innerHTML = "";
+
+            for (var i = 1; i <= count; i++) {
+                $container.append(this.profileTemplate.replace('profile-number', i).replace('profile-count', count));
+                console.debug($container);
+
+                $profile = $(".profile-" + i);
+                if (i < count) {
+                    $profile.find('.actions')[0].remove();
+                } else {
+                    $profile.find('.actions .add').on("click", function (ev) {
+                        Appanel.focus.addProfile();
+                    });
+                    $profile.find('.actions .remove').on("click", function (ev) {
+                        Appanel.focus.removeProfile();
+                    });
+                }
+
+                $profile.find('.load').on("click", {control: this, index: i}, function (ev) {
+                    ev.data.control.loadProfile(ev.data.index);
+                });
+                $profile.find('.numbers').on("click", {control: this, index: i}, function (ev) {
+                    ev.data.control.loadProfile(ev.data.index, 'numbers');
+                });
+                $profile.find('.durations').on("click", {control: this, index: i}, function (ev) {
+                    ev.data.control.loadProfile(ev.data.index, 'durations');
+                });
+                $profile.find('.range').on("click", {control: this, index: i}, function (ev) {
+                    ev.data.control.loadProfile(ev.data.index, 'range');
+                });
+                $profile.find('.indexes').on("click", {control: this, index: i}, function (ev) {
+                    ev.data.control.loadProfile(ev.data.index, 'indexes');
+                });
+                $profile.find('.colors').on("click", {control: this, index: i}, function (ev) {
+                    ev.data.control.loadProfile(ev.data.index, 'colors');
+                });
+                $profile.find('.save').on("click", {control: this, index: i}, function (ev) {
+                    ev.data.control.saveProfile(ev.data.index);
+                });
+
+                this.initProfile(i);
+            }
+
+            this.theme.updateElement();
+        },
+
+        initProfile: function (profileIndex) {
+            var $profile = $(".profile-" + (profileIndex === 0 ? 1 : profileIndex)),
+                $numbers = $profile,
+                profile = Appanel.get("focus:profile-" + profileIndex);
+
+            if (!profile) {
+                profile = {
+                    out: 1,
+                    afterOut: 1,
+                    in: 1,
+                    afterIn: 1,
+
+                    speed: 1,
+                    zeroNumber: 0,
+                    max: 9,
+                    startNumber: 0,
+
+                    animationIndex: 2,
+                    counterIndex: 0,
+
+                    colorBack: 'black',
+                    colorNumber: 'yellow',
+                    colorCircle1: 'black',
+                    colorCircle2: 'black'
+                };
+            }
+
+            if (profileIndex === 0) {
+                $profile.find('.color-back').attr('title', '-- profile 0 --\n' + JSON.stringify(profile).substr(1).replace('}', '').replaceAll(',"', '\n"'));
+                return;
+            }
+
+            Appanel.chains($profile, 'ani-c-comeIn,ani-c-goOut');
+
+            $profile.find('.color-back').css('background-color', profile.colorBack);
+            $profile.find('.color-number').css('background-color', profile.colorNumber);
+            $profile.find('.color-light-circle').css('background-color', profile.colorCircle1);
+            $profile.find('.color-dark-circle').css('background-color', profile.colorCircle2);
+
+            $profile.find('.load').attr('title', '-- profile ' + profileIndex + ' --\n' + JSON.stringify(profile).substr(1).replace('}', '').replaceAll(',"', '\n"'));
+
+            var durations = profile.out + '|' + profile.afterOut + '\n' + profile.in + '|' + profile.afterIn;
+            $numbers.find('.number-durations')[0].innerText = durations;
+            $numbers.find('.durations .zoom').css('zoom', 1 - (durations.length * 0.02));
+
+            console.debug(profile);
+            $numbers.find('.number-range')[0].innerText = profile.zeroNumber + '|' + profile.max + '\n' + toPrecision(profile.speed) + 'x';
+            $numbers.find('.range .zoom').css('zoom', 1 - (durations.length * 0.03));
+
+            $numbers.find('.number-indexes')[0].innerText = profile.animationIndex + '|' + profile.counterIndex;
+            $numbers.find('.indexes .zoom').css('zoom', 1 - (durations.length * 0.01));
         },
 
         init: function () {
