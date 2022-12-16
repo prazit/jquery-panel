@@ -70,6 +70,18 @@ Appanel({
             }]
         },
 
+        theme: {
+            colors: [],
+            updateElement: function () {
+                var color;
+                for (var i in this.colors) {
+                    color = this.colors[i];
+                    color.updateElement();
+                    color.set(color.get());
+                }
+            }
+        },
+
         debugPad: $(".debug-pad"),
 
         debugFunc: function () {
@@ -175,7 +187,7 @@ Appanel({
 
             $('.ani-' + animationIndex).addClass('border--c3');
             $('.counter-' + counterIndex).addClass('border--c3');
-            Appanel.fcBorder.element = $(Appanel.fcBorder.element.selector);
+            Appanel.fcBorder.updateElement();
 
             /**
              * css.animation-timing-function:
@@ -498,11 +510,45 @@ Appanel({
             $numbers.css('zoom', 1 - (durations.length * 0.03));
         },
 
+        removeProfile: function () {
+            this.profileCount--;
+            Appanel.set('focus:profiles', this.profileCount);
+            this.handleProfile();
+        },
+
+        addProfile: function () {
+            this.profileCount++;
+            Appanel.set('focus:profiles', this.profileCount);
+            this.handleProfile();
+        },
+
         handleProfile: function () {
-            var count = 6,
+            var count = this.profileCount === undefined ? Appanel.get('focus:profiles') : this.profileCount,
+                $container = $('.profiles'),
                 $profile;
+
+            if (this.profileTemplate === undefined) this.profileTemplate = $container[0].innerHTML;
+
+            if (!count) count = 6;
+            this.profileCount = count;
+            $container[0].innerHTML = "";
+
             for (var i = 1; i <= count; i++) {
+                $container.append(this.profileTemplate.replace('profile-number', i).replace('profile-count', count));
+                console.debug($container);
+
                 $profile = $(".profile-" + i);
+                if (i < count) {
+                    $profile.find('.actions')[0].remove();
+                } else {
+                    $profile.find('.actions .add').on("click", function (ev) {
+                        Appanel.focus.addProfile();
+                    });
+                    $profile.find('.actions .remove').on("click", function (ev) {
+                        Appanel.focus.removeProfile();
+                    });
+                }
+
                 $profile.find('.load').on("click", {control: this, index: i}, function (ev) {
                     ev.data.control.loadProfile(ev.data.index);
                 });
@@ -515,8 +561,11 @@ Appanel({
                 $profile.find('.save').on("click", {control: this, index: i}, function (ev) {
                     ev.data.control.saveProfile(ev.data.index);
                 });
+
                 this.initProfile(i);
             }
+
+            this.theme.updateElement();
         },
 
         /**
@@ -775,6 +824,7 @@ Appanel({
                 sourceColor: sourceColor,
                 child: []
             });
+            Appanel.focus.theme.colors.push(Appanel[name]);
             Appanel[name].handle();
             if (sourceColor !== undefined) {
                 Appanel[sourceColor].child.push(Appanel[name]);
@@ -796,6 +846,9 @@ Appanel({
             this.stamp("numberColor", "background-color", $(".number-color"), "number");
             this.stamp("circle1Color", "background-color", $(".circle1-color"), "circle1");
             this.stamp("circle2Color", "background-color", $(".circle2-color"), "circle2");
+        },
+        updateElement: function () {
+            this.element = $(this.element.selector);
         }
     },
 
