@@ -110,26 +110,44 @@ Appanel({
         nextNumber: [
             function (/* 0: count up from zeroNumber to max */) {
                 var focus = Appanel.focus,
-                    number = focus.number >= focus.max ? focus.zeroNumber : focus.number + 1;
+                    number = focus.number;
+
+                if (focus.countDown) {
+                    number = number <= focus.zeroNumber ? focus.max : number - 1;
+                } else {
+                    number = number >= focus.max ? focus.zeroNumber : number + 1;
+                }
+
                 focus.debugFunc.call(this);
 
                 focus.set(number);
                 focus.initCircle(number);
 
+                if (focus.targetMax !== focus.max) focus.setTargetMax(focus.max);
+
                 // update config
-                if (focus.targetMax !== focus.max) focus.targetMax = focus.max;
                 focus.saveDefaultProfile();
             },
             function (/* 1: count up from zeroNumber to (targetMax + 1) when targetMax reach the max value then reset it to zeroNumber */) {
                 var focus = Appanel.focus,
-                    max = focus.targetMax === undefined ? focus.zeroNumber + 1 : focus.targetMax,
+                    zero = focus.zeroNumber,
+                    max = focus.targetMax === undefined ? zero + 1 : focus.targetMax,
                     number = focus.number;
 
-                if (number >= max) {
-                    max = number >= focus.max ? focus.zeroNumber + 1 : number + 1;
-                    number = focus.zeroNumber;
+                if (focus.countDown) {
+                    if (number <= zero) {
+                        max = max >= focus.max ? focus.zeroNumber + 1 : max + 1;
+                        number = max;
+                    } else {
+                        number--;
+                    }
                 } else {
-                    number++;
+                    if (number >= max) {
+                        max = max >= focus.max ? focus.zeroNumber + 1 : max + 1;
+                        number = focus.zeroNumber;
+                    } else {
+                        number++;
+                    }
                 }
 
                 focus.debugFunc.call(this);
@@ -220,6 +238,27 @@ Appanel({
             this.mon1.html(number);
             this.mon2.html(number);
             if (number === this.zeroNumber) this.maxTick = 0;
+        },
+
+        countDown: false,
+
+        setCountDirection: function (countDown) {
+            this.countDown = countDown;
+
+            var active, inactive;
+            if (countDown) {
+                active = '.count-down';
+                inactive = '.count-up';
+            } else {
+                active = '.count-up';
+                inactive = '.count-down';
+            }
+
+            $(active).addClass('border--c3');
+            $(inactive).removeClass('border--c3').css('border-color','inherit');;
+
+            Appanel.fcBorder.updateElement();
+            Appanel.focus.theme.refresh();
         },
 
         setAnimationIndex: function (animationIndex, counterIndex) {
@@ -510,6 +549,7 @@ Appanel({
                 }
 
                 if (loadIndexes) {
+                    this.setCountDirection(profile.countDown);
                     this.setAnimationIndex(profile.animationIndex, profile.counterIndex);
                 }
 
@@ -564,6 +604,7 @@ Appanel({
 
                     animationIndex: this.animationIndex,
                     counterIndex: this.counterIndex,
+                    countDown: this.countDown,
 
                     colorBack: Appanel.back.get(),
                     colorNumber: Appanel.number.get(),
@@ -603,7 +644,6 @@ Appanel({
 
             for (var i = 1; i <= count; i++) {
                 $container.append(this.profileTemplate.replace('profile-number', i).replace('profile-count', count));
-                console.debug($container);
 
                 $profile = $(".profile-" + i);
                 if (i < count) {
@@ -664,6 +704,7 @@ Appanel({
 
                     animationIndex: 2,
                     counterIndex: 0,
+                    countDown: false,
 
                     colorBack: 'black',
                     colorNumber: 'yellow',
@@ -694,7 +735,6 @@ Appanel({
             $numbers.find('.number-durations')[0].innerText = durations;
             $numbers.find('.durations .zoom').css('zoom', 1 - (durations.length * 0.02));
 
-            console.debug(profile);
             $numbers.find('.number-range')[0].innerText = profile.zeroNumber + '|' + profile.max + '\n' + toPrecision(profile.speed) + 'x';
             $numbers.find('.range .zoom').css('zoom', 1 - (durations.length * 0.03));
 
@@ -842,6 +882,14 @@ Appanel({
                     Appanel.focus.setAnimationIndex(Appanel.focus.animationIndex, 1);
                     config.call(Appanel.focus);
                     refresh();
+                }],
+                [$(".count-up").sweep(speed), "click", function (ev) {
+                    Appanel.focus.setCountDirection(false);
+                    config.call(Appanel.focus);
+                }],
+                [$(".count-down").sweep(speed), "click", function (ev) {
+                    Appanel.focus.setCountDirection(true);
+                    config.call(Appanel.focus);
                 }]
             ]);
 
