@@ -166,10 +166,11 @@ Appanel({
 
         ticktock: $('.circle-inside'),
         hand: $('.circle-hand'),
+        shortHand: $('.short-hand'),
 
         nextTick: function () {
             var focus = Appanel.focus,
-                tick,hand,ratio,
+                tick, hand, ratio, degree,
                 maxTick = focus.maxTick,
                 maxHand = focus.maxHand;
 
@@ -183,12 +184,15 @@ Appanel({
                 focus.hand.css('stroke-dashoffset', 0);
             }
 
-            ratio = focus.number / focus.targetMax;
+            ratio = focus.number / (focus.targetMax - focus.zeroNumber + 1);
             tick = ratio * maxTick;
             focus.ticktock.css('stroke-dashoffset', maxTick - tick);
 
             hand = ratio * maxHand;
             focus.hand.css('stroke-dashoffset', maxHand - hand);
+
+            degree = ratio * 360;
+            focus.shortHand.css('transform', 'rotate(' + degree + 'deg)');
         },
 
         inputNumber: function (title, defaultNumber, handler) {
@@ -974,7 +978,8 @@ Appanel({
 
             this.stamp("circle0", "stroke", $(".circle"), "circle1");
             this.stamp("circleInside", "stroke", $(".circle-inside"), "circle2");
-            this.stamp("circleTick", "stroke", $(".circle-hand"), "circle1");
+            this.stamp("circleHand", "stroke", $(".circle-hand,.short-hand"), "circle1");
+            this.stamp("shortHand", "fill", $(".short-hand"), "circle2");
             this.stamp("fcForeground", "color", $(".symbol--c3,.symbol--c3--at,.text--c3"), "number");
             this.stamp("fcBackgroundHover", "background-color", $(".background--c0--at"), "circle1");
             this.stamp("fcBackground", "background-color", $(".fcBackground"), "circle2");
