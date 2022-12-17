@@ -162,23 +162,33 @@ Appanel({
         ],
 
         maxTick: 0,
+        maxHand: 0,
 
-        ticktock: $('.circle-tick'),
+        ticktock: $('.circle-inside'),
+        hand: $('.circle-hand'),
 
         nextTick: function () {
             var focus = Appanel.focus,
-                tick,
-                maxTick = focus.maxTick;
+                tick,hand,ratio,
+                maxTick = focus.maxTick,
+                maxHand = focus.maxHand;
 
             if (maxTick === 0) {
                 maxTick = 2 * Math.PI * focus.ticktock.attr('r');
                 focus.maxTick = maxTick;
-                focus.ticktock.css('stroke-dasharray', focus.maxTick);
-                focus.ticktock.css('stroke-dashoffset', 0);
+
+                maxHand = 2 * Math.PI * focus.hand.attr('r');
+                focus.maxHand = maxHand;
+                focus.hand.css('stroke-dasharray', focus.maxHand);
+                focus.hand.css('stroke-dashoffset', 0);
             }
 
-            tick = focus.number / focus.targetMax * maxTick;
-            focus.ticktock.css('stroke-dashoffset', -tick);
+            ratio = focus.number / focus.targetMax;
+            tick = ratio * maxTick;
+            focus.ticktock.css('stroke-dashoffset', maxTick - tick);
+
+            hand = ratio * maxHand;
+            focus.hand.css('stroke-dashoffset', maxHand - hand);
         },
 
         inputNumber: function (title, defaultNumber, handler) {
@@ -255,7 +265,8 @@ Appanel({
             }
 
             $(active).addClass('border--c3');
-            $(inactive).removeClass('border--c3').css('border-color','inherit');;
+            $(inactive).removeClass('border--c3').css('border-color', 'inherit');
+            ;
 
             Appanel.fcBorder.updateElement();
             Appanel.focus.theme.refresh();
@@ -962,8 +973,8 @@ Appanel({
             this.stamp("circle2", "stroke", $(".circle2"));
 
             this.stamp("circle0", "stroke", $(".circle"), "circle1");
-            this.stamp("circleInside", "stroke", $(".circle-inside"), "circle1");
-            this.stamp("circleTick", "stroke", $(".circle-tick"), "back");
+            this.stamp("circleInside", "stroke", $(".circle-inside"), "circle2");
+            this.stamp("circleTick", "stroke", $(".circle-hand"), "circle1");
             this.stamp("fcForeground", "color", $(".symbol--c3,.symbol--c3--at,.text--c3"), "number");
             this.stamp("fcBackgroundHover", "background-color", $(".background--c0--at"), "circle1");
             this.stamp("fcBackground", "background-color", $(".fcBackground"), "circle2");
