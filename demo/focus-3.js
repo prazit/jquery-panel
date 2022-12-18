@@ -98,6 +98,12 @@ Appanel({
                     color.updateElement();
                 }
                 this.refresh();
+            },
+            setActiveButton: function (activeSelector, inactiveSelector) {
+                $(activeSelector).addClass('border--c3');
+                $(inactiveSelector).removeClass('border--c3').css('border-color', 'inherit');
+                Appanel.fcBorder.updateElement();
+                this.refresh();
             }
         },
 
@@ -110,12 +116,20 @@ Appanel({
         nextNumber: [
             function (/* 0: count up from zeroNumber to max */) {
                 var focus = Appanel.focus,
-                    number = focus.number;
+                    number = focus.number,
+                    finished;
 
                 if (focus.countDown) {
-                    number = number <= focus.zeroNumber ? focus.max : number - 1;
+                    finished = number <= focus.zeroNumber;
+                    number = finished ? focus.max : number - 1;
                 } else {
-                    number = number >= focus.max ? focus.zeroNumber : number + 1;
+                    finished = number >= focus.max;
+                    number = finished ? focus.zeroNumber : number + 1;
+                }
+
+                if (finished && !focus.loop) {
+                    focus.togglePlay('finished');
+                    return;
                 }
 
                 focus.debugFunc.call(this);
@@ -132,22 +146,30 @@ Appanel({
                 var focus = Appanel.focus,
                     zero = focus.zeroNumber,
                     max = focus.targetMax === undefined ? zero + 1 : focus.targetMax,
-                    number = focus.number;
+                    number = focus.number,
+                    finished = false;
 
                 if (focus.countDown) {
                     if (number <= zero) {
-                        max = max >= focus.max ? focus.zeroNumber + 1 : max + 1;
+                        finished = max >= focus.max;
+                        max = finished ? focus.zeroNumber + 1 : max + 1;
                         number = max;
                     } else {
                         number--;
                     }
                 } else {
                     if (number >= max) {
-                        max = max >= focus.max ? focus.zeroNumber + 1 : max + 1;
+                        finished = max >= focus.max;
+                        max = finished ? focus.zeroNumber + 1 : max + 1;
                         number = focus.zeroNumber;
                     } else {
                         number++;
                     }
+                }
+
+                if (finished && !focus.loop) {
+                    focus.togglePlay('finished');
+                    return;
                 }
 
                 focus.debugFunc.call(this);
@@ -173,6 +195,8 @@ Appanel({
                 tick, hand, ratio, degree,
                 maxTick = focus.maxTick,
                 maxHand = focus.maxHand;
+
+            focus.debugFunc.call(this);
 
             if (maxTick === 0) {
                 maxTick = 2 * Math.PI * focus.ticktock.attr('r');
@@ -268,12 +292,24 @@ Appanel({
                 inactive = '.count-down';
             }
 
-            $(active).addClass('border--c3');
-            $(inactive).removeClass('border--c3').css('border-color', 'inherit');
-            ;
+            this.theme.setActiveButton(active, inactive);
+        },
 
-            Appanel.fcBorder.updateElement();
-            Appanel.focus.theme.refresh();
+        loop: true,
+
+        setLoop: function (loop) {
+            this.loop = loop;
+
+            var active, inactive;
+            if (loop) {
+                active = '.forever-loop';
+                inactive = '.no-loop';
+            } else {
+                active = '.no-loop';
+                inactive = '.forever-loop';
+            }
+
+            this.theme.setActiveButton(active, inactive);
         },
 
         setAnimationIndex: function (animationIndex, counterIndex) {
@@ -323,7 +359,8 @@ Appanel({
                                     duration: this.afterOut,
                                     timing: 'ease-out',
                                     play: 'ani-c-after-goOut',
-                                    run: this.debugFunc,
+                                    /*run: this.debugFunc,*/
+                                    run: this.nextTick,
                                     sweep: [{/* 3 */
                                         duration: this.in,
                                         timing: 'ease-in',
@@ -347,7 +384,6 @@ Appanel({
                                         duration: this.in + this.afterIn,
                                         timing: "linear",
                                         play: 'ani-c-circle-show',
-                                        run: this.nextTick,
                                         seep: []
                                     }]
                                 }]
@@ -466,8 +502,8 @@ Appanel({
             $('.after-in-number')[0].innerText = number;
         },
 
-        togglePlay: function () {
-            var state = this.getState(),
+        togglePlay: function (specifiedState) {
+            var state = specifiedState === undefined ? this.getState() : specifiedState,
                 starter = {
                     speedx: this.speed,
                     on: "sweep:ready",
@@ -495,6 +531,12 @@ Appanel({
                     this.playButton.off('sweep:ready').sweep(starter);
                     this.pauseButton.removeClass("hidden");
                     this.playButton.addClass("hidden");
+                    break;
+                case 'finished':
+                    this.stateText = "FINISHED";
+                    this.playButton.sweep("pause");
+                    this.resumeButton.removeClass("hidden");
+                    this.pauseButton.addClass("hidden");
                     break;
                 default:
                     console.warn('focus.togglePlay: invalid state "', state, '"');
@@ -561,10 +603,11 @@ Appanel({
                     this.setMaxNumber(profile.max);
                     this.setTargetMax(profile.targetMax);
                     this.setSpeedX(profile.speed);
+                    this.setCountDirection(profile.countDown);
+                    this.setLoop(profile.loop);
                 }
 
                 if (loadIndexes) {
-                    this.setCountDirection(profile.countDown);
                     this.setAnimationIndex(profile.animationIndex, profile.counterIndex);
                 }
 
@@ -620,6 +663,7 @@ Appanel({
                     animationIndex: this.animationIndex,
                     counterIndex: this.counterIndex,
                     countDown: this.countDown,
+                    loop: this.loop,
 
                     colorBack: Appanel.back.get(),
                     colorNumber: Appanel.number.get(),
@@ -720,6 +764,7 @@ Appanel({
                     animationIndex: 2,
                     counterIndex: 0,
                     countDown: false,
+                    loop: true,
 
                     colorBack: 'black',
                     colorNumber: 'yellow',
@@ -904,6 +949,14 @@ Appanel({
                 }],
                 [$(".count-down").sweep(speed), "click", function (ev) {
                     Appanel.focus.setCountDirection(true);
+                    config.call(Appanel.focus);
+                }],
+                [$(".no-loop").sweep(speed), "click", function (ev) {
+                    Appanel.focus.setLoop(false);
+                    config.call(Appanel.focus);
+                }],
+                [$(".forever-loop").sweep(speed), "click", function (ev) {
+                    Appanel.focus.setLoop(true);
                     config.call(Appanel.focus);
                 }]
             ]);
