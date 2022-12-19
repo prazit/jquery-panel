@@ -138,8 +138,24 @@
 <!-- JS -->
 <script type="text/javascript" src="http://localhost/jquery/1.11/jquery.js"></script>
 <script type="text/javascript" src="../dist/jquery.panel.suite.min.js"></script>
+<script type="text/javascript" src="../src/jquery.colors.js"></script>
 <script>
     Appanel({
+        color: {
+            init: function () {
+                var colors = new Colors();
+                Appanel['theme'] = colors;
+                colors.add('handSecond', ['stroke', 'fill'], $('.second svg'));
+                colors.add('handMinute', ['stroke', 'fill'], $('.minute svg'));
+                colors.add('handHour', ['stroke', 'fill'], $('.hour svg'));
+                colors.add('numbers', ['stroke', 'fill'], $('.numbers text'));
+                colors.add('minutes', ['stroke', 'fill'], $('.one.minutes line'));
+                colors.add('fiveMinutes', ['stroke', 'fill'], $('.five.minutes line'));
+                colors.add('frame', 'stroke', $('.numbers circle'));
+                colors.add('background', 'fill', $('.numbers circle'));
+                colors.add('outSide', 'background-color', $('body'));
+            }
+        },
         ready: function () {
             var sweeper = {
                 duration: 0.00001,
@@ -155,10 +171,6 @@
 
             //1round = 1minutes = 60s (loop=1day=43200rounds)
             sweeper.sweep.push(this.getSweeper('.second > svg', 'ani-clock', 60, 3600));
-
-            this.moveToCurrentTime(new Date());
-            $('.hour,.minute,.second').sweep(sweeper);
-            this.refreshAfter(3600);
 
             this.createMinutes($('.five.minutes'), {
                 "0": 0,
@@ -239,7 +251,24 @@
                 "59": 354
             }, 60);
 
+            this.moveToCurrentTime(new Date());
+            $('.hour,.minute,.second').sweep(sweeper);
             $('.clock').css('display', 'block');
+
+            this.refreshAfter(3600);
+
+            this.color.init();
+            Appanel.theme.set({
+                handSecond: 'red',
+                handMinute: 'orange',
+                handHour: 'gold',
+                numbers: 'gold',
+                minutes: '#000000',
+                fiveMinutes: '#222222',
+                frame: 'silver',
+                background: 'navy',
+                outSide: 'bluesky'
+            });
         },
         getSweeper: function (selector, play, duration, loop) {
             return {
@@ -249,18 +278,18 @@
                 duration: duration,
                 loop: loop
             };
-        },
+        }
+        ,
         createMinutes: function (container, degrees, count) {
             var template = container[0].innerHTML;
-
             container[0].innerHTML = "";
             for (var i = 0; i < count; i++) {
                 if (degrees[i] === 0) continue;
                 container.append(template.replace('number-id', 'number-' + i));
                 container.find('.number-' + i).css('transform', 'rotate(' + degrees[i] + 'deg)');
-                console.debug('minute: number-' + i + '=' + degrees[i]);
             }
-        },
+        }
+        ,
         moveToCurrentTime: function (now) {
             var hour = now.getHours(),
                 minute = now.getMinutes(),
@@ -276,7 +305,8 @@
             hours = (hour + minutes) / 12 * 360;
             $('.hour').css('transform', 'rotate(' + hours + 'deg)');
 
-        },
+        }
+        ,
         refreshAfter: function (seconds) {
             var timeout = setTimeout(function () {
                 clearTimeout(timeout);
@@ -286,7 +316,8 @@
                 window.top.location.href = src;
             }, seconds * 1000);
         }
-    });
+    })
+    ;
 </script>
 </body>
 </html>
