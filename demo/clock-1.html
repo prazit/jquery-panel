@@ -138,22 +138,22 @@
 <!-- JS -->
 <script type="text/javascript" src="http://localhost/jquery/1.11/jquery.js"></script>
 <script type="text/javascript" src="../dist/jquery.panel.suite.min.js"></script>
-<script type="text/javascript" src="../src/jquery.colors.js"></script>
+<script type="text/javascript" src="../src/jquery.theme.js"></script>
 <script>
     Appanel({
-        color: {
+        theme: {
             init: function () {
-                var colors = new Colors();
-                Appanel['theme'] = colors;
-                colors.add('handSecond', ['stroke', 'fill'], $('.second svg'));
-                colors.add('handMinute', ['stroke', 'fill'], $('.minute svg'));
-                colors.add('handHour', ['stroke', 'fill'], $('.hour svg'));
-                colors.add('numbers', ['stroke', 'fill'], $('.numbers text'));
-                colors.add('minutes', ['stroke', 'fill'], $('.one.minutes line'));
-                colors.add('fiveMinutes', ['stroke', 'fill'], $('.five.minutes line'));
-                colors.add('frame', 'stroke', $('.numbers circle'));
-                colors.add('background', 'fill', $('.numbers circle'));
-                colors.add('outSide', 'background-color', $('body'));
+                var theme = new Theme();
+                theme.add('handSecond', ['stroke', 'fill'], $('.second svg'));
+                theme.add('handMinute', ['stroke', 'fill'], $('.minute svg'));
+                theme.add('handHour', ['stroke', 'fill'], $('.hour svg'));
+                theme.add('numbers', ['stroke', 'fill'], $('.numbers text'));
+                theme.add('minutes', ['stroke', 'fill'], $('.one.minutes line'));
+                theme.add('fiveMinutes', ['stroke', 'fill'], $('.five.minutes line'));
+                theme.add('frame', 'stroke', $('.numbers circle'));
+                theme.add('background', 'fill', $('.numbers circle'));
+                theme.add('outSide', 'background-color', $('body'));
+                Appanel['theme'] = new Profile('analogue-clock', theme);
             }
         },
         ready: function () {
@@ -257,18 +257,21 @@
 
             this.refreshAfter(3600);
 
-            this.color.init();
-            Appanel.theme.set({
-                handSecond: 'red',
-                handMinute: 'orange',
-                handHour: 'gold',
-                numbers: 'gold',
-                minutes: '#000000',
-                fiveMinutes: '#222222',
-                frame: 'silver',
-                background: 'navy',
-                outSide: 'bluesky'
-            });
+            this.theme.init();
+            if (!Appanel.theme.contains('default')) {
+                Appanel.theme.save('default', {
+                    handSecond: 'red',
+                    handMinute: 'orange',
+                    handHour: 'gold',
+                    numbers: 'gold',
+                    minutes: '#000000',
+                    fiveMinutes: '#222222',
+                    frame: 'silver',
+                    background: 'navy',
+                    outSide: 'bluesky'
+                });
+            }
+            Appanel.theme.load('default');
         },
         getSweeper: function (selector, play, duration, loop) {
             return {
