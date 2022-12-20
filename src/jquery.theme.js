@@ -48,12 +48,12 @@
                     set: function (value) {
                         if (value) {
                             this.color = value;
-                            if (this.prop instanceof String) {
-                                this.element.css(this.prop, value);
-                            } else {
+                            if ($.isArray(this.prop)) {
                                 for (var i = 0; i < this.prop.length; i++) {
                                     this.element.css(this.prop[i], value);
                                 }
+                            } else {
+                                this.element.css(this.prop, value);
                             }
                             for (var i in this.child) {
                                 this.child[i].set(value);
@@ -129,13 +129,22 @@
      */
     window['Profile'] = function (name, theme) {
 
-        var ids = Appanel.get(this.name + ":profiles");
-        if (!ids) ids = [];
+        var ids = Appanel.get(name + ":profiles");
+        if (ids == null) ids = [];
+        else ids = ids.profiles;
+
+        var current = Appanel.get(name + ":profile-current");
+        if (current == null) current = 'default';
 
         Object.assign(this, {
             name: name,
             ids: ids,
+            current: current,
             theme: theme,
+            setCurrent: function (profileId) {
+                this.current = profileId;
+                Appanel.set(this.name + ":profile-current", profileId);
+            },
             contains: function (profileId) {
                 return this.ids.indexOf(profileId) >= 0;
             },
@@ -144,9 +153,10 @@
                 if (profile) {
                     if (!this.contains(profileId)) {
                         this.ids.push(profileId);
-                        Appanel.set(this.name + ":profiles", this.ids);
+                        Appanel.set(this.name + ":profiles", {profiles: this.ids});
                     }
                     this.theme.set(profile);
+                    this.setCurrent(profileId);
                     return profile;
                 }
                 return null;
@@ -154,7 +164,7 @@
             save: function (profileId, profile) {
                 if (!this.contains(profileId)) {
                     this.ids.push(profileId);
-                    Appanel.set(this.name + ":profiles", this.ids);
+                    Appanel.set(this.name + ":profiles", {profiles: this.ids});
                 }
                 if (profile !== undefined) {
                     this.theme.set(profile);
@@ -163,9 +173,14 @@
             },
             remove: function (profileId) {
                 ids.pop(profileId);
-                Appanel.set(this.name + ":profiles", this.ids);
+                Appanel.set(this.name + ":profiles", {profiles: this.ids});
+                if (this.current === profileId) this.setCurrent('default');
             }
         });
+
+        if (!this.contains(current) && ids.length > 0) {
+            this.setCurrent(ids[0]);
+        }
 
     };
 

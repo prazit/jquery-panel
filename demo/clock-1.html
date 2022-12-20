@@ -135,14 +135,47 @@
     </svg>
 </div>
 
+<!-- colors -->
+<div class="css-trans on-right theme margin--x10 opacity--x0 opacity--x100--at columns" style="align-items:center">
+    <div class="column-1-2 padding--x-5">
+        <div class="rounded--x50 border--x4 border--c3">
+            <span class="profile-list button top-child background--c1 background--c0--at padding--x10 center-text">Profiles</span>
+            <div class="profile-container">
+                <span class="profile button child background--c1 background--c0--at padding--x10 left-text">profile-name</span>
+            </div>
+            <span class="add-profile button bottom-child background--c1 background--c0--at padding--x10 center-text">+</span>
+        </div>
+    </div>
+    <div class="column-1-2 padding--x-5">
+        <div class="rounded--x50 border--x4 border--c3 colors">
+            <span class="profile-name button top-child background--c1 background--c0--at padding--x10 center-text">Profile</span>
+            <span class="color-handSecond button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Second Hand</span>
+            <span class="color-handMinute button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Minute Hand</span>
+            <span class="color-handHour button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Hour Hand</span>
+            <span class="color-numbers button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Numbers</span>
+            <span class="color-minutes button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Minutes</span>
+            <span class="color-fiveMinutes button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Five Minutes</span>
+            <span class="color-frame button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Frame</span>
+            <span class="color-background button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Background</span>
+            <span class="color-outSide button bottom-child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Outside</span>
+        </div>
+    </div>
+</div>
+
+<!-- input -->
+<div class="input-panel opacity--x0" style="overflow:hidden;max-width:0px;">
+    <label>Please enter value:</label>
+    <input type="text" value="10" class="text--c0 width--fit"/>
+</div>
+
 <!-- JS -->
 <script type="text/javascript" src="http://localhost/jquery/1.11/jquery.js"></script>
 <script type="text/javascript" src="../dist/jquery.panel.suite.min.js"></script>
 <script type="text/javascript" src="../src/jquery.theme.js"></script>
 <script>
     Appanel({
-        theme: {
-            init: function () {
+        clock: {
+            initProfile: function () {
                 var theme = new Theme();
                 theme.add('handSecond', ['stroke', 'fill'], $('.second svg'));
                 theme.add('handMinute', ['stroke', 'fill'], $('.minute svg'));
@@ -152,10 +185,146 @@
                 theme.add('fiveMinutes', ['stroke', 'fill'], $('.five.minutes line'));
                 theme.add('frame', 'stroke', $('.numbers circle'));
                 theme.add('background', 'fill', $('.numbers circle'));
-                theme.add('outSide', 'background-color', $('body'));
-                Appanel['theme'] = new Profile('analogue-clock', theme);
+                theme.add('outSide', 'background-color', $(document.getElementsByTagName('body')));
+
+                theme.add('chandSecond', 'background-color', $('.color-handSecond'), 'handSecond');
+                theme.add('chandMinute', 'background-color', $('.color-handMinute'), 'handMinute');
+                theme.add('chandHour', 'background-color', $('.color-handHour'), 'handHour');
+                theme.add('cnumbers', 'background-color', $('.color-numbers'), 'numbers');
+                theme.add('cminutes', 'background-color', $('.color-minutes'), 'minutes');
+                theme.add('cfiveMinutes', 'background-color', $('.color-fiveMinutes'), 'fiveMinutes');
+                theme.add('cframe', 'background-color', $('.color-frame'), 'frame');
+                theme.add('cbackground', 'background-color', $('.color-background'), 'background');
+                theme.add('coutSide', 'background-color', $('.color-outSide'), 'outSide');
+
+                this.handle(new Profile('analogue-clock', theme));
+            },
+
+            handle: function (profile) {
+                Appanel['profile'] = profile;
+
+                if (!profile.contains('default')) {
+                    profile.save('default', {
+                        handSecond: 'red',
+                        handMinute: 'orange',
+                        handHour: 'gold',
+                        numbers: 'gold',
+                        minutes: '#000000',
+                        fiveMinutes: '#222222',
+                        frame: 'silver',
+                        background: 'navy',
+                        outSide: 'bluesky'
+                    });
+                }
+
+                var e = $('.theme .profile'),
+                    container = e.parents('.profile-container'),
+                    template = container[0].innerHTML,
+                    count = profile.ids.length,
+                    theme = profile.theme,
+                    themeProperty;
+
+                // handle profile buttons
+                container[0].innerHTML = "";
+                for (var i = 0; i < count; i++) {
+                    container.append(template.replace('profile-name', profile.ids[i]));
+                    button = container.find('.profile').removeClass('profile');
+                    Appanel.map([
+                        [button, 'click', function (ev) {
+                            Appanel.profile.load(ev.data.profile);
+                            $('.profile-name')[0].innerText = ev.data.profile;
+                        }, {theme: profile.theme, profile: profile.ids[i]}]
+                    ]);
+                    if (profile.ids[i] === profile.current) button.click();
+                }
+
+                // handle add profile button
+                Appanel.map([[$('.theme .add-profile'), 'click', function (ev) {
+                    Appanel.util.input('New Profile', 'Enter profile name:', 'default',
+                        function (data, name) {
+                            if (Appanel.profile.contains(name)) {
+                                alert('Profile ' + name + ' already exists!');
+                            } else {
+                                Appanel.profile.save(name);
+                                Appanel.util.refresh();
+                            }
+                        });
+                }]]);
+
+                // handle profile name button
+                button = $('.theme .profile-name');
+                Appanel.map([[button, 'click', function (ev) {
+                    var oldName = ev.currentTarget.innerText;
+                    Appanel.util.input('Change Profile Name', 'Enter new name:', oldName,
+                        function (data, newName) {
+                            if (Appanel.profile.contains(newName)) {
+                                alert('Profile ' + newName + ' already exists!');
+                            } else {
+                                Appanel.profile.save(newName);
+                                Appanel.profile.remove(data.oldName);
+                                Appanel.profile.setCurrent(newName);
+                                Appanel.util.refresh();
+                            }
+                        }, {oldName: oldName});
+                }]]);
+
+                // handle color buttons
+                var colorPanel = $('.theme .colors'),
+                    title, button;
+                for (var i in theme) {
+                    themeProperty = theme[i];
+                    if ($.isArray(themeProperty) || themeProperty.constructor === Function || themeProperty.sourceProperty != null) continue;
+                    button = colorPanel.find('.color-' + i);
+                    title = button[0].innerText;
+                    Appanel.map([
+                        [button, 'click', function (ev) {
+                            Appanel.util.input(ev.data.title, 'Enter color value:', ev.data.property.get(),
+                                function (data, color) {
+                                    data.property.set(color);
+                                    Appanel.profile.save($('.profile-name')[0].innerText);
+                                }, {property: ev.data.property});
+                        }, {title: title, property: themeProperty}]
+                    ]);
+                }
             }
         },
+
+        util: {
+            input: function (title, label, defaultValue, handler, data) {
+                if (data === undefined) data = {};
+
+                var inputPanel = $('.input-panel');
+                inputPanel.find('label')[0].innerText = label;
+                inputPanel.find('input')[0].defaultValue = defaultValue;
+
+                // show dialog with max-number-input
+                var dialogue = Appanel.selection('information', title, inputPanel[0].innerHTML, {
+                    buttons: ['OK', 'Cancel']
+                });
+
+                Appanel.map([
+                    [dialogue, 'selection:open', function (ev, button) {
+                        var $input = $(ev.target).find('input');
+                        $input[0].select();
+                        $input.focus();
+                    }],
+                    [dialogue, 'selection:closed', function (ev, button) {
+                        if (button.button === 'OK') {
+                            var number = $(ev.target).find('input')[0].value;
+                            handler(ev.data, isNaN(number) ? number : Math.abs(number));
+                        }
+                    }, data]
+                ]);
+            },
+
+            refresh: function () {
+                var src = window.top.location.href,
+                    lastIndex = src.indexOf("?");
+                src = src.substr(0, lastIndex > 0 ? lastIndex : src.length) + '?refresh=' + Date().toString();
+                window.top.location.href = src;
+            }
+        },
+
         ready: function () {
             var sweeper = {
                 duration: 0.00001,
@@ -251,28 +420,15 @@
                 "59": 354
             }, 60);
 
-            this.moveToCurrentTime(new Date());
+            this.moveToDate(new Date());
             $('.hour,.minute,.second').sweep(sweeper);
             $('.clock').css('display', 'block');
 
             this.refreshAfter(3600);
 
-            this.theme.init();
-            if (!Appanel.theme.contains('default')) {
-                Appanel.theme.save('default', {
-                    handSecond: 'red',
-                    handMinute: 'orange',
-                    handHour: 'gold',
-                    numbers: 'gold',
-                    minutes: '#000000',
-                    fiveMinutes: '#222222',
-                    frame: 'silver',
-                    background: 'navy',
-                    outSide: 'bluesky'
-                });
-            }
-            Appanel.theme.load('default');
+            this.clock.initProfile();
         },
+
         getSweeper: function (selector, play, duration, loop) {
             return {
                 selector: selector,
@@ -281,8 +437,8 @@
                 duration: duration,
                 loop: loop
             };
-        }
-        ,
+        },
+
         createMinutes: function (container, degrees, count) {
             var template = container[0].innerHTML;
             container[0].innerHTML = "";
@@ -291,9 +447,9 @@
                 container.append(template.replace('number-id', 'number-' + i));
                 container.find('.number-' + i).css('transform', 'rotate(' + degrees[i] + 'deg)');
             }
-        }
-        ,
-        moveToCurrentTime: function (now) {
+        },
+
+        moveToDate: function (now) {
             var hour = now.getHours(),
                 minute = now.getMinutes(),
                 second = now.getSeconds(),
@@ -308,19 +464,15 @@
             hours = (hour + minutes) / 12 * 360;
             $('.hour').css('transform', 'rotate(' + hours + 'deg)');
 
-        }
-        ,
+        },
+
         refreshAfter: function (seconds) {
             var timeout = setTimeout(function () {
                 clearTimeout(timeout);
-                var src = window.top.location.href,
-                    lastIndex = src.indexOf("?"),
-                    src = src.substr(0, lastIndex > 0 ? lastIndex : src.length) + '?refresh=' + Date().toString();
-                window.top.location.href = src;
+                Appanel.util.refresh();
             }, seconds * 1000);
         }
-    })
-    ;
+    });
 </script>
 </body>
 </html>
