@@ -38,6 +38,10 @@
             width: 100vh;
             height: 100vh;
         }
+
+        .css-trans {
+            transition-duration: 0.2s;
+        }
     </style>
 </head>
 
@@ -135,6 +139,11 @@
     </svg>
 </div>
 
+<!-- ticker -->
+<div class="on-top-right padding--x5 hidden">
+    <span class="text--c3 text--x2 ticker"></span>
+</div>
+
 <!-- colors -->
 <div class="css-trans on-right theme margin--x10 opacity--x0 opacity--x100--at columns" style="align-items:center">
     <div class="column-1-2 padding--x-5">
@@ -175,6 +184,101 @@
 <script>
     Appanel({
         clock: {
+            useSweep: false,
+
+            setSecond: function (second) {
+                this.percentSecond = second / 60;
+                if (!this.useSweep) {
+                    this.$second.css('transform', 'rotate(' + (this.percentSecond * 360) + 'deg)');
+                    if (second === 59) {
+                        this.timeout = setTimeout(function () {
+                            Appanel.clock.$second.removeClass('css-trans');
+                            Appanel.clock.$second.css('transform', 'rotate(-6deg)');
+                            clearTimeout(Appanel.clock.timeout);
+                            Appanel.clock.timeout = setTimeout(function () {
+                                Appanel.clock.$second.addClass('css-trans');
+                                clearTimeout(Appanel.clock.timeout);
+                            }, 200);
+                        }, 200);
+                    }
+                }
+                this.second = second;
+            },
+
+            setMinute: function (minute) {
+                this.percentMinute = (minute + this.percentSecond) / 60;
+                if (!this.useSweep) {
+                    this.minuteDegree = (this.percentMinute * 360);
+                    this.$minute.css('transform', 'rotate(' + this.minuteDegree + 'deg)');
+                    if (minute === 59) {
+                        this.timeout = setTimeout(function () {
+                            Appanel.clock.$minute.removeClass('css-trans');
+                            Appanel.clock.$minute.css('transform', 'rotate(-' + (360 - Appanel.clock.minuteDegree) + 'deg)');
+                            clearTimeout(Appanel.clock.timeout);
+                            Appanel.clock.timeout = setTimeout(function () {
+                                Appanel.clock.$minute.addClass('css-trans');
+                                clearTimeout(Appanel.clock.timeout);
+                            }, 200);
+                        }, 200);
+                    }
+
+                    // update hour hand at every minute
+                    if (this.hour !== undefined) this.setHour(this.hour);
+                }
+                this.minute = minute;
+            },
+
+            setHour: function (hour) {
+                if (!this.useSweep) {
+                    this.hourDegree = ((hour + this.percentMinute) / 12) * 360;
+                    this.$hour.css('transform', 'rotate(' + this.hourDegree + 'deg)');
+                    if (hour === 11) {
+                        this.timeout = setTimeout(function () {
+                            Appanel.clock.$hour.removeClass('css-trans');
+                            Appanel.clock.$hour.css('transform', 'rotate(-' + (360 - Appanel.clock.hourDegree) + 'deg)');
+                            clearTimeout(Appanel.clock.timeout);
+                            Appanel.clock.timeout = setTimeout(function () {
+                                Appanel.clock.$hour.addClass('css-trans');
+                                clearTimeout(Appanel.clock.timeout);
+                            }, 200);
+                        }, 200);
+                    }
+                }
+                this.hour = hour;
+            },
+
+            refreshTime: function () {
+                this.ticker[0].innerText = this.hour + ':' + this.minute + ':' + this.second;
+            },
+
+            secondTick: function () {
+                var second = this.second + 1;
+                if (second === 60)
+                    this.minuteTick();
+                else
+                    this.setSecond(second);
+            },
+
+            minuteTick: function () {
+                this.setSecond(0);
+
+                var minute = this.minute + 1;
+                if (minute === 60)
+                    this.hourTick();
+                else
+                    this.setMinute(minute);
+            },
+
+            hourTick: function () {
+                this.setMinute(0);
+
+                var hour = this.hour + 1;
+                if (hour === 24)
+                    this.setHour(0);
+                else
+                    this.setHour(hour);
+            },
+
             initProfile: function () {
                 var theme = new Theme();
                 theme.add('handSecond', ['stroke', 'fill'], $('.second svg'));
@@ -286,7 +390,73 @@
                         }, {title: title, property: themeProperty}]
                     ]);
                 }
-            }
+            },
+
+            start: function (now) {
+                var hour = now.getHours(),
+                    minute = now.getMinutes(),
+                    second = now.getSeconds(),
+                    clock = Appanel.clock,
+                    useSweep = clock.useSweep;
+
+                clock.ticker = $('.ticker');
+                clock.$second = $('.second');
+                clock.$minute = $('.minute');
+                clock.$hour = $('.hour');
+                clock.sweeper = $('.hour,.minute,.second');
+
+                if (clock.useSweep) {
+                    var options = {
+                        duration: 0.00001,
+                        on: "sweep:ready",
+                        sweep: []
+                    };
+
+                    //1round = 12hours = 60s x 60 x 12 (loop=1day=2rounds)
+                    options.sweep.push(this.getSweeper('.hour > svg', 'ani-clock', 43200, 2));
+
+                    //1round = 60minutes = 60s x 60 (loop=1day=12rounds)
+                    options.sweep.push(this.getSweeper('.minute > svg', 'ani-clock', 3600, 12));
+
+                    //1round = 1minutes = 60s (loop=1day=43200rounds)
+                    options.sweep.push(this.getSweeper('.second > svg', 'ani-clock', 60, 3600));
+
+                    clock.sweep = options;
+                }
+
+                // force move clock hands
+                Appanel.clock.useSweep = false;
+                clock.setSecond(second + 1);
+                clock.setMinute(minute);
+                clock.setHour(hour);
+                Appanel.clock.useSweep = useSweep;
+
+                this.timeout = setTimeout(function () {
+                    if (Appanel.clock.useSweep) {
+                        Appanel.clock.sweeper.sweep(Appanel.clock.sweep);
+                    } else {
+                        Appanel.clock.sweeper.addClass('css-trans');
+                    }
+
+                    setInterval(function () {
+                        Appanel.clock.secondTick();
+                        Appanel.clock.refreshTime();
+                    }, 1000);
+
+                    clearTimeout(Appanel.clock.timeout);
+                }, 1000 - now.getMilliseconds());
+            },
+
+            getSweeper: function (selector, play, duration, loop) {
+                return {
+                    selector: selector,
+                    play: play,
+                    timing: 'linear',
+                    duration: duration,
+                    loop: loop
+                };
+            },
+
         },
 
         util: {
@@ -326,21 +496,6 @@
         },
 
         ready: function () {
-            var sweeper = {
-                duration: 0.00001,
-                on: "sweep:ready",
-                sweep: []
-            };
-
-            //1round = 12hours = 60s x 60 x 12 (loop=1day=2rounds)
-            sweeper.sweep.push(this.getSweeper('.hour > svg', 'ani-clock', 43200, 2));
-
-            //1round = 60minutes = 60s x 60 (loop=1day=12rounds)
-            sweeper.sweep.push(this.getSweeper('.minute > svg', 'ani-clock', 3600, 12));
-
-            //1round = 1minutes = 60s (loop=1day=43200rounds)
-            sweeper.sweep.push(this.getSweeper('.second > svg', 'ani-clock', 60, 3600));
-
             this.createMinutes($('.five.minutes'), {
                 "0": 0,
                 "1": 30,
@@ -420,23 +575,13 @@
                 "59": 354
             }, 60);
 
-            this.moveToDate(new Date());
-            $('.hour,.minute,.second').sweep(sweeper);
+            Appanel.clock.start(new Date());
+
+            // need to show after started
             $('.clock').css('display', 'block');
 
             this.refreshAfter(3600);
-
             this.clock.initProfile();
-        },
-
-        getSweeper: function (selector, play, duration, loop) {
-            return {
-                selector: selector,
-                play: play,
-                timing: 'linear',
-                duration: duration,
-                loop: loop
-            };
         },
 
         createMinutes: function (container, degrees, count) {
@@ -447,23 +592,6 @@
                 container.append(template.replace('number-id', 'number-' + i));
                 container.find('.number-' + i).css('transform', 'rotate(' + degrees[i] + 'deg)');
             }
-        },
-
-        moveToDate: function (now) {
-            var hour = now.getHours(),
-                minute = now.getMinutes(),
-                second = now.getSeconds(),
-                hours, minutes, seconds;
-
-            seconds = second / 60;
-            $('.second').css('transform', 'rotate(' + (seconds * 360) + 'deg)');
-
-            minutes = (minute + seconds) / 60;
-            $('.minute').css('transform', 'rotate(' + (minutes * 360) + 'deg)');
-
-            hours = (hour + minutes) / 12 * 360;
-            $('.hour').css('transform', 'rotate(' + hours + 'deg)');
-
         },
 
         refreshAfter: function (seconds) {
