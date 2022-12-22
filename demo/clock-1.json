@@ -1,0 +1,10 @@
+[
+  {
+    "name": "original",
+    "display": "Original Analog Clock"
+  },
+  {
+    "name": "station",
+    "display": "Station Clock"
+  }
+]
