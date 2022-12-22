@@ -144,10 +144,18 @@
     <span class="text--c3 text--x2 ticker"></span>
 </div>
 
+<!-- animation selector -->
+<div class="on-top-left css-trans opacity--x0 opacity--x100--at margin--x20" style="display: inline-block">
+    <div class="rounded--x50 center-text">
+        <span class="analogue-move button left-child fcBackground border--x4 background--c1 background--c0--at border--x3 border--c3 padding--x10 symbol text--c3" title="count up to max">Analogue Move</span>
+        <span class="smooth-move button right-child fcBackground border--x4 background--c1 background--c0--at border--x3 border--c3 padding--x10 symbol text--c3" title="count up to last-max and increase last-max every loop">Smooth Move</span>
+    </div>
+</div>
+
 <!-- colors -->
-<div class="css-trans on-right theme margin--x10 opacity--x0 opacity--x100--at columns" style="align-items:center">
-    <div class="column-1-2 padding--x-5">
-        <div class="rounded--x50 border--x4 border--c3">
+<div class="css-trans on-right theme margin--x10 opacity--x0 opacity--x100--at columns">
+    <div class="column-1-2">
+        <div class="rounded--x20 border--x4 border--c3">
             <span class="profile-list button top-child background--c1 background--c0--at padding--x10 center-text">Profiles</span>
             <div class="profile-container">
                 <span class="profile button child background--c1 background--c0--at padding--x10 left-text">profile-name</span>
@@ -155,8 +163,8 @@
             <span class="add-profile button bottom-child background--c1 background--c0--at padding--x10 center-text">+</span>
         </div>
     </div>
-    <div class="column-1-2 padding--x-5">
-        <div class="rounded--x50 border--x4 border--c3 colors">
+    <div class="column-1-2">
+        <div class="rounded--x20 border--x4 border--c3 colors">
             <span class="profile-name button top-child background--c1 background--c0--at padding--x10 center-text">Profile</span>
             <span class="color-handSecond button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Second Hand</span>
             <span class="color-handMinute button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Minute Hand</span>
@@ -180,24 +188,36 @@
 <!-- JS -->
 <script type="text/javascript" src="http://localhost/jquery/1.11/jquery.js"></script>
 <script type="text/javascript" src="../dist/jquery.panel.suite.min.js"></script>
-<script type="text/javascript" src="../src/jquery.theme.js"></script>
+<script type="text/javascript" src="../src/jquery.theme.js?version=1"></script>
 <script>
     Appanel({
         clock: {
             useSweep: false,
 
+            setUseSweep: function (useSweep) {
+                var changed = this.useSweep != useSweep;
+                this.useSweep = useSweep;
+                Appanel.profile.more.useSweep = useSweep;
+                Appanel.profile.save();
+
+                if (changed) {
+                    if (!useSweep)
+                        Appanel.util.refresh();
+                    else
+                        this.start(new Date());
+                }
+            },
+
             setSecond: function (second) {
                 this.percentSecond = second / 60;
                 if (!this.useSweep) {
                     this.$second.css('transform', 'rotate(' + (this.percentSecond * 360) + 'deg)');
-                    if (second === 59) {
-                        this.timeout = setTimeout(function () {
+                    if (second >= 59) {
+                        this.setTimeout(function () {
                             Appanel.clock.$second.removeClass('css-trans');
                             Appanel.clock.$second.css('transform', 'rotate(-6deg)');
-                            clearTimeout(Appanel.clock.timeout);
-                            Appanel.clock.timeout = setTimeout(function () {
+                            Appanel.clock.setTimeout(function () {
                                 Appanel.clock.$second.addClass('css-trans');
-                                clearTimeout(Appanel.clock.timeout);
                             }, 200);
                         }, 200);
                     }
@@ -210,14 +230,12 @@
                 if (!this.useSweep) {
                     this.minuteDegree = (this.percentMinute * 360);
                     this.$minute.css('transform', 'rotate(' + this.minuteDegree + 'deg)');
-                    if (minute === 59) {
-                        this.timeout = setTimeout(function () {
+                    if (minute >= 59) {
+                        this.setTimeout(function () {
                             Appanel.clock.$minute.removeClass('css-trans');
                             Appanel.clock.$minute.css('transform', 'rotate(-' + (360 - Appanel.clock.minuteDegree) + 'deg)');
-                            clearTimeout(Appanel.clock.timeout);
-                            Appanel.clock.timeout = setTimeout(function () {
+                            Appanel.clock.setTimeout(function () {
                                 Appanel.clock.$minute.addClass('css-trans');
-                                clearTimeout(Appanel.clock.timeout);
                             }, 200);
                         }, 200);
                     }
@@ -233,13 +251,11 @@
                     this.hourDegree = ((hour + this.percentMinute) / 12) * 360;
                     this.$hour.css('transform', 'rotate(' + this.hourDegree + 'deg)');
                     if (hour === 11) {
-                        this.timeout = setTimeout(function () {
+                        this.setTimeout(function () {
                             Appanel.clock.$hour.removeClass('css-trans');
                             Appanel.clock.$hour.css('transform', 'rotate(-' + (360 - Appanel.clock.hourDegree) + 'deg)');
-                            clearTimeout(Appanel.clock.timeout);
-                            Appanel.clock.timeout = setTimeout(function () {
+                            Appanel.clock.setTimeout(function () {
                                 Appanel.clock.$hour.addClass('css-trans');
-                                clearTimeout(Appanel.clock.timeout);
                             }, 200);
                         }, 200);
                     }
@@ -301,7 +317,7 @@
                 theme.add('cbackground', 'background-color', $('.color-background'), 'background');
                 theme.add('coutSide', 'background-color', $('.color-outSide'), 'outSide');
 
-                this.handle(new Profile('analogue-clock', theme));
+                this.handle(new Profile('analogue-clock', theme, {useSweep: false}));
             },
 
             handle: function (profile) {
@@ -309,15 +325,18 @@
 
                 if (!profile.contains('default')) {
                     profile.save('default', {
-                        handSecond: 'red',
-                        handMinute: 'orange',
-                        handHour: 'gold',
-                        numbers: 'gold',
-                        minutes: '#000000',
-                        fiveMinutes: '#222222',
-                        frame: 'silver',
-                        background: 'navy',
-                        outSide: 'bluesky'
+                        theme: {
+                            handSecond: 'red',
+                            handMinute: 'orange',
+                            handHour: 'gold',
+                            numbers: 'gold',
+                            minutes: '#000000',
+                            fiveMinutes: '#222222',
+                            frame: 'silver',
+                            background: 'navy',
+                            outSide: 'bluesky'
+                        },
+                        more: {useSweep: this.useSweep}
                     });
                 }
 
@@ -328,6 +347,16 @@
                     theme = profile.theme,
                     themeProperty;
 
+                // handle movement buttons
+                Appanel.map([
+                    ['.analogue-move', 'click', function () {
+                        Appanel.clock.setUseSweep(false);
+                    }],
+                    ['.smooth-move', 'click', function () {
+                        Appanel.clock.setUseSweep(true);
+                    }]
+                ]);
+
                 // handle profile buttons
                 container[0].innerHTML = "";
                 for (var i = 0; i < count; i++) {
@@ -335,7 +364,8 @@
                     button = container.find('.profile').removeClass('profile');
                     Appanel.map([
                         [button, 'click', function (ev) {
-                            Appanel.profile.load(ev.data.profile);
+                            var profile = Appanel.profile.load(ev.data.profile);
+                            Appanel.clock.setUseSweep(profile.more.useSweep);
                             $('.profile-name')[0].innerText = ev.data.profile;
                         }, {theme: profile.theme, profile: profile.ids[i]}]
                     ]);
@@ -392,6 +422,30 @@
                 }
             },
 
+            setTimeout: function (func, millisec) {
+                this.clearTimeout();
+                this.timeout = window.setTimeout(func, millisec);
+            },
+
+            clearTimeout: function () {
+                if (this.timeout !== undefined) {
+                    clearTimeout(this.timeout);
+                    delete this.timeout;
+                }
+            },
+
+            setInterval: function (func, millisec) {
+                this.clearInterval();
+                this.interval = window.setInterval(func, millisec);
+            },
+
+            clearInterval: function () {
+                if (this.interval !== undefined) {
+                    clearInterval(this.interval);
+                    delete this.interval;
+                }
+            },
+
             start: function (now) {
                 var hour = now.getHours(),
                     minute = now.getMinutes(),
@@ -399,11 +453,13 @@
                     clock = Appanel.clock,
                     useSweep = clock.useSweep;
 
+                console.debug("clock start at ", hour, ":", minute, ":", second);
+
                 clock.ticker = $('.ticker');
                 clock.$second = $('.second');
                 clock.$minute = $('.minute');
                 clock.$hour = $('.hour');
-                clock.sweeper = $('.hour,.minute,.second');
+                clock.sweeper = $('.hour,.minute,.second').addClass('hidden');
 
                 if (clock.useSweep) {
                     var options = {
@@ -431,19 +487,43 @@
                 clock.setHour(hour);
                 Appanel.clock.useSweep = useSweep;
 
-                this.timeout = setTimeout(function () {
-                    if (Appanel.clock.useSweep) {
-                        Appanel.clock.sweeper.sweep(Appanel.clock.sweep);
+                // reset all animations
+                if (clock.sweeper[0].sweepID) {
+                    clock.sweeper
+                        .sweep('pause')
+                        .each(function (i, e) {
+                            delete e.sweepID;
+                            delete e.sweepContext;
+                        })
+                        .find('svg')
+                        .each(function (i, e) {
+                            delete e.sweepID;
+                            delete e.sweepContext;
+                        })
+                        .removeClass('ani-clock')
+                        .css('transform', 'rotate(0deg)')
+                        .css('animation-duration', '')
+                        .css('animation-iteration-count', '')
+                        .css('animation-timing-function', '')
+                    ;
+                }
+
+                // delay start
+                Appanel.clock.setTimeout(function () {
+                    var clock = Appanel.clock;
+
+                    if (clock.useSweep) {
+                        clock.sweeper.sweep(clock.sweep);
                     } else {
-                        Appanel.clock.sweeper.addClass('css-trans');
+                        clock.sweeper.addClass('css-trans');
                     }
 
-                    setInterval(function () {
+                    clock.setInterval(function () {
+                        Appanel.clock.sweeper.removeClass('hidden');
                         Appanel.clock.secondTick();
                         Appanel.clock.refreshTime();
                     }, 1000);
 
-                    clearTimeout(Appanel.clock.timeout);
                 }, 1000 - now.getMilliseconds());
             },
 

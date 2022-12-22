@@ -125,10 +125,10 @@
      *
      * @param name - profile prefix name.
      * @param theme - initialized theme (instant of Theme())
+     * @param more - more option to manage by the Profile.
      * @constructor
      */
-    window['Profile'] = function (name, theme) {
-
+    window['Profile'] = function (name, theme, more) {
         var ids = Appanel.get(name + ":profiles");
         if (ids == null) ids = [];
         else ids = ids.profiles;
@@ -141,6 +141,7 @@
             ids: ids,
             current: current,
             theme: theme,
+            more: more,
             setCurrent: function (profileId) {
                 this.current = profileId;
                 Appanel.set(this.name + ":profile-current", profileId);
@@ -155,26 +156,47 @@
                         this.ids.push(profileId);
                         Appanel.set(this.name + ":profiles", {profiles: this.ids});
                     }
-                    this.theme.set(profile);
+                    /*Notice: Temporary: backward compatible*/
+                    if (profile.theme === undefined) {
+                        profile = {theme: profile, more: this.more};
+                    }
+                    this.theme.set(profile.theme);
+                    this.more = profile.more == null ? undefined : profile.more;
                     this.setCurrent(profileId);
                     return profile;
                 }
                 return null;
             },
             save: function (profileId, profile) {
+                if (profileId === undefined) {
+                    profileId = this.current;
+                }
                 if (!this.contains(profileId)) {
                     this.ids.push(profileId);
                     Appanel.set(this.name + ":profiles", {profiles: this.ids});
                 }
                 if (profile !== undefined) {
-                    this.theme.set(profile);
+                    /*Notice: Temporary: backward compatible*/
+                    if (profile.theme === undefined) {
+                        profile = {theme: profile};
+                    }
+                    this.theme.set(profile.theme);
+                    if (profile.more !== undefined) this.more = profile.more;
                 }
-                Appanel.set(this.name + ":profile-" + profileId, this.theme.get());
+
+                var data = {
+                    theme: this.theme.get(),
+                    more: this.more === undefined ? null : this.more
+                };
+                Appanel.set(this.name + ":profile-" + profileId, data);
             },
             remove: function (profileId) {
                 ids.pop(profileId);
                 Appanel.set(this.name + ":profiles", {profiles: this.ids});
-                if (this.current === profileId) this.setCurrent('default');
+                if (this.current === profileId) {
+                    this.setCurrent('default');
+                    this.load('default');
+                }
             }
         });
 
