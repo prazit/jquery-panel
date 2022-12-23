@@ -15,15 +15,15 @@
             left: calc((100vw - 100vh) / 2);
         }
 
-        .minutes > div {
+        /*.minutes > div {
             position: absolute;
             width: 100vh;
             height: 100vh;
-        }
+        }*/
     </style>
 </head>
 
-<body class="css-trans fixed background--c0 fit-width fit-height" style="font-family: Arial,sans-serif;">
+<body class="css-trans fixed background--c0 fit-width fit-height">
 
 <div class="clock numbers">
     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
@@ -39,25 +39,25 @@
 </div>
 
 <div class="clock five minutes">
-    <div class="number-id">
+    <div class="clock number-id">
         <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
              viewBox="0 0 200 200"
              stroke="gold"
              fill="gold"
              style="width:100%">
-            <line x1="100" x2="100" y1="5" y2="17" stroke-width="3"></line>
+            <line x1="100" x2="100" y1="5" y2="27" stroke-width="6"></line>
         </svg>
     </div>
 </div>
 
 <div class="clock one minutes">
-    <div class="number-id">
+    <div class="clock number-id">
         <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
              viewBox="0 0 200 200"
              stroke="gold"
              fill="gold"
              style="width:100%">
-            <line x1="100" x2="100" y1="5" y2="10" stroke-width="1"></line>
+            <line x1="100" x2="100" y1="5" y2="12" stroke-width="2.5"></line>
         </svg>
     </div>
 </div>
@@ -68,7 +68,8 @@
          stroke="gold"
          fill="gold"
          style="width:100%">
-        <polygon points="100,20 100,20 101,22 99,22" stroke-width="1" stroke-linecap="butt"></polygon>
+        <!--<polygon points="100,30 100,30 101,32 99,32" stroke-width="1" stroke-linecap="butt"></polygon>-->
+        <line x1="100" x2="100" y1="27" y2="33" stroke-width="6"></line>
     </svg>
 </div>
 
@@ -78,7 +79,7 @@
          stroke="silver"
          fill="silver"
          style="width:100%">
-        <polygon points="102,27 98,27 95,120 105,120" stroke-width="1" stroke-linecap="butt"></polygon>
+        <polygon points="103,12 97,12 96.5,120 104.5,120" stroke-width="1" stroke-linecap="butt"></polygon>
     </svg>
 </div>
 
@@ -88,23 +89,13 @@
          stroke="red"
          fill="red"
          style="width:100%">
-        <polygon points="102,36 98,36 95,120 105,120" stroke-width="1" stroke-linecap="butt"></polygon>
+        <polygon points="103,33 97,33 96.5,120 104.5,120" stroke-width="1" stroke-linecap="butt"></polygon>
     </svg>
 </div>
 
 <script>
-    function createMinutes(container, degrees, count) {
-        var template = container[0].innerHTML;
-        container[0].innerHTML = "";
-        for (var i = 0; i < count; i++) {
-            if (degrees[i] === 0) continue;
-            container.append(template.replace('number-id', 'number-' + i));
-            container.find('.number-' + i).css('transform', 'rotate(' + degrees[i] + 'deg)');
-        }
-    }
-
-    $(function(){
-        createMinutes($('.five.minutes'), {
+    $(function () {
+        Appanel.util.createMinutes($('.five.minutes'), {
             "0": 360,
             "1": 30,
             "2": 60,
@@ -119,8 +110,7 @@
             "11": 330,
             "12": 0
         }, 12);
-
-        createMinutes($('.one.minutes'), {
+        Appanel.util.createMinutes($('.one.minutes'), {
             "0": 0,
             "1": 6,
             "2": 12,
@@ -182,8 +172,45 @@
             "58": 348,
             "59": 354
         }, 60);
+
+        $('body').append($('.bgfilter').remove());
+
+        var resize = function (ev) {
+            var body = $('body').removeClass('css-trans'),
+                cover = $('.cover'),
+                width = parseInt(body.css('width')),
+                height = parseInt(body.css('height')),
+                ratio = width / 2560,
+                posY = (height - (ratio * 1707)) / 2,
+                coverY = posY + (ratio * 1707 * 0.311);
+            body.css('background-position-y', posY + 'px');
+            cover.css('top', coverY + 'px');
+        };
+        $(window).on('resize', resize);
+        resize();
     });
 </script>
+
+<style>
+    body {
+        background-image: url('img/swiss-railway-clock-scaled.webp');
+        background-position-x: center;
+        background-size: 100%;
+    }
+
+    .out-side {
+        opacity: 25%;
+    }
+
+    .cover {
+        left: 57.15%;
+    }
+
+    .clock {
+        width: 25vw;
+        height: 25vw;
+    }
+</style>
 
 </body>
 </html>

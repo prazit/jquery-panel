@@ -39,12 +39,6 @@
             display: none;
         }
 
-        .minutes > div {
-            position: absolute;
-            width: 100vh;
-            height: 100vh;
-        }
-
         .css-trans {
             transition-duration: 0.2s;
         }
@@ -52,6 +46,10 @@
 </head>
 
 <body class="css-trans fixed background--c0 fit-width fit-height" style="font-family: Arial,sans-serif;">
+
+<div class="out-side fixed fit-width fit-height">
+    <h1 class="on-top footprint padding--x10 opacity--x0 opacity--x100--at">Analogue Clock v1</h1>
+</div>
 
 <div class="cover">
     <!-- this content will be replaced by clock -->
@@ -235,7 +233,7 @@
                 theme.add('fiveMinutes', ['stroke', 'fill'], $('.five.minutes line'));
                 theme.add('frame', 'stroke', $('.numbers circle'));
                 theme.add('background', 'fill', $('.numbers circle'));
-                theme.add('outSide', 'background-color', $(document.getElementsByTagName('body')));
+                theme.add('outSide', 'background-color', $('.out-side'));
 
                 theme.add('chandSecond', 'background-color', $('.color-handSecond'), 'handSecond');
                 theme.add('chandMinute', 'background-color', $('.color-handMinute'), 'handMinute');
@@ -504,12 +502,12 @@
             },
 
             loadClocks: function () {
-                var requestDate = new Date(),
-                    myJson = Appanel.util.myURL() + '.json';
+                var requestDate = (new Date()).toLocaleTimeString(),
+                    myJson = Appanel.util.myURL() + '.json?v=' + requestDate;
 
                 // test: get list of clock from json file
                 console.debug("URL: ", myJson);
-                console.debug('request at ', requestDate.toLocaleTimeString());
+                console.debug('request at ', requestDate);
                 $.getJSON(myJson).complete(function (json, status) {
                     console.debug('respond at ', new Date().toLocaleTimeString());
                     console.debug('json:', json.responseJSON);
@@ -520,16 +518,16 @@
 
             loadClock: function (clockIndex) {
                 var clock = this.clocks[clockIndex],
-                    requestDate = new Date(),
+                    requestDate = (new Date()).toLocaleTimeString(),
                     clockName = clock.name,
-                    url = Appanel.util.myURL() + '-' + clockName + '.html';
+                    url = Appanel.util.myURL() + '-' + clockName + '.html?v=' + requestDate;
 
                 this.clock = clockName;
                 Appanel.set(this.name + ':clock', clockName);
 
                 // test: get clock from first element
                 console.debug("URL: ", url);
-                console.debug('request at ', requestDate.toLocaleTimeString());
+                console.debug('request at ', requestDate);
                 $.get(url).complete(function (result, status) {
                     var clockHtml = result.responseText,
                         headStart = clockHtml.indexOf('<head>'),
@@ -602,6 +600,16 @@
                 src = location.origin + location.pathname;
                 src.indexOf('clock-1.html');
                 return src.replace('.html', '');
+            },
+
+            createMinutes: function (container, degrees, count) {
+                var template = container[0].innerHTML;
+                container[0].innerHTML = "";
+                for (var i = 0; i < count; i++) {
+                    if (degrees[i] === 0) continue;
+                    container.append(template.replace('number-id', 'number-' + i));
+                    container.find('.number-' + i).css('transform', 'rotate(' + degrees[i] + 'deg)');
+                }
             }
         },
 
