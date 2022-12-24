@@ -620,18 +620,20 @@
             },
 
             /**
+             * Set Background Attributes.
+             *
              * Example:
              * Appanel.clock.setAttributes({
              *      image: 'img/swiss-railway-clock-scaled.webp',
-             *      imageW: 2560,
-             *      imageH: 1707,
+             *      imageWidth: 2560,
+             *      imageHeight: 1707,
              *      imageFilter: 0.25,
              *
-             *      coverYInPercent: 0.311,
-             *      coverWInPercent: 0.25,
+             *      clockYInPercent: 0.311,
+             *      clockWInPercent: 0.25,
              *
-             *      coverXInPercent: 0.5715,
-             *      coverHInPercent: 0.37
+             *      clockXInPercent: 0.5715,
+             *      clockHInPercent: 0.37
              * });
              */
             setAttributes: function (attributes) {
@@ -652,23 +654,23 @@
                     a.screenW = parseInt(a.body.css('width'));
                     a.screenH = parseInt(a.body.css('height'));
 
-                    a.ratioW = a.screenW / a.imageW;
-                    a.ratioH = a.screenH / a.imageH;
+                    a.ratioW = a.screenW / a.imageWidth;
+                    a.ratioH = a.screenH / a.imageHeight;
 
                     if (a.ratioW >= a.ratioH) {
                         a.imageX = 0;
-                        a.imageY = (a.screenH - (a.ratioW * a.imageH)) / 2;
-                        a.coverX = a.coverXInPercent * a.screenW;
-                        a.coverY = a.imageY + (a.ratioW * a.imageH * a.coverYInPercent);
+                        a.imageY = (a.screenH - (a.ratioW * a.imageHeight)) / 2;
                         a.imageSize = a.screenW;
-                        a.coverSize = '25vw';
+                        a.coverX = a.clockXInPercent * a.screenW;
+                        a.coverY = a.imageY + (a.ratioW * a.imageHeight * a.clockYInPercent);
+                        a.coverSize = (100 * a.clockWInPercent) + 'vw';
                     } else {
-                        a.imageX = (a.screenW - (a.ratioH * a.imageW)) / 2;
+                        a.imageX = (a.screenW - (a.ratioH * a.imageWidth)) / 2;
                         a.imageY = 0;
-                        a.coverX = a.imageX + (a.ratioH * a.imageW * a.coverXInPercent);
-                        a.coverY = a.coverYInPercent * a.screenH;
-                        a.imageSize = a.imageW * a.ratioH;
-                        a.coverSize = '37vh';
+                        a.imageSize = a.imageWidth * a.ratioH;
+                        a.coverX = a.imageX + (a.ratioH * a.imageWidth * a.clockXInPercent);
+                        a.coverY = a.clockYInPercent * a.screenH;
+                        a.coverSize = (100 * a.clockHInPercent) + 'vh';
                     }
 
                     a.body
