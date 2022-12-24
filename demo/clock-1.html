@@ -149,8 +149,11 @@
 <script>
     Appanel({
         clock: {
-            name: 'analogue-clock',
             useSweep: false,
+            speed: 1,
+
+            name: 'analogue-clock',
+            state: 'initialized',
 
             setUseSweep: function (useSweep) {
                 var changed = this.useSweep != useSweep;
@@ -162,42 +165,56 @@
                     if (!useSweep)
                         Appanel.util.refresh();
                     else
-                        this.start(new Date());
+                        this.start(new Date(), this.speed);
                 }
             },
 
             setSecond: function (second) {
                 this.percentSecond = second / 60;
                 if (!this.useSweep) {
-                    this.$second.css('transform', 'rotate(' + (this.percentSecond * 360) + 'deg)');
-                    if (second === 59) {
-                        /*TODO: issued: found invalid start position of second-hand when start clock at 59-60 seconds*/
+                    if (this.state === 'starting' && second >= 59) {
+                        console.debug('setSecond: in case starting at 59');
+                        this.$second.css('transform', 'rotate(-6deg)');
+                    } else if (second === 59) {
+                        console.debug('setSecond: in case of 59');
+                        this.$second.css('transform', 'rotate(' + (this.percentSecond * 360) + 'deg)');
                         this.setTimeout(function () {
-                            Appanel.clock.$second
-                                .removeClass('css-trans')
-                                .css('transform', 'rotate(-6deg)');
+                            Appanel.clock.$second.removeClass('css-trans');
+                            Appanel.clock.$second.css('transform', 'rotate(-6deg)');
                             Appanel.clock.setTimeout(function () {
                                 Appanel.clock.$second.addClass('css-trans');
-                            }, 200);
-                        }, 200);
+                            }, 100);
+                        }, 100);
+                    } else {
+                        console.debug('setSecond: in another case');
+                        this.$second.css('transform', 'rotate(' + (this.percentSecond * 360) + 'deg)');
                     }
                 }
                 this.second = second;
             },
 
             setMinute: function (minute) {
-                this.percentMinute = (minute + this.percentSecond) / 60;
-                if (!this.useSweep) {
+                if (this.useSweep) {
+                    this.percentMinute = (minute + this.percentSecond) / 60;
+                } else {
+                    this.percentMinute = minute / 60;
                     this.minuteDegree = (this.percentMinute * 360);
-                    this.$minute.css('transform', 'rotate(' + this.minuteDegree + 'deg)');
-                    if (minute === 59) {
+                    if (this.state === 'starting' && minute >= 59) {
+                        console.debug('setMinute: in case starting at 59');
+                        Appanel.clock.$minute.css('transform', 'rotate(-' + (360 - Appanel.clock.minuteDegree) + 'deg)');
+                    } else if (minute === 59) {
+                        console.debug('setMinute: in case of 59');
+                        this.$minute.css('transform', 'rotate(' + this.minuteDegree + 'deg)');
                         this.setTimeout(function () {
                             Appanel.clock.$minute.removeClass('css-trans');
                             Appanel.clock.$minute.css('transform', 'rotate(-' + (360 - Appanel.clock.minuteDegree) + 'deg)');
                             Appanel.clock.setTimeout(function () {
                                 Appanel.clock.$minute.addClass('css-trans');
-                            }, 200);
-                        }, 200);
+                            }, 100);
+                        }, 100);
+                    } else {
+                        console.debug('setMinute: in another case');
+                        this.$minute.css('transform', 'rotate(' + this.minuteDegree + 'deg)');
                     }
 
                     // update hour hand at every minute
@@ -209,15 +226,24 @@
             setHour: function (hour) {
                 if (!this.useSweep) {
                     this.hourDegree = ((hour + this.percentMinute) / 12) * 360;
-                    this.$hour.css('transform', 'rotate(' + this.hourDegree + 'deg)');
                     if (hour === 11) {
-                        this.setTimeout(function () {
-                            Appanel.clock.$hour.removeClass('css-trans');
+                        if (this.hour !== hour) {
+                            console.debug('setHour: in case of 11');
+                            this.$hour.css('transform', 'rotate(' + this.hourDegree + 'deg)');
+                            this.setTimeout(function () {
+                                Appanel.clock.$hour.removeClass('css-trans');
+                                Appanel.clock.$hour.css('transform', 'rotate(-' + (360 - Appanel.clock.hourDegree) + 'deg)');
+                                Appanel.clock.setTimeout(function () {
+                                    Appanel.clock.$hour.addClass('css-trans');
+                                }, 100);
+                            }, 100);
+                        } else {
+                            console.debug('setHour: in case after 11');
                             Appanel.clock.$hour.css('transform', 'rotate(-' + (360 - Appanel.clock.hourDegree) + 'deg)');
-                            Appanel.clock.setTimeout(function () {
-                                Appanel.clock.$hour.addClass('css-trans');
-                            }, 200);
-                        }, 200);
+                        }
+                    } else {
+                        console.debug('setHour: in another case');
+                        this.$hour.css('transform', 'rotate(' + this.hourDegree + 'deg)');
                     }
                 }
                 this.hour = hour;
@@ -229,7 +255,7 @@
 
             secondTick: function () {
                 var second = this.second + 1;
-                if (second === 60)
+                if (second >= 60)
                     this.minuteTick();
                 else
                     this.setSecond(second);
@@ -449,14 +475,18 @@
                 this.sweeper = $(this.sweeper.selector);
             },
 
-            start: function (now) {
+            start: function (now, speed) {
                 var hour = now.getHours(),
                     minute = now.getMinutes(),
                     second = now.getSeconds(),
                     clock = Appanel.clock,
                     useSweep = clock.useSweep;
 
-                console.info("clock start at ", hour, ":", minute, ":", second);
+                clock.state = 'starting';
+
+                if (speed === undefined) speed = 1;
+                clock.speed = speed;
+                console.info("clock start at ", hour, ":", minute, ":", second, ' ', speed, 'X speed');
 
                 clock.ticker = $('.ticker');
                 clock.$second = $('.second');
@@ -516,7 +546,7 @@
                     var clock = Appanel.clock;
 
                     if (clock.useSweep) {
-                        clock.sweeper.sweep(clock.sweep);
+                        clock.sweeper.sweep(clock.sweep).sweep('speedx', clock.speed);
                     } else {
                         clock.sweeper.addClass('css-trans');
                     }
@@ -525,9 +555,11 @@
                         Appanel.clock.sweeper.removeClass('hidden');
                         Appanel.clock.secondTick();
                         Appanel.clock.refreshTime();
-                    }, 1000);
+                    }, 1000 * (1 / clock.speed));
 
                 }, 1000 - now.getMilliseconds());
+
+                clock.state = 'started';
             },
 
             getSweeper: function (selector, play, duration, loop) {
@@ -589,6 +621,7 @@
 
             ready: function () {
                 this.start(new Date());
+                /*this.start(new Date(2022, 12, 24, 10, 59, 59), 3);*/
 
                 // need to show after started
                 $('.clock').css('display', 'block');
