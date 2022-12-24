@@ -173,10 +173,10 @@
                 this.percentSecond = second / 60;
                 if (!this.useSweep) {
                     if (this.state === 'starting' && second >= 59) {
-                        console.debug('setSecond: in case starting at 59');
+                        /*console.debug('setSecond: in case starting at 59');*/
                         this.$second.css('transform', 'rotate(-6deg)');
                     } else if (second === 59) {
-                        console.debug('setSecond: in case of 59');
+                        /*console.debug('setSecond: in case of 59');*/
                         this.$second.css('transform', 'rotate(' + (this.percentSecond * 360) + 'deg)');
                         this.setTimeout(function () {
                             Appanel.clock.$second.removeClass('css-trans');
@@ -186,7 +186,7 @@
                             }, 100);
                         }, 100);
                     } else {
-                        console.debug('setSecond: in another case');
+                        /*console.debug('setSecond: in another case');*/
                         this.$second.css('transform', 'rotate(' + (this.percentSecond * 360) + 'deg)');
                     }
                 }
@@ -200,10 +200,10 @@
                     this.percentMinute = minute / 60;
                     this.minuteDegree = (this.percentMinute * 360);
                     if (this.state === 'starting' && minute >= 59) {
-                        console.debug('setMinute: in case starting at 59');
+                        /*console.debug('setMinute: in case starting at 59');*/
                         Appanel.clock.$minute.css('transform', 'rotate(-' + (360 - Appanel.clock.minuteDegree) + 'deg)');
                     } else if (minute === 59) {
-                        console.debug('setMinute: in case of 59');
+                        /*console.debug('setMinute: in case of 59');*/
                         this.$minute.css('transform', 'rotate(' + this.minuteDegree + 'deg)');
                         this.setTimeout(function () {
                             Appanel.clock.$minute.removeClass('css-trans');
@@ -213,7 +213,7 @@
                             }, 100);
                         }, 100);
                     } else {
-                        console.debug('setMinute: in another case');
+                        /*console.debug('setMinute: in another case');*/
                         this.$minute.css('transform', 'rotate(' + this.minuteDegree + 'deg)');
                     }
 
@@ -228,7 +228,7 @@
                     this.hourDegree = ((hour + this.percentMinute) / 12) * 360;
                     if (hour === 11) {
                         if (this.hour !== hour) {
-                            console.debug('setHour: in case of 11');
+                            /*console.debug('setHour: in case of 11');*/
                             this.$hour.css('transform', 'rotate(' + this.hourDegree + 'deg)');
                             this.setTimeout(function () {
                                 Appanel.clock.$hour.removeClass('css-trans');
@@ -238,11 +238,11 @@
                                 }, 100);
                             }, 100);
                         } else {
-                            console.debug('setHour: in case after 11');
+                            /*console.debug('setHour: in case after 11');*/
                             Appanel.clock.$hour.css('transform', 'rotate(-' + (360 - Appanel.clock.hourDegree) + 'deg)');
                         }
                     } else {
-                        console.debug('setHour: in another case');
+                        /*console.debug('setHour: in another case');*/
                         this.$hour.css('transform', 'rotate(' + this.hourDegree + 'deg)');
                     }
                 }
@@ -619,6 +619,78 @@
                 });
             },
 
+            /**
+             * Example:
+             * Appanel.clock.setAttributes({
+             *      image: 'img/swiss-railway-clock-scaled.webp',
+             *      imageW: 2560,
+             *      imageH: 1707,
+             *      imageFilter: 0.25,
+             *
+             *      coverYInPercent: 0.311,
+             *      coverWInPercent: 0.25,
+             *
+             *      coverXInPercent: 0.5715,
+             *      coverHInPercent: 0.37
+             * });
+             */
+            setAttributes: function (attributes) {
+                this.bgImageAttributes = Object.assign(attributes, {
+                    body: $('body')
+                        .removeClass('css-trans')
+                        .css('background-image', 'url(' + attributes.image + ')')
+                        .css('background-repeat', 'no-repeat'),
+                    cover: $('.cover'),
+                    clock: $('.clock')
+                });
+
+                $('.out-side').css('opacity', (100 * this.bgImageAttributes.imageFilter) + '%');
+
+                var resize = function (ev) {
+                    var a = Appanel.clock.bgImageAttributes;
+
+                    a.screenW = parseInt(a.body.css('width'));
+                    a.screenH = parseInt(a.body.css('height'));
+
+                    a.ratioW = a.screenW / a.imageW;
+                    a.ratioH = a.screenH / a.imageH;
+
+                    if (a.ratioW >= a.ratioH) {
+                        a.imageX = 0;
+                        a.imageY = (a.screenH - (a.ratioW * a.imageH)) / 2;
+                        a.coverX = a.coverXInPercent * a.screenW;
+                        a.coverY = a.imageY + (a.ratioW * a.imageH * a.coverYInPercent);
+                        a.imageSize = a.screenW;
+                        a.coverSize = '25vw';
+                    } else {
+                        a.imageX = (a.screenW - (a.ratioH * a.imageW)) / 2;
+                        a.imageY = 0;
+                        a.coverX = a.imageX + (a.ratioH * a.imageW * a.coverXInPercent);
+                        a.coverY = a.coverYInPercent * a.screenH;
+                        a.imageSize = a.imageW * a.ratioH;
+                        a.coverSize = '37vh';
+                    }
+
+                    a.body
+                        .css('background-position-x', a.imageX + 'px')
+                        .css('background-position-y', a.imageY + 'px')
+                        .css('background-size', a.imageSize + 'px');
+
+                    a.cover
+                        .css('top', a.coverY + 'px')
+                        .css('left', a.coverX + 'px');
+
+                    a.clock
+                        .css('width', a.coverSize)
+                        .css('height', a.coverSize);
+
+                    console.debug('resize: Attributes=', a);
+                };
+
+                $(window).on('resize', resize);
+                resize();
+            },
+
             ready: function () {
                 this.start(new Date());
                 /*this.start(new Date(2022, 12, 24, 10, 59, 59), 3);*/
@@ -704,7 +776,6 @@
             Appanel.clock.loadClocks();
             Appanel.util.refreshAfter(3600);
         }
-
     });
 </script>
 </body>
