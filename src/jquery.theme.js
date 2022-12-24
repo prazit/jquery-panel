@@ -45,21 +45,39 @@
                     element: target,
                     sourceProperty: sourcePropertyName,
                     child: [],
-                    set: function (value) {
-                        if (value) {
-                            this.color = value;
-                            if ($.isArray(this.prop)) {
-                                for (var i = 0; i < this.prop.length; i++) {
-                                    this.element.css(this.prop[i], value);
-                                }
-                            } else {
-                                this.element.css(this.prop, value);
+                    setProperty: function (property, value) {
+                        if (CSS.supports(property, value)) {
+                            this.element.css(property, value);
+                        } else {
+                            $(this).triggerHandler('css-property:error', {
+                                type: 'css-property:set',
+                                target: this,
+                                property: property,
+                                value: value
+                            });
+                            if(CSS.supports(property, 'white')) {
+                                this.element.css(property, 'white');
+                                this.color = 'white';
                             }
-                            for (var i in this.child) {
-                                this.child[i].set(value);
-                            }
-                            $(this).triggerHandler('setcolor');
                         }
+                    },
+                    set: function (value) {
+                        if (!value) return;
+                        this.color = value;
+                        if ($.isArray(this.prop)) {
+                            for (var i = 0; i < this.prop.length; i++) {
+                                this.setProperty(this.prop[i], value);
+                            }
+                        } else {
+                            this.setProperty(this.prop, value);
+                        }
+                        for (var i in this.child) {
+                            this.child[i].set(value);
+                        }
+                        $(this).triggerHandler('css-property:set', {
+                            target: this,
+                            value: value
+                        });
                     },
                     get: function () {
                         return this.color;
@@ -71,6 +89,7 @@
                 if (sourcePropertyName !== undefined) {
                     this[sourcePropertyName].child.push(this[name]);
                 }
+                return this[name];
             },
 
             /**
@@ -94,7 +113,7 @@
                 var color, theme = {};
                 for (var i in this.theme) {
                     color = this[this.theme[i]];
-                    if (color.sourceProperty !== undefined) continue;
+                    if (color.color === undefined || color.sourceProperty !== undefined) continue;
                     theme[this.theme[i]] = color.get();
                 }
                 return theme;

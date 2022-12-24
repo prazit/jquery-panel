@@ -7,10 +7,7 @@
     <link rel="stylesheet" type="text/css" href="focus-3.css" media="all"/>
     <link rel="stylesheet" type="text/css" href="http://localhost/scbs/css/sym-fa.css" media="all"/>
     <link rel="stylesheet" type="text/css" href="http://localhost/scbs/css/ani-anicss.css"/>
-
-    <!-- animation -->
     <style>
-
         @keyframes ani-clock {
             0% {
                 transform: rotate(0deg);
@@ -23,6 +20,21 @@
         .ani-clock {
             -webkit-animation-name: ani-clock;
             animation-name: ani-clock;
+        }
+
+        @keyframes ani-hide-circle-progress {
+            0% {
+                stroke-dashoffset: 0;
+            }
+            100% {
+                stroke-dashoffset: -31.415926535897932384626433832795;
+            }
+        }
+
+        .ani-hide-circle-progress {
+            -webkit-animation-name: ani-hide-circle-progress;
+            animation-name: ani-hide-circle-progress;
+            animation-timing-function: linear;
         }
 
         .cover {
@@ -109,6 +121,26 @@
     <label>Please enter value:</label>
     <input type="text" value="10" class="text--c0 width--fit"/>
 </div>
+
+<!-- message -->
+<div class="message-container on-top-left css-trans"></div>
+<div class="warning-message hidden css-trans rounded--x10 margin--x10 padding--x10 background--c3 text--cred background--cyellow">
+    <h1 class="symbol sym-warning"> message-title</h1>
+    <p class="text--c0">message-text</p>
+</div>
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
+     viewBox="0 0 12 12"
+     class="circle-progress float-right hidden"
+     style="width:20px;transform:rotate(-90deg);"
+     fill="transparent"
+     stroke="gray">
+    <circle cx="6" cy="6" r="5"
+            stroke-linecap="round"
+            stroke-opacity="1"
+            stroke-width="2"
+            stroke-dashoffset="0"
+            stroke-dasharray="31.415926535897932384626433832795"/>
+</svg>
 
 <!-- JS -->
 <script type="text/javascript" src="http://localhost/jquery/1.11/jquery.js"></script>
@@ -223,17 +255,34 @@
                     this.setHour(hour);
             },
 
+            addProperty: function (theme, name, prop, target) {
+                $(theme.add(name, prop, target)).on('css-property:error', function (ev, data) {
+                    var $container = $('.message-container'),
+                        $message;
+                    $container.append(
+                        $('.warning-message')[0].outerHTML
+                            .replace('message-title', 'Invalid Color')
+                            .replace('message-text', `css-property '${data.property}' not supports the value '${data.value}'`)
+                    );
+                    $message = $container.find('.warning-message')
+                        .removeClass('warning-message')
+                        .removeClass('hidden');
+
+                    Appanel.util.removeAfter(6, $message);
+                });
+            },
+
             initProfile: function () {
                 var theme = new Theme();
-                theme.add('handSecond', ['stroke', 'fill'], $('.second svg'));
-                theme.add('handMinute', ['stroke', 'fill'], $('.minute svg'));
-                theme.add('handHour', ['stroke', 'fill'], $('.hour svg'));
-                theme.add('numbers', ['stroke', 'fill'], $('.numbers text'));
-                theme.add('minutes', ['stroke', 'fill'], $('.one.minutes line'));
-                theme.add('fiveMinutes', ['stroke', 'fill'], $('.five.minutes line'));
-                theme.add('frame', 'stroke', $('.numbers circle'));
-                theme.add('background', 'fill', $('.numbers circle'));
-                theme.add('outSide', 'background-color', $('.out-side'));
+                this.addProperty(theme, 'handSecond', ['stroke', 'fill'], $('.second svg'));
+                this.addProperty(theme, 'handMinute', ['stroke', 'fill'], $('.minute svg'));
+                this.addProperty(theme, 'handHour', ['stroke', 'fill'], $('.hour svg'));
+                this.addProperty(theme, 'numbers', ['stroke', 'fill'], $('.numbers text'));
+                this.addProperty(theme, 'minutes', ['stroke', 'fill'], $('.one.minutes line'));
+                this.addProperty(theme, 'fiveMinutes', ['stroke', 'fill'], $('.five.minutes line'));
+                this.addProperty(theme, 'frame', 'stroke', $('.numbers circle'));
+                this.addProperty(theme, 'background', 'fill', $('.numbers circle'));
+                this.addProperty(theme, 'outSide', 'background-color', $('.out-side'));
 
                 theme.add('chandSecond', 'background-color', $('.color-handSecond'), 'handSecond');
                 theme.add('chandMinute', 'background-color', $('.color-handMinute'), 'handMinute');
@@ -354,7 +403,7 @@
                     title, button;
                 for (var i in theme) {
                     themeProperty = theme[i];
-                    if ($.isArray(themeProperty) || themeProperty.constructor === Function || themeProperty.sourceProperty != null) continue;
+                    if (i.startsWith('jQuery') || $.isArray(themeProperty) || themeProperty.constructor === Function || themeProperty.sourceProperty != null) continue;
                     button = colorPanel.find('.color-' + i);
                     title = button[0].innerText;
                     Appanel.map([
@@ -407,7 +456,7 @@
                     clock = Appanel.clock,
                     useSweep = clock.useSweep;
 
-                console.debug("clock start at ", hour, ":", minute, ":", second);
+                console.info("clock start at ", hour, ":", minute, ":", second);
 
                 clock.ticker = $('.ticker');
                 clock.$second = $('.second');
@@ -506,11 +555,9 @@
                     myJson = Appanel.util.myURL() + '.json?v=' + requestDate;
 
                 // test: get list of clock from json file
-                console.debug("URL: ", myJson);
-                console.debug('request at ', requestDate);
+                console.info("Clocks URL: ", myJson);
                 $.getJSON(myJson).complete(function (json, status) {
-                    console.debug('respond at ', new Date().toLocaleTimeString());
-                    console.debug('json:', json.responseJSON);
+                    console.info('respond at ', new Date().toLocaleTimeString());
                     Appanel.clock.clocks = json.responseJSON;
                     Appanel.clock.loadClock(Appanel.clock.clockIndex(Appanel.get(Appanel.clock.name + ':clock')));
                 });
@@ -526,14 +573,12 @@
                 Appanel.set(this.name + ':clock', clockName);
 
                 // test: get clock from first element
-                console.debug("URL: ", url);
-                console.debug('request at ', requestDate);
+                console.info("Clock URL: ", url);
                 $.get(url).complete(function (result, status) {
                     var clockHtml = result.responseText,
                         headStart = clockHtml.indexOf('<head>'),
                         headEnd = clockHtml.indexOf('</head>') + 7;
-                    console.debug('respond at ', new Date().toLocaleTimeString());
-                    console.debug('html: length ', clockHtml.length);
+                    console.info('respond at ', new Date().toLocaleTimeString());
                     clockHtml = clockHtml.substring(0, headStart) + clockHtml.substring(headEnd + 1);
                     $('.cover').html(clockHtml);
                     Appanel.clock.setTimeout(function () {
@@ -584,7 +629,7 @@
             refresh: function () {
                 var src = window.top.location.href,
                     lastIndex = src.indexOf("?");
-                src = src.substr(0, lastIndex > 0 ? lastIndex : src.length) + '?refresh=' + Date().toString();
+                src = src.substr(0, lastIndex > 0 ? lastIndex : src.length) + '?refresh=' + (new Date()).toLocaleTimeString();
                 window.top.location.href = src;
             },
 
@@ -593,6 +638,15 @@
                     clearTimeout(timeout);
                     Appanel.util.refresh();
                 }, seconds * 1000);
+            },
+
+            removeAfter: function (seconds, $e) {
+                $e.append($('.circle-progress')[0].outerHTML.replace('hidden', ''));
+                var timeout = setTimeout(function () {
+                    clearTimeout(timeout);
+                    $e.remove();
+                }, seconds * 1000);
+                Appanel.chains($e.find('.circle-progress > circle'), 'ani-hide-circle-progress:' + seconds);
             },
 
             myURL: function () {
