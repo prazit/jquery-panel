@@ -6,5 +6,9 @@
   {
     "name": "station",
     "display": "Station Clock"
+  },
+  {
+    "name": "twelve",
+    "display": "Twelve Numbers"
   }
 ]

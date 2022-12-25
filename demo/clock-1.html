@@ -148,6 +148,32 @@
     <label>Please enter value:</label>
     <input type="text" value="10" class="text--c0 width--fit"/>
 </div>
+<div class="seenmove-panel opacity--x0" style="overflow:hidden;max-width:0px;">
+    <div class="columns width--fit">
+        <div class="column-1-2">
+            <label class="label-x">X value:</label>
+        </div>
+        <div class="column-1-2">
+            <label class="label-y">Y value:</label>
+        </div>
+    </div>
+    <div class="columns width--fit">
+        <div class="column-1-2">
+            <input class="input-x" type="number" value="0" class="text--c0 width--fit"/>
+        </div>
+        <div class="column-1-2">
+            <input class="input-y" type="number" value="0" class="text--c0 width--fit"/>
+        </div>
+    </div>
+    <div class="columns width--fit">
+        <div class="column-1-2">
+            <label class="display-x">0</label>
+        </div>
+        <div class="column-1-2">
+            <label class="display-y">0</label>
+        </div>
+    </div>
+</div>
 
 <!-- message -->
 <div class="message-container on-top-left css-trans"></div>
@@ -862,10 +888,14 @@
                 });
             },
 
+            activated: function () {
+                Appanel.clock.start(new Date());
+            },
+
             ready: function () {
                 var firstTime = this.state === 'initialized';
                 this.start(new Date());
-                /*this.start(new Date(2022, 12, 24, 10, 59, 59), 3);*/
+                /*this.start(new Date(2022, 12, 25, 17, 59, 59), 1);*/
 
                 // need to show after started
                 this.loadBackground(this.backgroundIndex(Appanel.get(this.name + ':background')));
@@ -873,6 +903,7 @@
 
                 if (firstTime) {
                     this.initProfile();
+                    $(window).on('focus', this.activated);
                 } else {
                     Appanel.profile.load(Appanel.profile.current);
                 }
@@ -907,6 +938,53 @@
                             handler(ev.data, isNaN(number) ? number : Math.abs(number));
                         }
                     }, data]
+                ]);
+            },
+
+            seeNMove: function (selector, propertyX, propertyY) {
+                var inputPanel = $('.seenmove-panel'),
+                    target = $(selector),
+                    x = target.css(propertyX),
+                    y = target.css(propertyY);
+
+                inputPanel.find('.label-x').text(propertyX);
+                inputPanel.find('.label-y').text(propertyY);
+
+                // show dialog with max-number-input
+                var dialogue = Appanel.selection('information', 'See n Move', inputPanel[0].innerHTML, {buttons: ['Close']});
+
+                Appanel.map([
+                    [dialogue, 'selection:open', function (ev) {
+                        var panel = $(ev.target),
+                            inputX = panel.find('.input-x'),
+                            inputY = panel.find('.input-y'),
+                            displayX = panel.find('.display-x'),
+                            displayY = panel.find('.display-y'),
+                            data = ev.data;
+
+                        /*on keyup then set property*/
+                        Appanel.map([
+                            [inputX, 'keyup', function (ev) {
+                                var value = ev.currentTarget.value;
+                                ev.data.target.attr(ev.data.property, value);
+                                ev.data.display.text(ev.data.target.attr(ev.data.property));
+                            }, {target: ev.data.target, property: propertyX, display: displayX}],
+                            [inputY, 'keyup', function (ev) {
+                                var value = ev.currentTarget.value;
+                                ev.data.target.attr(ev.data.property, value);
+                                ev.data.display.text(ev.data.target.attr(ev.data.property));
+                            }, {target: ev.data.target, property: propertyY, display: displayY}]
+                        ]);
+
+                        inputX[0].value = data.target.attr(data.propertyX);
+                        inputY[0].value = data.target.attr(data.propertyY);
+
+                        displayX.text(inputX[0].value);
+                        displayY.text(inputY[0].value);
+
+                        inputX[0].select();
+                        inputX.focus();
+                    }, {target: target, propertyX: propertyX, propertyY: propertyY}]
                 ]);
             },
 

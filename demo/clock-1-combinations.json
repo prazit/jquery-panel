@@ -14,5 +14,13 @@
     "theme": "Classic",
     "background": "onhand",
     "analogue": false
+  },
+  {
+    "name": "shard",
+    "display": "Many Shard",
+    "clock": "original",
+    "theme": "Classic 2",
+    "background": "shard",
+    "analogue": true
   }
 ]

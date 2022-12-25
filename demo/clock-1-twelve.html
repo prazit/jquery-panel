@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+
+<!-- excluded -->
+<head>
+    <title>Original Clock for clock-1.html</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="focus-3.css" media="all"/>
+    <link rel="stylesheet" type="text/css" href="http://localhost/scbs/css/sym-fa.css" media="all"/>
+    <link rel="stylesheet" type="text/css" href="http://localhost/scbs/css/ani-anicss.css"/>
+
+    <style>
+        .clock {
+            position: absolute;
+            width: 100vh;
+            height: 100vh;
+            left: calc((100vw - 100vh) / 2);
+        }
+    </style>
+</head>
+
+<!-- inside body tag will be included -->
+<body class="css-trans fixed background--c0 fit-width fit-height" style="font-family: Arial,sans-serif;">
+
+<div class="clock numbers">
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
+         viewBox="0 0 200 200"
+         stroke="gold"
+         fill="#000033"
+         style="width:100%">
+        <circle cx="100" cy="100" r="98"
+                stroke-opacity="1" stroke-width="2"
+                stroke-linecap="butt"
+                stroke-dashoffset="0" stroke-dasharray="0"/>
+        <text x="92" y="24">12</text>
+        <text x="56" y="34">11</text>
+        <text x="23" y="60">10</text>
+        <text x="13" y="106">9</text>
+        <text x="26" y="148">8</text>
+        <text x="55" y="175">7</text>
+        <text x="96" y="186">6</text>
+        <text x="137" y="175">5</text>
+        <text x="167" y="147">4</text>
+        <text x="179" y="106">3</text>
+        <text x="167" y="63">2</text>
+        <text x="136" y="33">1</text>
+        <!--
+            class="move-me"
+            Appanel.util.refresh();
+            Appanel.util.seeNMove('.move-me','x','y');
+            $('#panel-selection').css('left',220).css('top',80);
+        -->
+    </svg>
+</div>
+
+<div class="clock five minutes">
+    <div class="clock number-id">
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
+             viewBox="0 0 200 200"
+             stroke="gold"
+             fill="gold"
+             style="width:100%">
+            <line x1="100" x2="100" y1="3" y2="12" stroke-width="2"></line>
+        </svg>
+    </div>
+</div>
+
+<div class="clock one minutes">
+    <div class="clock number-id">
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
+             viewBox="0 0 200 200"
+             stroke="gold"
+             fill="gold"
+             style="width:100%">
+            <line x1="100" x2="100" y1="3" y2="7" stroke-width="1"></line>
+        </svg>
+    </div>
+</div>
+
+<div class="clock second">
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
+         viewBox="0 0 200 200"
+         stroke="gold"
+         fill="gold"
+         style="width:100%">
+        <circle class='hidden' cx="100" cy="100" r="5" fill="lightgreen"/>
+        <circle class='hidden opacity--x10' cx="100" cy="100" r="76"
+                fill="transparent"
+                stroke-opacity="1" stroke-width="2"
+                stroke-linecap="butt"
+                stroke-dashoffset="0" stroke-dasharray="2"/>
+        <polygon class='hidden' points="100,19 103,22 97,22 100,19" stroke-width="1"/>
+        <line x1="100" x2="100" y1="23" y2="100" stroke-width="2" stroke-linecap="round"></line>
+    </svg>
+</div>
+
+<div class="clock minute">
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
+         viewBox="0 0 200 200"
+         stroke="silver"
+         fill="silver"
+         style="width:100%">
+        <circle class='hidden' cx="100" cy="100" r="4"/>
+        <circle class='hidden opacity--x10' cx="100" cy="100" r="60"
+                fill="transparent"
+                stroke-opacity="1" stroke-width="5"
+                stroke-linecap="butt"
+                stroke-dashoffset="0" stroke-dasharray="2"/>
+        <polygon class='hidden' points="100,31 104,36 96,36 100,31" stroke-width="1"/>
+        <line x1="100" x2="100" y1="37" y2="100" stroke-width="2.7" stroke-linecap="round"></line>
+    </svg>
+</div>
+
+<div class="clock hour">
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
+         viewBox="0 0 200 200"
+         stroke="red"
+         fill="red"
+         style="width:100%">
+        <circle cx="100" cy="100" r="4"/>
+        <circle class='hidden opacity--x10' cx="100" cy="100" r="40"
+                fill="transparent"
+                stroke-opacity="1" stroke-width="7"
+                stroke-linecap="butt"
+                stroke-dashoffset="0" stroke-dasharray="2"/>
+        <polygon class='hidden' points="100,50 104,55 96,55 100,50" stroke-width="1"/>
+        <line x1="100" x2="100" y1="56" y2="100" stroke-width="3.5" stroke-linecap="round"></line>
+    </svg>
+</div>
+
+<script>
+    $(function(){
+        Appanel.util.createMinutes($('.five.minutes'), {
+            "0": 0,
+            "1": 30,
+            "2": 60,
+            "3": 90,
+            "4": 120,
+            "5": 150,
+            "6": 180,
+            "7": 210,
+            "8": 240,
+            "9": 270,
+            "10": 300,
+            "11": 330,
+            "12": 360
+        }, 13);
+        Appanel.util.createMinutes($('.one.minutes'), {
+            "0": 0,
+            "1": 6,
+            "2": 12,
+            "3": 18,
+            "4": 24,
+            "5": 0,//30,
+            "6": 36,
+            "7": 42,
+            "8": 48,
+            "9": 54,
+            "10": 0,//60,
+            "11": 66,
+            "12": 72,
+            "13": 78,
+            "14": 84,
+            "15": 0,//90,
+            "16": 96,
+            "17": 102,
+            "18": 108,
+            "19": 114,
+            "20": 0,//120,
+            "21": 125.99999999999999,
+            "22": 132,
+            "23": 138,
+            "24": 144,
+            "25": 0,//150,
+            "26": 156,
+            "27": 162,
+            "28": 168,
+            "29": 174,
+            "30": 0,//180,
+            "31": 186.00000000000003,
+            "32": 192,
+            "33": 198.00000000000003,
+            "34": 204,
+            "35": 0,//210,
+            "36": 216,
+            "37": 222,
+            "38": 228,
+            "39": 234,
+            "40": 0,//240,
+            "41": 246,
+            "42": 251.99999999999997,
+            "43": 258,
+            "44": 264,
+            "45": 0,//270,
+            "46": 276,
+            "47": 282,
+            "48": 288,
+            "49": 294,
+            "50": 0,//300,
+            "51": 306,
+            "52": 312,
+            "53": 318,
+            "54": 324,
+            "55": 0,//330,
+            "56": 336,
+            "57": 342,
+            "58": 348,
+            "59": 354
+        }, 60);
+    });
+</script>
+
+</body>
+</html>
