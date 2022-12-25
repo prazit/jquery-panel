@@ -59,12 +59,14 @@
 
 <body class="css-trans fixed background--c0 fit-width fit-height" style="font-family: Arial,sans-serif;">
 
-<div class="out-side fixed fit-width fit-height">
-    <h1 class="on-top footprint padding--x10 opacity--x0 opacity--x100--at">Analogue Clock v1</h1>
-</div>
-
+<!-- clock -->
 <div class="cover">
     <!-- this content will be replaced by clock -->
+</div>
+
+<!-- filter -->
+<div class="out-side fixed fit-width fit-height">
+    <h1 class="on-top footprint padding--x10 opacity--x0 opacity--x100--at">Analogue Clock v1</h1>
 </div>
 
 <!-- ticker -->
@@ -283,18 +285,7 @@
 
             addProperty: function (theme, name, prop, target) {
                 $(theme.add(name, prop, target)).on('css-property:error', function (ev, data) {
-                    var $container = $('.message-container'),
-                        $message;
-                    $container.append(
-                        $('.warning-message')[0].outerHTML
-                            .replace('message-title', 'Invalid Color')
-                            .replace('message-text', `css-property '${data.property}' not supports the value '${data.value}'`)
-                    );
-                    $message = $container.find('.warning-message')
-                        .removeClass('warning-message')
-                        .removeClass('hidden');
-
-                    Appanel.util.removeAfter(6, $message);
+                    Appanel.util.warn('Invalid Color', `css-property '${data.property}' not supports the value '${data.value}'`);
                 });
             },
 
@@ -582,19 +573,6 @@
                 return 0;
             },
 
-            loadClocks: function () {
-                var requestDate = (new Date()).toLocaleTimeString(),
-                    myJson = Appanel.util.myURL() + '.json?v=' + requestDate;
-
-                // test: get list of clock from json file
-                console.info("Clocks URL: ", myJson);
-                $.getJSON(myJson).complete(function (json, status) {
-                    console.info('respond at ', new Date().toLocaleTimeString());
-                    Appanel.clock.clocks = json.responseJSON;
-                    Appanel.clock.loadClock(Appanel.clock.clockIndex(Appanel.get(Appanel.clock.name + ':clock')));
-                });
-            },
-
             loadClock: function (clockIndex) {
                 var clock = this.clocks[clockIndex],
                     requestDate = (new Date()).toLocaleTimeString(),
@@ -610,13 +588,54 @@
                     var clockHtml = result.responseText,
                         headStart = clockHtml.indexOf('<head>'),
                         headEnd = clockHtml.indexOf('</head>') + 7;
-                    console.info('respond at ', new Date().toLocaleTimeString());
+                    console.info('load clock completed at ', new Date().toLocaleTimeString());
                     clockHtml = clockHtml.substring(0, headStart) + clockHtml.substring(headEnd + 1);
                     $('.cover').html(clockHtml);
                     Appanel.clock.setTimeout(function () {
                         Appanel.clock.ready();
                     }, 100);
                 });
+            },
+
+            backgrounds: [],
+
+            backgroundIndex: function (name) {
+                var backgrounds = this.backgrounds;
+                for (var i = 0; i < backgrounds.length; i++) {
+                    if (backgrounds[i].name === name) return i;
+                }
+                return 0;
+            },
+
+            loadBackground: function (backgroundIndex) {
+                var bgName = this.backgrounds[backgroundIndex].name;
+
+                this.background = bgName;
+                Appanel.set(this.name + ':background', bgName);
+
+                /*TODO: preload background-image before switch to it*/
+                this.setAttributes(this.backgrounds[backgroundIndex]);
+            },
+
+            rotateBackgroundInterval: null,
+
+            rotateBackground: function (secondsOrStop, startFrom) {
+                if (startFrom !== undefined) {
+                    this.loadBackground(startFrom);
+                }
+
+                if (secondsOrStop !== undefined) {
+                    if (this.rotateBackgroundInterval != null) clearInterval(this.rotateBackgroundInterval);
+                    if (secondsOrStop === 'stop') return;
+                    this.rotateBackgroundInterval = setInterval(function () {
+                        Appanel.clock.rotateBackground.call(Appanel.clock);
+                    }, secondsOrStop);
+                    return;
+                }
+
+                var bgIndex = (startFrom === undefined ? this.backgroundIndex(this.background) : startFrom) + 1;
+                if (bgIndex >= this.backgrounds.length) bgIndex = 0;
+                if (startFrom === undefined) this.loadBackground(bgIndex);
             },
 
             /**
@@ -685,12 +704,39 @@
                     a.clock
                         .css('width', a.coverSize)
                         .css('height', a.coverSize);
-
-                    console.debug('resize: Attributes=', a);
                 };
 
                 $(window).on('resize', resize);
                 resize();
+            },
+
+            loadJSON: function (name, callback) {
+                var requestDate = (new Date()).toLocaleTimeString(),
+                    myJson = Appanel.util.myURL() + '-' + name + '.json?v=' + requestDate;
+
+                console.info("JSON URL: ", myJson);
+                $.getJSON(myJson).complete(function (json, status) {
+                    console.info('load ', name, 'completed at ', new Date().toLocaleTimeString());
+                    Appanel.clock[name] = json.responseJSON;
+                    if ($.isFunction(callback)) callback.call(Appanel.clock, json, status);
+                });
+            },
+
+            loadJSONs: function () {
+                this.loadJSON('clocks', function () {
+                    if (status === 'parsererror') {
+                        this.clocks = [];
+                        Appanel.util.warn('IMPORTANT', 'load clock list failed the "' + Appanel.util.myURL() + '-clocks.json" may be corrupted', 20);
+                        return;
+                    }
+                    this.loadClock(this.clockIndex(Appanel.get(this.name + ':clock')));
+                });
+                this.loadJSON('backgrounds', function (json, status) {
+                    if (status === 'parsererror') {
+                        this.backgrounds = [];
+                        Appanel.util.warn('IMPORTANT', 'load background list failed the "' + Appanel.util.myURL() + '-backgrounds.json" may be corrupted', 20);
+                    }
+                });
             },
 
             ready: function () {
@@ -699,6 +745,7 @@
 
                 // need to show after started
                 $('.clock').css('display', 'block');
+                this.loadBackground(this.backgroundIndex(Appanel.get(this.name + ':background')));
 
                 this.initProfile();
             }
@@ -756,6 +803,23 @@
                 Appanel.chains($e.find('.circle-progress > circle'), 'ani-hide-circle-progress:' + seconds);
             },
 
+            warn: function (title, text, seconds) {
+                var $container = $('.message-container'),
+                    $message;
+
+                $container.append(
+                    $('.warning-message')[0].outerHTML
+                        .replace('message-title', title)
+                        .replace('message-text', text)
+                );
+
+                $message = $container.find('.warning-message')
+                    .removeClass('warning-message')
+                    .removeClass('hidden');
+
+                this.removeAfter(seconds === undefined ? 6 : seconds, $message);
+            },
+
             myURL: function () {
                 var location = window.location;
                 src = location.origin + location.pathname;
@@ -775,7 +839,7 @@
         },
 
         ready: function () {
-            Appanel.clock.loadClocks();
+            Appanel.clock.loadJSONs();
             Appanel.util.refreshAfter(3600);
         }
     });

@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 <html>
+
+<!-- excluded -->
 <head>
     <title>Station Clock for clock-1.html</title>
     <meta charset="UTF-8">
@@ -23,6 +25,7 @@
     </style>
 </head>
 
+<!-- inside body tag will be included -->
 <body class="css-trans fixed background--c0 fit-width fit-height">
 
 <div class="clock numbers">
@@ -69,7 +72,8 @@
          fill="gold"
          style="width:100%">
         <!--<polygon points="100,30 100,30 101,32 99,32" stroke-width="1" stroke-linecap="butt"></polygon>-->
-        <line x1="100" x2="100" y1="27" y2="33" stroke-width="6"></line>
+        <!--<line x1="100" x2="100" y1="27" y2="33" stroke-width="6"></line>-->
+        <line x1="100" x2="100" y1="5.5" y2="11.5" stroke-width="1.1"></line>
     </svg>
 </div>
 
@@ -172,61 +176,7 @@
             "58": 348,
             "59": 354
         }, 60);
-        Appanel.clock.backgroundIndex = 0;
-        Appanel.clock.backgrounds = [
-            {
-                image: 'img/swiss-railway-clock-scaled.webp',
-                imageWidth: 2560,
-                imageHeight: 1707,
-                imageFilter: 0.25,
-
-                clockYInPercent: 0.313,
-                clockXInPercent: 0.5715,
-
-                clockWInPercent: 0.2475,
-                clockHInPercent: 0.3715
-            },
-            {
-                image: 'img/wallpaperaccess.com.3013992.jpg',
-                imageWidth: 1920,
-                imageHeight: 1080,
-                imageFilter: 0.25,
-
-                clockXInPercent: 0.585,
-                clockYInPercent: 0.3138,
-
-                clockWInPercent: 0.2475,
-                clockHInPercent: 0.44
-            },
-            {
-                image: 'img/wallpaperaccess.com.5072490.jpg',
-                imageWidth: 1200,
-                imageHeight: 675,
-                imageFilter: 0.05,
-
-                clockXInPercent: 0.368,
-                clockYInPercent: 0.2872,
-
-                clockWInPercent: 0.2515,
-                clockHInPercent: 0.449
-            }
-        ];
-
-        var rotateImage = function (pin) {
-                var clock = Appanel.clock,
-                    bgIndex = pin === undefined ? clock.backgroundIndex + 1 : pin,
-                    count = clock.backgrounds.length;
-                if (bgIndex > count) bgIndex = 0;
-                clock.backgroundIndex = bgIndex;
-                clock.setAttributes(clock.backgrounds[bgIndex]);
-            },
-            pin = undefined;
-
-        rotateImage(pin);
-        setInterval(function () {
-            rotateImage(pin);
-        }, 180000);
-
+        Appanel.clock.rotateBackground(15000);
     });
 </script>
 
