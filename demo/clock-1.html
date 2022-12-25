@@ -77,34 +77,41 @@
 <!-- animation selector -->
 <div class="on-top-left css-trans opacity--x0 opacity--x100--at margin--x20" style="display: inline-block">
     <div class="rounded--x50 center-text">
-        <span class="analogue-move button left-child fcBackground border--x4 background--c1 background--c0--at border--x3 border--c3 padding--x10 symbol text--c3" title="count up to max">Analogue Move</span>
-        <span class="smooth-move button right-child fcBackground border--x4 background--c1 background--c0--at border--x3 border--c3 padding--x10 symbol text--c3" title="count up to last-max and increase last-max every loop">Smooth Move</span>
+        <span class="analogue-move button left-child border--x4 background--c3 background--c0--at opacity--x70 border--x3 border--c3 padding--x10 symbol text--c0 text--c3--at" title="count up to max">Analogue Move</span>
+        <span class="smooth-move button right-child border--x4 background--c3 background--c0--at opacity--x70 border--x3 border--c3 padding--x10 symbol text--c0 text--c3--at" title="count up to last-max and increase last-max every loop">Smooth Move</span>
     </div>
 </div>
 
-<!-- clocks -->
-<div class="clocks css-trans on-bottom-left margin--x10 opacity--x0 opacity--x100--at rounded--x20 border--x4 border--c3">
-    <span class="clock-list top-child background--c1 padding--x10 center-text">Clocks</span>
-    <div class="clock-container">
-        <span class="clock-item button child background--c1 background--c0--at padding--x10 left-text">clock-name</span>
+<!-- clocks & backgrounds -->
+<div class="css-trans on-bottom-left columns  opacity--x0 opacity--x100--at">
+    <!-- backgrounds -->
+    <div class="column-1-2">
+        <div class="backgrounds margin--x10 rounded--x20 border--x4 border--c3">
+            <span class="background-list top-child background--c3 opacity--x70 padding--x10 center-text">Backgrounds</span>
+            <div class="background-container">
+                <span class="background-item button child background--c1 background--c0--at padding--x10 left-text">background-name</span>
+            </div>
+            <span class="auto-change-background bottom-child button background--c1 background--c0--at padding--x10 center-text">Auto Change</span>
+        </div>
     </div>
-    <span class="bottom-child background--c1 padding--x10 center-text"></span>
+
+    <!-- clocks -->
+    <div class="column-1-2">
+        <div class="clocks margin--x10 rounded--x20 border--x4 border--c3">
+            <span class="clock-list top-child background--c3 opacity--x70 padding--x10 center-text">Clocks</span>
+            <div class="clock-container">
+                <span class="clock-item button child background--c1 background--c0--at padding--x10 left-text">clock-name</span>
+            </div>
+            <span class="bottom-child background--c1 padding--x10 center-text"></span>
+        </div>
+    </div>
 </div>
 
 <!-- colors -->
-<div class="css-trans on-right theme margin--x10 opacity--x0 opacity--x100--at columns">
-    <div class="column-1-2">
-        <div class="rounded--x20 border--x4 border--c3">
-            <span class="profile-list button top-child background--c1 background--c0--at padding--x10 center-text">Profiles</span>
-            <div class="profile-container">
-                <span class="profile button child background--c1 background--c0--at padding--x10 left-text">profile-name</span>
-            </div>
-            <span class="add-profile button bottom-child background--c1 background--c0--at padding--x10 center-text">+</span>
-        </div>
-    </div>
+<div class="css-trans on-top-right theme margin--x10 opacity--x0 opacity--x100--at columns">
     <div class="column-1-2">
         <div class="rounded--x20 border--x4 border--c3 colors">
-            <span class="profile-name button top-child background--c1 background--c0--at padding--x10 center-text">Profile</span>
+            <span class="profile-name button top-child background--c3 background--c0--at opacity--x70 padding--x10 center-text">Profile</span>
             <span class="color-handSecond button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Second Hand</span>
             <span class="color-handMinute button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Minute Hand</span>
             <span class="color-handHour button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Hour Hand</span>
@@ -114,6 +121,15 @@
             <span class="color-frame button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Frame</span>
             <span class="color-background button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Background</span>
             <span class="color-outSide button bottom-child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Outside</span>
+        </div>
+    </div>
+    <div class="column-1-2">
+        <div class="rounded--x20 border--x4 border--c3">
+            <span class="profile-list top-child background--c3 opacity--x70 padding--x10 center-text">Color Profiles</span>
+            <div class="profile-container">
+                <span class="profile button child background--c1 background--c0--at padding--x10 left-text">profile-name</span>
+            </div>
+            <span class="add-profile button bottom-child background--c1 background--c0--at padding--x10 center-text">+</span>
         </div>
     </div>
 </div>
@@ -158,12 +174,12 @@
             state: 'initialized',
 
             setUseSweep: function (useSweep) {
-                var changed = this.useSweep != useSweep;
+                if (useSweep == null) useSweep = false;
+                var changed = this.useSweep !== useSweep;
                 this.useSweep = useSweep;
-                Appanel.profile.more.useSweep = useSweep;
-                Appanel.profile.save();
 
-                if (changed) {
+                if (changed && this.state === 'started') {
+                    Appanel.set(this.name + ':analogue', useSweep);
                     if (!useSweep)
                         Appanel.util.refresh();
                     else
@@ -339,6 +355,8 @@
                     template = container[0].innerHTML,
                     clockContainer = $('.clock-container'),
                     clockTemplate = clockContainer[0].innerHTML,
+                    bgContainer = $('.background-container'),
+                    bgTemplate = bgContainer[0].innerHTML,
                     count = profile.ids.length,
                     theme = profile.theme,
                     themeProperty;
@@ -352,6 +370,31 @@
                         Appanel.clock.setUseSweep(true);
                     }]
                 ]);
+
+                // handle bakground buttons
+                bgContainer[0].innerHTML = "";
+                for (var i = 0; i < this.backgrounds.length; i++) {
+                    bgContainer.append(bgTemplate.replace('background-name', this.backgrounds[i].display));
+                    button = bgContainer.find('.background-item').removeClass('background-item');
+                    Appanel.map([
+                        [button, 'click', function (ev) {
+                            Appanel.clock.rotateBackground('stop');
+                            Appanel.clock.loadBackground(ev.data.index);
+                        }, {name: this.backgrounds[i].name, index: i}]
+                    ]);
+                }
+
+                // handle Auto Change Background button
+                Appanel.map([[$('.auto-change-background'), 'click', function (ev) {
+                    Appanel.util.input('Time Interval', 'Enter duration before every change of background (in seconds):', '15',
+                        function (data, seconds) {
+                            if (!$.isNumeric(seconds)) {
+                                Appanel.util.warn("Invalid Value", "Time interval need number value like 12345, entered value '" + seconds + "' is not a number!", 10);
+                                return;
+                            }
+                            Appanel.clock.rotateBackground(seconds * 1000);
+                        });
+                }]]);
 
                 // handle clock buttons
                 clockContainer[0].innerHTML = "";
@@ -378,7 +421,6 @@
                     Appanel.map([
                         [button, 'click', function (ev) {
                             var profile = Appanel.profile.load(ev.data.profile);
-                            Appanel.clock.setUseSweep(profile.more.useSweep);
                             $('.profile-name')[0].innerText = ev.data.profile;
                         }, {theme: profile.theme, profile: profile.ids[i]}]
                     ]);
@@ -722,7 +764,8 @@
                 });
             },
 
-            loadJSONs: function () {
+            load: function () {
+                this.setUseSweep(Appanel.get(this.name + ':analogue'));
                 this.loadJSON('clocks', function () {
                     if (status === 'parsererror') {
                         this.clocks = [];
@@ -744,8 +787,8 @@
                 /*this.start(new Date(2022, 12, 24, 10, 59, 59), 3);*/
 
                 // need to show after started
-                $('.clock').css('display', 'block');
                 this.loadBackground(this.backgroundIndex(Appanel.get(this.name + ':background')));
+                $('.clock').css('display', 'block');
 
                 this.initProfile();
             }
@@ -839,7 +882,7 @@
         },
 
         ready: function () {
-            Appanel.clock.loadJSONs();
+            Appanel.clock.load();
             Appanel.util.refreshAfter(3600);
         }
     });
