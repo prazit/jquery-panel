@@ -83,7 +83,7 @@
 </div>
 
 <!-- clocks & backgrounds -->
-<div class="css-trans on-bottom-left columns  opacity--x0 opacity--x100--at">
+<div class="css-trans on-bottom-left columns opacity--x0 opacity--x100--at">
     <!-- backgrounds -->
     <div class="column-1-2">
         <div class="backgrounds margin--x10 rounded--x20 border--x4 border--c3">
@@ -91,7 +91,7 @@
             <div class="background-container">
                 <span class="background-item button child background--c1 background--c0--at padding--x10 left-text">background-name</span>
             </div>
-            <span class="auto-change-background bottom-child button background--c1 background--c0--at padding--x10 center-text">Auto Change</span>
+            <span class="auto-change-background bottom-child button background--c3 background--c0--at opacity--x70 padding--x10 center-text">Auto Change</span>
         </div>
     </div>
 
@@ -125,13 +125,22 @@
     </div>
     <div class="column-1-2">
         <div class="rounded--x20 border--x4 border--c3">
-            <span class="profile-list top-child background--c3 opacity--x70 padding--x10 center-text">Color Profiles</span>
+            <span class="profile-list top-child background--c3 opacity--x70 padding--x10 center-text">Themes</span>
             <div class="profile-container">
                 <span class="profile button child background--c1 background--c0--at padding--x10 left-text">profile-name</span>
             </div>
-            <span class="add-profile button bottom-child background--c1 background--c0--at padding--x10 center-text">+</span>
+            <span class="add-profile button bottom-child background--c3 background--c0--at opacity--x70 padding--x10 center-text">+</span>
         </div>
     </div>
+</div>
+
+<!-- combination -->
+<div class="combinations css-trans on-bottom-right margin--x10 opacity--x0 opacity--x100--at rounded--x20 border--x4 border--c3">
+    <span class="combination-list top-child background--c3 opacity--x70 padding--x10 center-text">Presets</span>
+    <div class="combination-container">
+        <span class="combination-item button child background--c1 background--c0--at padding--x10 left-text">combination-name</span>
+    </div>
+    <span class="add-combination bottom-child button background--c3 background--c0--at opacity--x70 padding--x10 center-text">+</span>
 </div>
 
 <!-- input -->
@@ -357,6 +366,8 @@
                     clockTemplate = clockContainer[0].innerHTML,
                     bgContainer = $('.background-container'),
                     bgTemplate = bgContainer[0].innerHTML,
+                    comContainer = $('.combination-container'),
+                    comTemplate = comContainer[0].innerHTML,
                     count = profile.ids.length,
                     theme = profile.theme,
                     themeProperty;
@@ -370,6 +381,18 @@
                         Appanel.clock.setUseSweep(true);
                     }]
                 ]);
+
+                // handle combination buttons
+                comContainer[0].innerHTML = "";
+                for (var i = 0; i < this.combinations.length; i++) {
+                    comContainer.append(comTemplate.replace('combination-name', this.combinations[i].display));
+                    button = comContainer.find('.combination-item').removeClass('combination-item');
+                    Appanel.map([
+                        [button, 'click', function (ev) {
+                            Appanel.clock.loadCombination(ev.data.index);
+                        }, {name: this.combinations[i].name, index: i}]
+                    ]);
+                }
 
                 // handle bakground buttons
                 bgContainer[0].innerHTML = "";
@@ -403,11 +426,15 @@
                     button = clockContainer.find('.clock-item').removeClass('clock-item');
                     Appanel.map([
                         [button, 'click', function (ev) {
-                            Appanel.clock.loadClock(ev.data.index);
-                            /*Appanel.clock.updateElements();
-                            Appanel.profile.theme.updateElements();
-                            Appanel.profile.load(Appanel.profile.current);*/
-                            Appanel.util.refresh();
+                            Appanel.clock.loadClock(ev.data.index, function () {
+                                this.updateElements();
+                                Appanel.profile.theme.updateElements();
+                                this.ready();
+                                /*Appanel.profile.load(Appanel.profile.current);
+                                this.loadBackground(this.backgroundIndex(this.background));
+                                $('.clock').css('display', 'block');*/
+                                /*Appanel.util.refresh();*/
+                            });
                         }, {name: this.clocks[i].name, index: i}]
                     ]);
                     if (this.clocks[i].name === profile.more.clock) button.click();
@@ -420,8 +447,10 @@
                     button = container.find('.profile').removeClass('profile');
                     Appanel.map([
                         [button, 'click', function (ev) {
-                            var profile = Appanel.profile.load(ev.data.profile);
-                            $('.profile-name')[0].innerText = ev.data.profile;
+                            var profile = Appanel.profile.load(ev.data.profile),
+                                profileName = $('.profile-name');
+                            profileName[0].innerText = ev.data.profile;
+                            profileName[0].title = 'Current Theme : ' + ev.data.profile;
                         }, {theme: profile.theme, profile: profile.ids[i]}]
                     ]);
                     if (profile.ids[i] === profile.current) button.click();
@@ -444,7 +473,7 @@
                 button = $('.theme .profile-name');
                 Appanel.map([[button, 'click', function (ev) {
                     var oldName = ev.currentTarget.innerText;
-                    Appanel.util.input('Change Profile Name', 'Enter new name:', oldName,
+                    Appanel.util.input('Change Theme Name', 'Enter new name:', oldName,
                         function (data, newName) {
                             if (Appanel.profile.contains(newName)) {
                                 alert('Profile ' + newName + ' already exists!');
@@ -615,7 +644,7 @@
                 return 0;
             },
 
-            loadClock: function (clockIndex) {
+            loadClock: function (clockIndex, callback) {
                 var clock = this.clocks[clockIndex],
                     requestDate = (new Date()).toLocaleTimeString(),
                     clockName = clock.name,
@@ -630,12 +659,16 @@
                     var clockHtml = result.responseText,
                         headStart = clockHtml.indexOf('<head>'),
                         headEnd = clockHtml.indexOf('</head>') + 7;
+
                     console.info('load clock completed at ', new Date().toLocaleTimeString());
                     clockHtml = clockHtml.substring(0, headStart) + clockHtml.substring(headEnd + 1);
                     $('.cover').html(clockHtml);
-                    Appanel.clock.setTimeout(function () {
-                        Appanel.clock.ready();
-                    }, 100);
+
+                    if (callback !== undefined) {
+                        Appanel.clock.setTimeout(function () {
+                            callback.call(Appanel.clock);
+                        }, 100);
+                    }
                 });
             },
 
@@ -752,6 +785,47 @@
                 resize();
             },
 
+            combinations: [],
+
+            combinationIndex: function (name) {
+                var combinations = this.combinations;
+                for (var i = 0; i < combinations.length; i++) {
+                    if (combinations[i].name === name) return i;
+                }
+                return 0;
+            },
+
+            loadCombination: function (combinationIndex) {
+                var combination = this.combinations[combinationIndex];
+                Appanel.util.disableRefresh = true;
+
+                this.loadClock(this.clockIndex(combination.clock), function () {
+                    console.debug('passed: load clock');
+
+                    this.updateElements();
+                    Appanel.profile.theme.updateElements();
+                    console.debug('passed: update elements');
+
+                    this.start(new Date());
+
+                    this.loadBackground(this.backgroundIndex(combination.background));
+                    $('.clock').css('display', 'block');
+                    console.debug('passed: load background');
+
+                    Appanel.profile.load(combination.theme);
+                    console.debug('passed: load theme');
+
+                    this.setUseSweep(!combination.analogue);
+                    console.debug('passed: analogue switch');
+
+                    Appanel.util.disableRefresh = false;
+                });
+            },
+
+            addCombination: function () {
+                /*TODO: save and push to arrays*/
+            },
+
             loadJSON: function (name, callback) {
                 var requestDate = (new Date()).toLocaleTimeString(),
                     myJson = Appanel.util.myURL() + '-' + name + '.json?v=' + requestDate;
@@ -772,7 +846,7 @@
                         Appanel.util.warn('IMPORTANT', 'load clock list failed the "' + Appanel.util.myURL() + '-clocks.json" may be corrupted', 20);
                         return;
                     }
-                    this.loadClock(this.clockIndex(Appanel.get(this.name + ':clock')));
+                    this.loadClock(this.clockIndex(Appanel.get(this.name + ':clock')), Appanel.clock.ready);
                 });
                 this.loadJSON('backgrounds', function (json, status) {
                     if (status === 'parsererror') {
@@ -780,9 +854,16 @@
                         Appanel.util.warn('IMPORTANT', 'load background list failed the "' + Appanel.util.myURL() + '-backgrounds.json" may be corrupted', 20);
                     }
                 });
+                this.loadJSON('combinations', function (json, status) {
+                    if (status === 'parsererror') {
+                        this.backgrounds = [];
+                        Appanel.util.warn('IMPORTANT', 'load combination list failed the "' + Appanel.util.myURL() + '-combinations.json" may be corrupted', 20);
+                    }
+                });
             },
 
             ready: function () {
+                var firstTime = this.state === 'initialized';
                 this.start(new Date());
                 /*this.start(new Date(2022, 12, 24, 10, 59, 59), 3);*/
 
@@ -790,12 +871,18 @@
                 this.loadBackground(this.backgroundIndex(Appanel.get(this.name + ':background')));
                 $('.clock').css('display', 'block');
 
-                this.initProfile();
+                if (firstTime) {
+                    this.initProfile();
+                } else {
+                    Appanel.profile.load(Appanel.profile.current);
+                }
             }
 
         },
 
         util: {
+            disableRefresh: false,
+
             input: function (title, label, defaultValue, handler, data) {
                 if (data === undefined) data = {};
 
@@ -824,6 +911,7 @@
             },
 
             refresh: function () {
+                if (this.disableRefresh) return;
                 var src = window.top.location.href,
                     lastIndex = src.indexOf("?");
                 src = src.substr(0, lastIndex > 0 ? lastIndex : src.length) + '?refresh=' + (new Date()).toLocaleTimeString();
@@ -887,5 +975,6 @@
         }
     });
 </script>
+
 </body>
 </html>
