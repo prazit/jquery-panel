@@ -8,6 +8,12 @@
     <link rel="stylesheet" type="text/css" href="http://localhost/scbs/css/sym-fa.css" media="all"/>
     <link rel="stylesheet" type="text/css" href="http://localhost/scbs/css/ani-anicss.css"/>
     <style>
+        @keyframes ani-clock-reset {
+            100% {
+                transform: rotate(0deg);
+            }
+        }
+
         @keyframes ani-clock {
             0% {
                 transform: rotate(0deg);
@@ -20,6 +26,11 @@
         .ani-clock {
             -webkit-animation-name: ani-clock;
             animation-name: ani-clock;
+        }
+
+        .ani-clock-reset {
+            -webkit-animation-name: ani-clock-reset;
+            animation-name: ani-clock-reset;
         }
 
         @keyframes ani-hide-circle-progress {
@@ -70,7 +81,7 @@
 </div>
 
 <!-- ticker -->
-<div class="on-top-right padding--x5 hidden">
+<div class="on-left padding--x5">
     <span class="text--c3 text--x2 ticker"></span>
 </div>
 
@@ -215,10 +226,10 @@
 
                 if (changed && this.state === 'started') {
                     Appanel.set(this.name + ':analogue', useSweep);
-                    if (!useSweep)
+                    /*if (!useSweep)
                         Appanel.util.refresh();
-                    else
-                        this.start(new Date(), this.speed);
+                    else*/
+                    this.start(new Date(), this.speed);
                 }
             },
 
@@ -456,10 +467,6 @@
                                 this.updateElements();
                                 Appanel.profile.theme.updateElements();
                                 this.ready();
-                                /*Appanel.profile.load(Appanel.profile.current);
-                                this.loadBackground(this.backgroundIndex(this.background));
-                                $('.clock').css('display', 'block');*/
-                                /*Appanel.util.refresh();*/
                             });
                         }, {name: this.clocks[i].name, index: i}]
                     ]);
@@ -563,12 +570,65 @@
                 this.sweeper = $(this.sweeper.selector);
             },
 
+            stop: function (callback) {
+                if (this.state !== 'started') {
+                    console.warn('Ignore stop at the state', this.state);
+                    if (callback !== undefined) callback.call(this);
+                    return;
+                }
+
+                this.state = 'stopping';
+                console.info("clock stop at ", this.hour, ":", this.minute, ":", this.second, ' ', this.speed, 'X speed');
+
+                this.clearInterval();
+                this.clearTimeout();
+
+                this.setSecond(this.second);
+                this.setMinute(this.minute);
+                this.setHour(this.hour);
+
+                this.sweeper
+                    .off('sweep:ready')
+                    .sweep('pause');
+                Appanel.util
+                    .clearSweep(this.sweeper)
+                    .clearSweep(this.secondHand)
+                    .clearSweep(this.minuteHand)
+                    .clearSweep(this.hourHand, function () {
+                        Appanel.clock.state = 'stop';
+                        callback.call(Appanel.clock);
+                    });
+            },
+
             start: function (now, speed) {
+                var clock = Appanel.clock,
+                    sweepAgain = clock.state === 'started' && clock.$second[0].sweepID !== undefined;
+
+                /*avoid invalid second when start after started*/
+                if (clock.state === 'started') {
+                    console.info('Start at the state', this.state, ' then restart');
+                    clock.stop(function () {
+                        clock.start(now, speed);
+                    });
+                    return;
+                }
+
+                if (sweepAgain) {
+                    clock.stop.call(clock, function () {
+                        this.postStart(now, speed);
+                    });
+                } else {
+                    this.postStart(now, speed);
+                }
+            },
+
+            postStart: function (now, speed) {
                 var hour = now.getHours(),
                     minute = now.getMinutes(),
                     second = now.getSeconds(),
                     clock = Appanel.clock,
-                    useSweep = clock.useSweep;
+                    useSweep = clock.useSweep,
+                    restart = clock.state === 'started';
 
                 clock.state = 'starting';
 
@@ -580,7 +640,10 @@
                 clock.$second = $('.second');
                 clock.$minute = $('.minute');
                 clock.$hour = $('.hour');
-                clock.sweeper = $('.hour,.minute,.second').addClass('hidden');
+                clock.sweeper = $('.hour,.minute,.second');
+                clock.hourHand = clock.$hour.find('svg');
+                clock.minuteHand = clock.$minute.find('svg');
+                clock.secondHand = clock.$second.find('svg');
 
                 if (clock.useSweep) {
                     var options = {
@@ -590,62 +653,46 @@
                     };
 
                     //1round = 12hours = 60s x 60 x 12 (loop=1day=2rounds)
-                    options.sweep.push(this.getSweeper('.hour > svg', 'ani-clock', 43200, 2));
+                    options.sweep.push(this.getSweeper(clock.hourHand, 'ani-clock', 43200, 2));
 
                     //1round = 60minutes = 60s x 60 (loop=1day=12rounds)
-                    options.sweep.push(this.getSweeper('.minute > svg', 'ani-clock', 3600, 12));
+                    options.sweep.push(this.getSweeper(clock.minuteHand, 'ani-clock', 3600, 12));
 
                     //1round = 1minutes = 60s (loop=1day=43200rounds)
-                    options.sweep.push(this.getSweeper('.second > svg', 'ani-clock', 60, 3600));
+                    options.sweep.push(this.getSweeper(clock.secondHand, 'ani-clock', 60, 3600));
 
                     clock.sweep = options;
                 }
 
                 // force move clock hands
                 Appanel.clock.useSweep = false;
-                clock.setSecond(second + 1);
+                clock.setSecond(second);
                 clock.setMinute(minute);
                 clock.setHour(hour);
                 Appanel.clock.useSweep = useSweep;
 
-                // reset all animations
-                if (clock.sweeper[0].sweepID) {
-                    clock.sweeper
-                        .sweep('pause')
-                        .each(function (i, e) {
-                            delete e.sweepID;
-                            delete e.sweepContext;
-                        })
-                        .find('svg')
-                        .each(function (i, e) {
-                            delete e.sweepID;
-                            delete e.sweepContext;
-                        })
-                        .removeClass('ani-clock')
-                        .css('transform', 'rotate(0deg)')
-                        .css('animation-duration', '')
-                        .css('animation-iteration-count', '')
-                        .css('animation-timing-function', '')
-                    ;
-                }
-
                 // delay start
-                Appanel.clock.setTimeout(function () {
-                    var clock = Appanel.clock;
+                let delayStart = function () {
+                    let clock = Appanel.clock;
+                    clock.secondTick();
+                    clock.refreshTime();
 
                     if (clock.useSweep) {
-                        clock.sweeper.sweep(clock.sweep).sweep('speedx', clock.speed);
+                        clock.sweeper
+                            .removeClass('css-trans')
+                            .sweep(clock.sweep)
+                            .sweep('speedx', clock.speed);
                     } else {
                         clock.sweeper.addClass('css-trans');
                     }
 
                     clock.setInterval(function () {
-                        Appanel.clock.sweeper.removeClass('hidden');
                         Appanel.clock.secondTick();
                         Appanel.clock.refreshTime();
                     }, 1000 * (1 / clock.speed));
 
-                }, 1000 - now.getMilliseconds());
+                };
+                Appanel.clock.setTimeout(delayStart, 1000 - now.getMilliseconds());
 
                 clock.state = 'started';
             },
@@ -826,23 +873,17 @@
                 Appanel.util.disableRefresh = true;
 
                 this.loadClock(this.clockIndex(combination.clock), function () {
-                    console.debug('passed: load clock');
-
                     this.updateElements();
                     Appanel.profile.theme.updateElements();
-                    console.debug('passed: update elements');
 
                     this.start(new Date());
 
                     this.loadBackground(this.backgroundIndex(combination.background));
                     $('.clock').css('display', 'block');
-                    console.debug('passed: load background');
 
                     Appanel.profile.load(combination.theme);
-                    console.debug('passed: load theme');
 
                     this.setUseSweep(!combination.analogue);
-                    console.debug('passed: analogue switch');
 
                     Appanel.util.disableRefresh = false;
                 });
@@ -889,7 +930,16 @@
             },
 
             activated: function () {
-                Appanel.clock.start(new Date());
+                var clock = Appanel.clock;
+                clock.loadClock(clock.clockIndex(clock.clock), function () {
+                    clock.updateElements();
+                    Appanel.profile.theme.updateElements();
+                    clock.ready();
+                });
+
+                /*Appanel.clock.stop(function () {
+                    Appanel.clock.start(new Date(), Appanel.clock.speed);
+                });*/
             },
 
             ready: function () {
@@ -989,7 +1039,10 @@
             },
 
             refresh: function () {
-                if (this.disableRefresh) return;
+                if (this.disableRefresh) {
+                    console.warn('Ignore refresh by disableRefresh is true.');
+                    return;
+                }
                 var src = window.top.location.href,
                     lastIndex = src.indexOf("?");
                 src = src.substr(0, lastIndex > 0 ? lastIndex : src.length) + '?refresh=' + (new Date()).toLocaleTimeString();
@@ -1034,6 +1087,52 @@
                 src = location.origin + location.pathname;
                 src.indexOf('clock-1.html');
                 return src.replace('.html', '');
+            },
+
+            compare: function (left, right, deep, rootName) {
+                if (deep === undefined) deep = 0;
+                else if (deep > focus) return;
+                if (rootName === undefined) rootName = '';
+                var print = true;
+                for (let name in left) {
+                    if ($.isFunction(left[name]) && !$.isFunction(right[name])) {
+                        if (print) console.warn(rootName + '.' + name + ': left is Function but right is ', typeof (right[name]));
+                    } else if (typeof (left[name]) === 'object') {
+                        if (deep < focus) this.compare(left[name], right[name], deep + 1, rootName + '.' + name);
+                    } else if (left[name] !== right[name]) {
+                        if (print) console.warn(rootName + '.' + name + ': left =', left[name], 'right =', right[name]);
+                    }
+                }
+                if (deep === 0) console.debug('comparation completed.')
+            },
+
+            clearSweep: function ($element, callback) {
+                var e, $e, length = $element.length;
+                if (length == 0) {
+                    console.warn('Ignore clearSweep with zero length');
+                    return;
+                }
+
+                for (let i = 0; i < $element.length; i++) {
+                    e = $element[i];
+                    delete e.sweepID;
+                    delete e.sweepContext;
+                    delete e.chainsID;
+                    $e = $(e)
+                        .removeClass('ani-clock')
+                        .removeClass('css-trans')
+                        .css('transform', '')
+                        .css('animation-duration', '')
+                        .css('animation-iteration-count', '')
+                        .css('animation-timing-function', '');
+                    Appanel.chains($e, 'ani-clock-reset:0.001');
+                }
+
+                if (callback !== undefined) Appanel.clock.setTimeout(function () {
+                    callback.call(Appanel.clock);
+                }, 10);
+
+                return this;
             },
 
             createMinutes: function (container, degrees, count) {
