@@ -45,7 +45,7 @@
                     element: target,
                     sourceProperty: sourcePropertyName,
                     child: [],
-                    setProperty: function (property, value) {
+                    setProperty: function (property, value, defaultValue) {
                         if (CSS.supports(property, value)) {
                             this.element.css(property, value);
                         } else {
@@ -55,21 +55,20 @@
                                 property: property,
                                 value: value
                             });
-                            if(CSS.supports(property, 'white')) {
-                                this.element.css(property, 'white');
-                                this.color = 'white';
-                            }
+                            this.element.css(property, defaultValue);
+                            this.color = defaultValue;
                         }
                     },
                     set: function (value) {
                         if (!value) return;
+                        let defaultValue = this.color;
                         this.color = value;
                         if ($.isArray(this.prop)) {
                             for (var i = 0; i < this.prop.length; i++) {
-                                this.setProperty(this.prop[i], value);
+                                this.setProperty(this.prop[i], value, defaultValue);
                             }
                         } else {
-                            this.setProperty(this.prop, value);
+                            this.setProperty(this.prop, value, defaultValue);
                         }
                         for (var i in this.child) {
                             this.child[i].set(value);

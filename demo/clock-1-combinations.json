@@ -22,5 +22,13 @@
     "theme": "Classic 2",
     "background": "shard",
     "analogue": true
+  },
+  {
+    "name": "miami2",
+    "display": "Colorful Miami",
+    "clock": "original",
+    "theme": "Colorful",
+    "background": "miami2",
+    "analogue": true
   }
 ]

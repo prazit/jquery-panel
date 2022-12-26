@@ -80,11 +80,6 @@
     <h1 class="on-top footprint padding--x10 opacity--x0 opacity--x100--at">Analogue Clock v1</h1>
 </div>
 
-<!-- ticker -->
-<div class="on-left padding--x5">
-    <span class="text--c3 text--x2 ticker"></span>
-</div>
-
 <!-- animation selector -->
 <div class="on-top-left css-trans opacity--x0 opacity--x100--at margin--x20" style="display: inline-block">
     <div class="rounded--x50 center-text">
@@ -127,6 +122,7 @@
             <span class="color-handMinute button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Minute Hand</span>
             <span class="color-handHour button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Hour Hand</span>
             <span class="color-numbers button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Numbers</span>
+            <span class="color-timer button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Timer</span>
             <span class="color-minutes button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Minutes</span>
             <span class="color-fiveMinutes button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Five Minutes</span>
             <span class="color-frame button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Frame</span>
@@ -163,17 +159,19 @@
     <div class="columns width--fit">
         <div class="column-1-2">
             <label class="label-x">X value:</label>
+            <label class="unit-x">unit</label>
         </div>
         <div class="column-1-2">
             <label class="label-y">Y value:</label>
+            <label class="unit-y">unit</label>
         </div>
     </div>
     <div class="columns width--fit">
         <div class="column-1-2">
-            <input class="input-x" type="number" value="0" class="text--c0 width--fit"/>
+            <input class="input-x" type="number" value="0" step="1" class="text--c0 width--fit"/>
         </div>
         <div class="column-1-2">
-            <input class="input-y" type="number" value="0" class="text--c0 width--fit"/>
+            <input class="input-y" type="number" value="0" step="1" class="text--c0 width--fit"/>
         </div>
     </div>
     <div class="columns width--fit">
@@ -313,8 +311,13 @@
                 this.hour = hour;
             },
 
+            twoDigit: function (number) {
+                if (number < 10) return '0' + number;
+                return ('' + number).substring(0, 2);
+            },
+
             refreshTime: function () {
-                this.ticker[0].innerText = this.hour + ':' + this.minute + ':' + this.second;
+                this.ticker.text(this.twoDigit(this.hour) + ':' + this.twoDigit(this.minute) + ':' + this.twoDigit(this.second));
             },
 
             secondTick: function () {
@@ -357,6 +360,7 @@
                 this.addProperty(theme, 'handMinute', ['stroke', 'fill'], $('.minute svg'));
                 this.addProperty(theme, 'handHour', ['stroke', 'fill'], $('.hour svg'));
                 this.addProperty(theme, 'numbers', ['stroke', 'fill'], $('.numbers text'));
+                this.addProperty(theme, 'timer', ['stroke', 'fill'], $('.ticker'));
                 this.addProperty(theme, 'minutes', ['stroke', 'fill'], $('.one.minutes line'));
                 this.addProperty(theme, 'fiveMinutes', ['stroke', 'fill'], $('.five.minutes line'));
                 this.addProperty(theme, 'frame', 'stroke', $('.numbers circle'));
@@ -367,6 +371,7 @@
                 theme.add('chandMinute', 'background-color', $('.color-handMinute'), 'handMinute');
                 theme.add('chandHour', 'background-color', $('.color-handHour'), 'handHour');
                 theme.add('cnumbers', 'background-color', $('.color-numbers'), 'numbers');
+                theme.add('ctimer', 'background-color', $('.color-timer'), 'timer');
                 theme.add('cminutes', 'background-color', $('.color-minutes'), 'minutes');
                 theme.add('cfiveMinutes', 'background-color', $('.color-fiveMinutes'), 'fiveMinutes');
                 theme.add('cframe', 'background-color', $('.color-frame'), 'frame');
@@ -476,25 +481,26 @@
                 // handle profile buttons
                 container[0].innerHTML = "";
                 for (var i = 0; i < count; i++) {
-                    container.append(template.replace('profile-name', profile.ids[i]));
-                    button = container.find('.profile').removeClass('profile');
+                    let profileName = profile.ids[i];
+                    container.append(template.replace('profile-name', profileName));
+                    button = container.find('.profile').removeClass('profile').addClass('profile-' + profileName);
                     Appanel.map([
                         [button, 'click', function (ev) {
                             var profile = Appanel.profile.load(ev.data.profile),
                                 profileName = $('.profile-name');
                             profileName[0].innerText = ev.data.profile;
                             profileName[0].title = 'Current Theme : ' + ev.data.profile;
-                        }, {theme: profile.theme, profile: profile.ids[i]}]
+                        }, {theme: profile.theme, profile: profileName}]
                     ]);
-                    if (profile.ids[i] === profile.current) button.click();
+                    if (profileName === profile.current) button.click();
                 }
 
                 // handle add profile button
                 Appanel.map([[$('.theme .add-profile'), 'click', function (ev) {
-                    Appanel.util.input('New Profile', 'Enter profile name:', 'default',
+                    Appanel.util.input('New Theme', 'Enter theme name:', 'default',
                         function (data, name) {
                             if (Appanel.profile.contains(name)) {
-                                alert('Profile ' + name + ' already exists!');
+                                Appanel.util.warn(name + ' theme already exists!', 'Try again with another name that not in the list.', 10);
                             } else {
                                 Appanel.profile.save(name);
                                 Appanel.util.refresh();
@@ -804,58 +810,67 @@
              * });
              */
             setAttributes: function (attributes) {
-                this.bgImageAttributes = Object.assign(attributes, {
+                this.backgroundAttributes = Object.assign(attributes, {
                     body: $('body')
                         .removeClass('css-trans')
                         .css('background-image', 'url(' + attributes.image + ')')
                         .css('background-repeat', 'no-repeat'),
                     cover: $('.cover'),
-                    clock: $('.clock')
+                    clock: $('.clock'),
+                    resize: function () {
+                        var a = Appanel.clock.backgroundAttributes;
+
+                        a.screenW = parseInt(a.body.css('width'));
+                        a.screenH = parseInt(a.body.css('height'));
+
+                        a.ratioW = a.screenW / a.imageWidth;
+                        a.ratioH = a.screenH / a.imageHeight;
+
+                        if (a.ratioW >= a.ratioH) {
+                            a.imageX = 0;
+                            a.imageY = (a.screenH - (a.ratioW * a.imageHeight)) / 2;
+                            a.imageSize = a.screenW;
+                            a.coverX = a.clockXInPercent * a.screenW;
+                            a.coverY = a.imageY + (a.ratioW * a.imageHeight * a.clockYInPercent);
+                            a.coverSize = (100 * a.clockWInPercent) + 'vw';
+                        } else {
+                            a.imageX = (a.screenW - (a.ratioH * a.imageWidth)) / 2;
+                            a.imageY = 0;
+                            a.imageSize = a.imageWidth * a.ratioH;
+                            a.coverX = a.imageX + (a.ratioH * a.imageWidth * a.clockXInPercent);
+                            a.coverY = a.clockYInPercent * a.screenH;
+                            a.coverSize = (100 * a.clockHInPercent) + 'vh';
+                        }
+
+                        a.body
+                            .css('background-position-x', a.imageX + 'px')
+                            .css('background-position-y', a.imageY + 'px')
+                            .css('background-size', a.imageSize + 'px');
+
+                        a.cover
+                            .css('top', a.coverY + 'px')
+                            .css('left', a.coverX + 'px');
+
+                        a.clock
+                            .css('width', a.coverSize)
+                            .css('height', a.coverSize);
+                    },
+                    member: function (memberName, value) {
+                        if (value === undefined) {
+                            /* GET VALUE */
+                            return this[memberName];
+                        } else {
+                            /* SET VALUE */
+                            this[memberName] = value;
+                            this.resize();
+                        }
+                    }
                 });
 
-                $('.out-side').css('opacity', (100 * this.bgImageAttributes.imageFilter) + '%');
+                $('.out-side').css('opacity', (100 * this.backgroundAttributes.imageFilter) + '%');
 
-                var resize = function (ev) {
-                    var a = Appanel.clock.bgImageAttributes;
-
-                    a.screenW = parseInt(a.body.css('width'));
-                    a.screenH = parseInt(a.body.css('height'));
-
-                    a.ratioW = a.screenW / a.imageWidth;
-                    a.ratioH = a.screenH / a.imageHeight;
-
-                    if (a.ratioW >= a.ratioH) {
-                        a.imageX = 0;
-                        a.imageY = (a.screenH - (a.ratioW * a.imageHeight)) / 2;
-                        a.imageSize = a.screenW;
-                        a.coverX = a.clockXInPercent * a.screenW;
-                        a.coverY = a.imageY + (a.ratioW * a.imageHeight * a.clockYInPercent);
-                        a.coverSize = (100 * a.clockWInPercent) + 'vw';
-                    } else {
-                        a.imageX = (a.screenW - (a.ratioH * a.imageWidth)) / 2;
-                        a.imageY = 0;
-                        a.imageSize = a.imageWidth * a.ratioH;
-                        a.coverX = a.imageX + (a.ratioH * a.imageWidth * a.clockXInPercent);
-                        a.coverY = a.clockYInPercent * a.screenH;
-                        a.coverSize = (100 * a.clockHInPercent) + 'vh';
-                    }
-
-                    a.body
-                        .css('background-position-x', a.imageX + 'px')
-                        .css('background-position-y', a.imageY + 'px')
-                        .css('background-size', a.imageSize + 'px');
-
-                    a.cover
-                        .css('top', a.coverY + 'px')
-                        .css('left', a.coverX + 'px');
-
-                    a.clock
-                        .css('width', a.coverSize)
-                        .css('height', a.coverSize);
-                };
-
-                $(window).on('resize', resize);
-                resize();
+                $(window).on('resize', this.backgroundAttributes.resize);
+                this.backgroundAttributes.resize();
             },
 
             combinations: [],
@@ -882,6 +897,7 @@
                     $('.clock').css('display', 'block');
 
                     Appanel.profile.load(combination.theme);
+                    $('.profile-name').text(combination.theme);
 
                     this.setUseSweep(!combination.analogue);
 
@@ -919,6 +935,7 @@
                     if (status === 'parsererror') {
                         this.backgrounds = [];
                         Appanel.util.warn('IMPORTANT', 'load background list failed the "' + Appanel.util.myURL() + '-backgrounds.json" may be corrupted', 20);
+                        return;
                     }
                 });
                 this.loadJSON('combinations', function (json, status) {
@@ -929,8 +946,15 @@
                 });
             },
 
+            disableActivated: false,
+
             activated: function () {
                 var clock = Appanel.clock;
+                if (clock.disableActivated) {
+                    console.warn('Ignore activated by switch disableActivated is ', clock.disableActivated);
+                    return;
+                }
+
                 clock.loadClock(clock.clockIndex(clock.clock), function () {
                     clock.updateElements();
                     Appanel.profile.theme.updateElements();
@@ -991,14 +1015,31 @@
                 ]);
             },
 
-            seeNMove: function (selector, propertyX, propertyY) {
+            seeNMove: function (selector, functionName, propertyX, propertyY, step) {
                 var inputPanel = $('.seenmove-panel'),
-                    target = $(selector),
-                    x = target.css(propertyX),
-                    y = target.css(propertyY);
+                    target = typeof (selector) === 'string' ? $(selector) : selector,
+                    x = target[functionName](propertyX),
+                    y = target[functionName](propertyY),
+                    num;
 
-                inputPanel.find('.label-x').text(propertyX);
-                inputPanel.find('.label-y').text(propertyY);
+                num = parseFloat(x);
+                unitX = (x + '').substr(num.toString().length);
+                x = num;
+
+                num = parseFloat(y);
+                unitY = (y + '').substr(num.toString().length);
+                y = num;
+
+                inputPanel.find('.label-x').text(propertyX + ':');
+                inputPanel.find('.label-y').text(propertyY + ':');
+
+                inputPanel.find('.unit-x').text(unitX);
+                inputPanel.find('.unit-y').text(unitY);
+
+                if (step !== undefined) {
+                    inputPanel.find('.input-x').attr('step', step);
+                    inputPanel.find('.input-y').attr('step', step);
+                }
 
                 // show dialog with max-number-input
                 var dialogue = Appanel.selection('information', 'See n Move', inputPanel[0].innerHTML, {buttons: ['Close']});
@@ -1015,26 +1056,28 @@
                         /*on keyup then set property*/
                         Appanel.map([
                             [inputX, 'keyup', function (ev) {
-                                var value = ev.currentTarget.value;
-                                ev.data.target.attr(ev.data.property, value);
-                                ev.data.display.text(ev.data.target.attr(ev.data.property));
-                            }, {target: ev.data.target, property: propertyX, display: displayX}],
+                                var value = ev.currentTarget.value,
+                                    data = ev.data;
+                                data.target[data.functionName](data.property, value + data.unit);
+                                data.display.text(data.target[data.functionName](data.property));
+                            }, {target: ev.data.target, property: data.propertyX, display: displayX, functionName: data.functionName, unit: data.unitX}],
                             [inputY, 'keyup', function (ev) {
-                                var value = ev.currentTarget.value;
-                                ev.data.target.attr(ev.data.property, value);
-                                ev.data.display.text(ev.data.target.attr(ev.data.property));
-                            }, {target: ev.data.target, property: propertyY, display: displayY}]
+                                var value = ev.currentTarget.value,
+                                    data = ev.data;
+                                data.target[data.functionName](data.property, value + data.unit);
+                                data.display.text(data.target[data.functionName](data.property));
+                            }, {target: ev.data.target, property: data.propertyY, display: displayY, functionName: data.functionName, unit: data.unitY}]
                         ]);
 
-                        inputX[0].value = data.target.attr(data.propertyX);
-                        inputY[0].value = data.target.attr(data.propertyY);
+                        inputX[0].value = parseFloat(data.target[data.functionName](data.propertyX));
+                        inputY[0].value = parseFloat(data.target[data.functionName](data.propertyY));
 
                         displayX.text(inputX[0].value);
                         displayY.text(inputY[0].value);
 
                         inputX[0].select();
                         inputX.focus();
-                    }, {target: target, propertyX: propertyX, propertyY: propertyY}]
+                    }, {target: target, propertyX: propertyX, propertyY: propertyY, functionName: functionName, unitX: unitX, unitY: unitY}]
                 ]);
             },
 

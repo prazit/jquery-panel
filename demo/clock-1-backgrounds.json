@@ -38,10 +38,40 @@
     "imageHeight": 675,
     "imageFilter": 0.05,
 
-    "clockXInPercent": 0.368,
-    "clockYInPercent": 0.2872,
+    "clockXInPercent": 0.362,
+    "clockYInPercent": 0.282,
 
-    "clockWInPercent": 0.2515,
-    "clockHInPercent": 0.449
+    "clockWInPercent": 0.262,
+    "clockHInPercent": 0.464
+  },
+  {
+    "name": "miami1",
+    "display": "Miami Beach",
+
+    "image": "img/shutterstock-490898872.webp",
+    "imageWidth": 1430,
+    "imageHeight": 912,
+    "imageFilter": 0.0,
+
+    "clockXInPercent": 0.222,
+    "clockYInPercent": 0.068,
+
+    "clockWInPercent": 0.555,
+    "clockHInPercent": 0.857
+  },
+  {
+    "name": "miami2",
+    "display": "Colorful Miami",
+
+    "image": "img/shutterstock-712625887.webp",
+    "imageWidth": 1056,
+    "imageHeight": 704,
+    "imageFilter": 0.075,
+
+    "clockXInPercent": 0.222,
+    "clockYInPercent": 0.068,
+
+    "clockWInPercent": 0.555,
+    "clockHInPercent": 0.857
   }
 ]
