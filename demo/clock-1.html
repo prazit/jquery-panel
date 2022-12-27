@@ -829,6 +829,8 @@
              */
             setAttributes: function (attributes) {
                 this.backgroundAttributes = Object.assign(attributes, {
+                    relativeX: 0,
+                    relativeY: 0,
                     body: $('body')
                         .removeClass('css-trans')
                         .css('background-image', 'url(' + attributes.image + ')')
@@ -860,14 +862,18 @@
                             a.coverSize = (100 * a.clockHInPercent) + 'vh';
                         }
 
+                        /*TODO: IMPORTANT: change background-image to img object and move it with cover by (relativeX, relativeY)
+                         *    relativeX = (window.innerWidth - coverWrapperBoundaryRect.width) / 2;
+                         **/
+
                         a.body
                             .css('background-position-x', a.imageX + 'px')
                             .css('background-position-y', a.imageY + 'px')
                             .css('background-size', a.imageSize + 'px');
 
                         a.cover
-                            .css('top', a.coverY + 'px')
                             .css('left', a.coverX + 'px')
+                            .css('top', a.coverY + 'px')
                             .find('.wrapper').css('transform', `rotate(${a.clockDegree}deg)`);
 
                         a.clock

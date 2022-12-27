@@ -96,6 +96,12 @@ Appanel({
             ]);
         },
 
+        /**
+         * Often Use
+         *
+         * :: clock-1.html ::
+         * Appanel.util.seeNMove(Appanel.clock.backgroundAttributes,'member',['clockXInPercent','clockYInPercent','clockWInPercent','clockHInPercent','clockDegree'],0.001);
+         */
         seeNMove: function (selector, functionName, properties, step) {
             var inputPanel = $('.seenmove-panel'),
                 target = typeof (selector) === 'string' ? $(selector) : selector,
