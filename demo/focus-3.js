@@ -1073,10 +1073,21 @@ Appanel({
                 .on("click", {control: this}, function (ev) {
                     var control = ev.data.control;
                     Appanel.chains($(ev.currentTarget), 'ani-c-comeIn,ani-c-goOut');
-                    Appanel.focus.inputNumber(control.name + ' color', control.get(), function (color) {
-                        control.set(color);
-                        Appanel.focus.saveDefaultProfile();
-                    });
+                    Appanel.util.input({
+                            title: control.name + ' color',
+                            label: 'Enter color below:',
+                            placeHolder: '#ff00ff gold rgb(255,0,0) rgba(255,0,0,0.5)',
+                            defaultValue: control.get(),
+                            handler: function (ev, color) {
+                                if (!CSS.supports('color', color)) {
+                                    Appanel.util.warn('Invalid Color', `Entered value '${color}' is invalid, please try another words`, 10);
+                                    return;
+                                }
+                                control.set(color);
+                                Appanel.focus.saveDefaultProfile();
+                            }
+                        }
+                    );
                 });
         },
         stamp: function (name, prop, target, sourceColor) {

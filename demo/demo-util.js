@@ -1,6 +1,39 @@
 Appanel({
     util: {
-        disableRefresh: false,
+
+        defaults: {
+            input: '<b><label class="text--c0">Please enter value:</label></b><br/>' +
+                '<input type="text" class="padding--x5 text--c0 width--x300"/>',
+            warn: {
+                container: '<div class="message-container on-top-left css-trans"></div>',
+                message: '<div class="warning-message hidden css-trans rounded--x10 margin--x10 padding--x10 background--c3 text--cred background--cyellow">' +
+                    '    <h1 class="symbol sym-warning"> message-title</h1>' +
+                    '    <p class="text--c0">message-text</p>' +
+                    '</div>'
+            },
+            removeAfter: '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"' +
+                '     viewBox="0 0 31.415926535897932384626433832795 2"' +
+                '     class="circle-progress pull-right hidden"' +
+                '     style="width:100%;"' +
+                '     fill="transparent">' +
+                '    <line x1="0" y1="1" x2="31.415926535897932384626433832795" y2="1"' +
+                '            class="opacity--x30"' +
+                '            stroke="silver"' +
+                '            stroke-linecap="butt"' +
+                '            stroke-opacity="1"' +
+                '            stroke-width="0.2"' +
+                '            stroke-dashoffset="0"' +
+                '            stroke-dasharray="31.415926535897932384626433832795"/>' +
+                '    <line x1="0" y1="1" x2="31.415926535897932384626433832795" y2="1"' +
+                '            class="progress"' +
+                '            stroke="red"' +
+                '            stroke-linecap="butt"' +
+                '            stroke-opacity="1"' +
+                '            stroke-width="0.2"' +
+                '            stroke-dashoffset="0"' +
+                '            stroke-dasharray="31.415926535897932384626433832795"/>' +
+                '</svg>'
+        },
 
         input: function (title, label, defaultValue, handler, data) {
             var o = {
@@ -29,28 +62,28 @@ Appanel({
                 });
             }
 
-            var inputPanel = $(o.panelSelector);
-            inputPanel.find(o.labelSelector).text(o.label);
-            inputPanel.find(o.inputSelector).each(function (i, e) {
-                e.defaultValue = o.defaultValue;
-                $(e).attr('placeHolder', o.placeHolder);
-            });
-
             // show dialog with max-number-input
-            var dialogue = Appanel.selection('information', o.title, inputPanel.html(), {
+            var inputPanel = $(o.panelSelector);
+            var dialogue = Appanel.selection('information', o.title, inputPanel.length === 0 ? this.defaults.input : inputPanel.html(), {
                 buttons: ['OK', 'Cancel']
             });
 
             Appanel.map([
                 [dialogue, 'selection:open', function (ev, button) {
-                    var $input = $(ev.target).find(o.inputSelector);
-                    if ($input.length > 0) {
-                        $input.on('keyup keydown keypress', function (ev) {
-                            ev.stopPropagation();
-                        });
-                        $input[0].select();
-                        $input.focus();
-                    }
+                    var $panel = $(ev.target),
+                        $input = $panel.find(o.inputSelector);
+
+                    $panel.find(o.labelSelector).text(o.label);
+                    $panel.find(o.inputSelector).each(function (i, e) {
+                        e.defaultValue = o.defaultValue;
+                        $(e).attr('placeHolder', o.placeHolder);
+                    });
+
+                    $input.on('keyup keydown keypress', function (ev) {
+                        ev.stopPropagation();
+                    });
+                    if ($input.length > 0) $input[0].select();
+                    $input.focus();
                 }],
                 [dialogue, 'selection:closed', function (ev, button) {
                     //var o = ev.data;
@@ -128,6 +161,8 @@ Appanel({
             ]);
         },
 
+        disableRefresh: false,
+
         refresh: function () {
             if (this.disableRefresh) {
                 console.warn('Ignore refresh by disableRefresh is true.');
@@ -147,20 +182,28 @@ Appanel({
         },
 
         removeAfter: function (seconds, $e) {
-            $e.append($('.circle-progress')[0].outerHTML.replace('hidden', ''));
+            var $progressBar = $('.circle-progress'),
+                html = $progressBar.length === 0 ? this.defaults.removeAfter : $('.circle-progress')[0].outerHTML;
+            $e.append(html.replace('hidden', ''));
             var timeout = setTimeout(function () {
                 clearTimeout(timeout);
                 $e.remove();
             }, seconds * 1000);
-            Appanel.chains($e.find('.circle-progress > circle'), 'ani-hide-circle-progress:' + seconds);
+            Appanel.chains($e.find('.circle-progress > .progress'), 'ani-hide-circle-progress:' + seconds);
         },
 
         warn: function (title, text, seconds) {
             var $container = $('.message-container'),
-                $message;
+                $message = $('.warning-message'),
+                html = $message.length === 0 ? this.defaults.warn.message : $message[0].outerHTML;
+
+            if ($container.length === 0) {
+                $('body').append(this.defaults.warn.container);
+                $container = $($container.selector);
+            }
 
             $container.append(
-                $('.warning-message')[0].outerHTML
+                html
                     .replace('message-title', title)
                     .replace('message-text', text)
             );

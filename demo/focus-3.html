@@ -73,6 +73,21 @@
             }
         }
 
+        @keyframes ani-hide-circle-progress {
+            0% {
+                stroke-dashoffset: 0;
+            }
+            100% {
+                stroke-dashoffset: -31.415926535897932384626433832795;
+            }
+        }
+
+        .ani-hide-circle-progress {
+            -webkit-animation-name: ani-hide-circle-progress;
+            animation-name: ani-hide-circle-progress;
+            animation-timing-function: linear;
+        }
+
         .ani-c-comeIn {
             -webkit-animation-name: ani-c-comeIn;
             animation-name: ani-c-comeIn;
@@ -359,10 +374,6 @@
 <div class="max-number-input-panel opacity--x0" style="overflow:hidden;max-width:0px;">
     <label class="text--c0">Please enter value:</label><br/>
     <input id="max-number-input" type="number" value="10" class="max-number-input text--c0 width--fit"/>
-</div>
-<div class="text-input-panel opacity--x0" style="overflow:hidden;max-width:0px;">
-    <b><label class="text--c0">Please enter value:</label></b><br/>
-    <input type="text" class="padding--x5 text--c0 width--x300"/>
 </div>
 
 <!-- JS -->
