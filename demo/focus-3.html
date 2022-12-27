@@ -187,81 +187,28 @@
     Debug Pad
 </div>
 
-<!-- number control -->
-<div class="css-trans on-top-left padding--x20 opacity--x0 opacity--x100--at columns" style="align-items:center;">
-    <div class="column-1-2">
-        <div class="rounded--x50 margin--x10 border--x4 border--c3">
-            <span class="plus button top-child fcBackground background--c1 background--c0--at padding--x10 symbol sym-caret-up symbol--c3"></span>
-            <span class="zero button child fcBackground background--c1 background--c0--at padding--x10 symbol sym-circle-o symbol--c3"></span>
-            <span class="zero-number button child fcBackground background--c1 background--c0--at padding--x10 text--c3">0</span>
-            <span class="minus button bottom-child fcBackground background--c1 background--c0--at padding--x10 symbol sym-caret-down symbol--c3"></span>
-        </div>
-    </div>
-    <div class="column-1-2">
-        <div class="rounded--x50 margin--x10 border--x4 border--c3">
-            <span class="max-plus button top-child fcBackground background--c1 background--c0--at padding--x10 symbol sym-caret-up symbol--c3"></span>
-            <span class="last-max button child fcBackground background--c1 background--c0--at top-padding--x10 bottom-padding--x10 text--c3">L</span>
-            <span class="max-number button child fcBackground background--c1 background--c0--at top-padding--x10 bottom-padding--x10 text--c3">1</span>
-            <span class="max-minus button bottom-child fcBackground background--c1 background--c0--at padding--x10 symbol sym-caret-down symbol--c3"></span>
-        </div>
-    </div>
-</div>
-
 <div class="on-bottom-left">
-    <!-- profile -->
-    <div class="profiles css-trans margin--x5 opacity--x0 opacity--x100--at columns" style="align-items:center;">
-        <div class="column-1-profile-count">
-            <div class="profile-profile-number rounded--x50 margin--x5 border--x4 border--c3">
-                <span class="load button top-child fcBackground background--c1 background--c0--at padding--x10 symbol sym-folder-open symbol--c3"></span>
-                <div class="durations button child fcBackground background--c1 background--c0--at padding--x5">
-                    <div class="zoom">
-                        <div class="number-durations center-text text--x1 text--c3">6|1|6|1</div>
-                    </div>
-                </div>
-                <div class="range button child fcBackground background--c1 background--c0--at padding--x5 center-text">
-                    <div class="zoom">
-                        <div class="number-range center-text text--x1 text--c3">0|59</div>
-                    </div>
-                </div>
-                <div class="indexes button child fcBackground background--c1 background--c0--at padding--x5">
-                    <div class="zoom">
-                        <div class="number-indexes center-text text--x1 text--c3">0|0</div>
-                    </div>
-                </div>
-                <div class="colors button child fcBackground background--c1 background--c0--at padding--x5">
-                    <div class="color-back rounded--x7 background--c3 padding--x5">
-                        <div class="color-circle rounded--x50 border--x7">
-                            <div class="color-number center-text padding--x5" style="font-weight:700;">1</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="actions child columns fcBackground background--c1 height--x20">
-                    <div class="remove column-1-2 button fcBackground background--c1 background--c0--at height--x20 background--c3 text--c3" title="remove this profile">-</div>
-                    <div class="add column-1-2 button fcBackground background--c1 background--c0--at height--x20 background--c3 text--c3" title="add new profile">+</div>
-                </div>
-                <span class="save button bottom-child fcBackground background--c1 background--c0--at padding--x10 symbol sym-save symbol--c3"></span>
-            </div>
-        </div>
-    </div>
-
     <!-- animation selector -->
     <div class="css-trans opacity--x0 opacity--x100--at margin--x20" style="display: inline-block">
         <div class="rounded--x50 center-text">
-            <span class="ani-0 button left-child fcBackground border--x4 background--c1 background--c0--at padding--x10 symbol text--c3">Ani1</span>
-            <span class="ani-1 button side-child fcBackground border--x4 background--c1 background--c0--at padding--x10 symbol text--c3">Ani2</span>
-            <span class="ani-2 button right-child fcBackground border--x4 background--c1 background--c0--at padding--x10 symbol text--c3">Ani3</span>
-        </div>
-        <div class="rounded--x50 center-text">
-            <span class="counter-0 button left-child fcBackground border--x4 background--c1 background--c0--at padding--x10 symbol text--c3" title="count up to max">Fixed Max</span>
-            <span class="counter-1 button right-child fcBackground border--x4 background--c1 background--c0--at padding--x10 symbol text--c3" title="count up to last-max and increase last-max every loop">Increase Max</span>
+            <span class="numbers button left-child right-child fcBackground border--x4 background--c1 background--c0--at padding--x10 symbol text--c3">Numbers</span>
         </div>
         <div class="rounded--x50 center-text">
             <span class="count-down button left-child fcBackground border--x4 background--c1 background--c0--at padding--x10 symbol text--c3" title="count up to max">Count Down</span>
             <span class="count-up button right-child fcBackground border--x4 background--c1 background--c0--at padding--x10 symbol text--c3" title="count up to last-max and increase last-max every loop">Count Up</span>
         </div>
         <div class="rounded--x50 center-text">
+            <span class="counter-0 button left-child fcBackground border--x4 background--c1 background--c0--at padding--x10 symbol text--c3" title="count up to max">Fixed Max</span>
+            <span class="counter-1 button right-child fcBackground border--x4 background--c1 background--c0--at padding--x10 symbol text--c3" title="count up to last-max and increase last-max every loop">Increase Max</span>
+        </div>
+        <div class="rounded--x50 center-text">
             <span class="no-loop button left-child fcBackground border--x4 background--c1 background--c0--at padding--x10 symbol text--c3">No Loop</span>
             <span class="forever-loop button right-child fcBackground border--x4 background--c1 background--c0--at padding--x10 symbol text--c3">Forever Loop</span>
+        </div>
+        <div class="rounded--x50 center-text">
+            <span class="ani-0 button left-child fcBackground border--x4 background--c1 background--c0--at padding--x10 symbol text--c3">Ani1</span>
+            <span class="ani-1 button side-child fcBackground border--x4 background--c1 background--c0--at padding--x10 symbol text--c3">Ani2</span>
+            <span class="ani-2 button right-child fcBackground border--x4 background--c1 background--c0--at padding--x10 symbol text--c3">Ani3</span>
         </div>
     </div>
 
@@ -273,86 +220,157 @@
     </div>
 </div>
 
-<!-- duration -->
-<div class="css-trans duration-pad on-top-right rounded--x50 margin--x10 padding--x5 opacity--x0 opacity--x100--at">
-    <span class="out-number button left-child fcBackground background--c1 background--c0--at padding--x10 symbol text--c3" title="out">6</span>
-    <span class="after-out-number button side-child fcBackground background--c1 background--c0--at padding--x10 symbol text--c3" title="after out">1</span>
-    <span class="in-number button side-child fcBackground background--c1 background--c0--at padding--x10 symbol text--c3" title="in">6</span>
-    <span class="after-in-number button right-child fcBackground background--c1 background--c0--at padding--x10 symbol text--c3" title="after in">1</span>
+<div class="on-bottom-right">
+
+    <!-- parameters -->
+    <div class=" css-trans padding--x20 opacity--x0 opacity--x100--at columns" style="align-items:center;">
+
+        <!-- number control -->
+        <div class="column-1-4">
+            <div class="rounded--x50 margin--x5 border--x4 border--c3">
+                <span class="plus button top-child fcBackground background--c1 background--c0--at padding--x10 symbol sym-caret-up symbol--c3"></span>
+                <span class="zero button child fcBackground background--c1 background--c0--at padding--x10 symbol sym-circle-o symbol--c3"></span>
+                <span class="zero-number button child fcBackground background--c1 background--c0--at padding--x10 text--c3">0</span>
+                <span class="minus button bottom-child fcBackground background--c1 background--c0--at padding--x10 symbol sym-caret-down symbol--c3"></span>
+            </div>
+        </div>
+        <div class="column-1-4">
+            <div class="rounded--x50 margin--x5 border--x4 border--c3">
+                <span class="max-plus button top-child fcBackground background--c1 background--c0--at padding--x10 symbol sym-caret-up symbol--c3"></span>
+                <span class="last-max button child fcBackground background--c1 background--c0--at top-padding--x10 bottom-padding--x10 text--c3">L</span>
+                <span class="max-number button child fcBackground background--c1 background--c0--at top-padding--x10 bottom-padding--x10 text--c3">1</span>
+                <span class="max-minus button bottom-child fcBackground background--c1 background--c0--at padding--x10 symbol sym-caret-down symbol--c3"></span>
+            </div>
+        </div>
+
+        <!-- duration -->
+        <div class="column-1-4">
+            <div class="css-trans duration-pad rounded--x50 margin--x5 border--x4 border--c3">
+                <span class="out-number button top-child fcBackground background--c1 background--c0--at padding--x10 symbol text--c3" title="out">6</span>
+                <span class="after-out-number button child fcBackground background--c1 background--c0--at padding--x10 symbol text--c3" title="after out">1</span>
+                <span class="in-number button child fcBackground background--c1 background--c0--at padding--x10 symbol text--c3" title="in">6</span>
+                <span class="after-in-number button bottom-child fcBackground background--c1 background--c0--at padding--x10 symbol text--c3" title="after in">1</span>
+            </div>
+        </div>
+
+        <!-- speed control -->
+        <div class="column-1-4">
+            <div class="css-trans rounded--x50 margin--x5 border--x4 border--c3">
+                <span class="big-speed-up button top-child fcBackground background--c1 background--c0--at padding--x10 symbol sym-angle-double-up symbol--c3"></span>
+                <span class="speed-up button child fcBackground background--c1 background--c0--at padding--x10 symbol sym-angle-up symbol--c3"></span>
+                <span class="speed-reset button child fcBackground background--c1 background--c0--at padding--x10 text--c3">1x</span>
+                <span class="speed-number button child fcBackground background--c1 background--c0--at padding--x10 text--c3">1x</span>
+                <span class="speed-down button child fcBackground background--c1 background--c0--at padding--x10 symbol sym-angle-down symbol--c3"></span>
+                <span class="big-speed-down button bottom-child fcBackground background--c1 background--c0--at padding--x10 symbol sym-angle-double-down symbol--c3"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- colors -->
+    <div class="css-trans rounded--x20 margin--x10 padding--x5 fcBackground background--c1 opacity--x0 opacity--x100--at width--x300 border--x4 border--c3">
+        <div class="row-1-4">
+            <div class="columns margin--x5">
+                <span class="column-1-8"><span class="back-color button square--x30 border background--c0"></span></span>
+                <span class="column-1-8"><span class="black-back button square--x30 border background--c0"></span></span>
+                <span class="column-1-8"><span class="gray-back button square--x30 border background--c1"></span></span>
+                <span class="column-1-8"><span class="silver-back button square--x30 border background--c2"></span></span>
+                <span class="column-1-8"><span class="white-back button square--x30 border background--c3"></span></span>
+                <span class="column-1-8"><span class="red-back button square--x30 border background--c4"></span></span>
+                <span class="column-1-8"><span class="orange-back button square--x30 border background--c5"></span></span>
+                <span class="column-1-8"><span class="yellow-back button square--x30 border background--c6"></span></span>
+            </div>
+        </div>
+        <div class="row-1-4">
+            <div class="columns margin--x5">
+                <span class="column-1-8"><span class="number-color button square--x30 border background--c0"></span></span>
+                <span class="column-1-8"><span class="black-number button square--x30 border background--c0"></span></span>
+                <span class="column-1-8"><span class="gray-number button square--x30 border background--c1"></span></span>
+                <span class="column-1-8"><span class="silver-number button square--x30 border background--c2"></span></span>
+                <span class="column-1-8"><span class="white-number button square--x30 border background--c3"></span></span>
+                <span class="column-1-8"><span class="red-number button square--x30 border background--c4"></span></span>
+                <span class="column-1-8"><span class="orange-number button square--x30 border background--c5"></span></span>
+                <span class="column-1-8"><span class="yellow-number button square--x30 border background--c6"></span></span>
+            </div>
+        </div>
+        <div class="row-1-4">
+            <div class="columns margin--x5">
+                <span class="column-1-8"><span class="circle1-color button square--x30 border background--c0"></span></span>
+                <span class="column-1-8"><span class="black-circle1 button square--x30 border background--c0"></span></span>
+                <span class="column-1-8"><span class="gray-circle1 button square--x30 border background--c1"></span></span>
+                <span class="column-1-8"><span class="silver-circle1 button square--x30 border background--c2"></span></span>
+                <span class="column-1-8"><span class="white-circle1 button square--x30 border background--c3"></span></span>
+                <span class="column-1-8"><span class="red-circle1 button square--x30 border background--c4"></span></span>
+                <span class="column-1-8"><span class="orange-circle1 button square--x30 border background--c5"></span></span>
+                <span class="column-1-8"><span class="yellow-circle1 button square--x30 border background--c6"></span></span>
+            </div>
+        </div>
+        <div class="row-1-4">
+            <div class="columns margin--x5">
+                <span class="column-1-8"><span class="circle2-color button square--x30 border background--c0"></span></span>
+                <span class="column-1-8"><span class="black-circle2 button square--x30 border background--c0"></span></span>
+                <span class="column-1-8"><span class="gray-circle2 button square--x30 border background--c1"></span></span>
+                <span class="column-1-8"><span class="silver-circle2 button square--x30 border background--c2"></span></span>
+                <span class="column-1-8"><span class="white-circle2 button square--x30 border background--c3"></span></span>
+                <span class="column-1-8"><span class="red-circle2 button square--x30 border background--c4"></span></span>
+                <span class="column-1-8"><span class="orange-circle2 button square--x30 border background--c5"></span></span>
+                <span class="column-1-8"><span class="yellow-circle2 button square--x30 border background--c6"></span></span>
+            </div>
+        </div>
+    </div>
 </div>
 
-<!-- speed control -->
-<div class="css-trans on-right rounded--x50 opacity--x0 opacity--x100--at margin--x20 border--x4 border--c3">
-    <span class="big-speed-up button top-child fcBackground background--c1 background--c0--at padding--x10 symbol sym-angle-double-up symbol--c3"></span>
-    <span class="speed-up button child fcBackground background--c1 background--c0--at padding--x10 symbol sym-angle-up symbol--c3"></span>
-    <span class="speed-reset button child fcBackground background--c1 background--c0--at padding--x10 text--c3">1x</span>
-    <span class="speed-number button child fcBackground background--c1 background--c0--at padding--x10 text--c3">1x</span>
-    <span class="speed-down button child fcBackground background--c1 background--c0--at padding--x10 symbol sym-angle-down symbol--c3"></span>
-    <span class="big-speed-down button bottom-child fcBackground background--c1 background--c0--at padding--x10 symbol sym-angle-double-down symbol--c3"></span>
-</div>
-
-<!-- colors -->
-<div class="css-trans on-bottom-right rounded--x20 margin--x10 padding--x5 fcBackground background--c1 opacity--x0 opacity--x100--at width--x300 border--x4 border--c3">
-    <div class="row-1-4">
-        <div class="columns margin--x5">
-            <span class="column-1-8"><span class="back-color button square--x30 border background--c0"></span></span>
-            <span class="column-1-8"><span class="black-back button square--x30 border background--c0"></span></span>
-            <span class="column-1-8"><span class="gray-back button square--x30 border background--c1"></span></span>
-            <span class="column-1-8"><span class="silver-back button square--x30 border background--c2"></span></span>
-            <span class="column-1-8"><span class="white-back button square--x30 border background--c3"></span></span>
-            <span class="column-1-8"><span class="red-back button square--x30 border background--c4"></span></span>
-            <span class="column-1-8"><span class="orange-back button square--x30 border background--c5"></span></span>
-            <span class="column-1-8"><span class="yellow-back button square--x30 border background--c6"></span></span>
-        </div>
-    </div>
-    <div class="row-1-4">
-        <div class="columns margin--x5">
-            <span class="column-1-8"><span class="number-color button square--x30 border background--c0"></span></span>
-            <span class="column-1-8"><span class="black-number button square--x30 border background--c0"></span></span>
-            <span class="column-1-8"><span class="gray-number button square--x30 border background--c1"></span></span>
-            <span class="column-1-8"><span class="silver-number button square--x30 border background--c2"></span></span>
-            <span class="column-1-8"><span class="white-number button square--x30 border background--c3"></span></span>
-            <span class="column-1-8"><span class="red-number button square--x30 border background--c4"></span></span>
-            <span class="column-1-8"><span class="orange-number button square--x30 border background--c5"></span></span>
-            <span class="column-1-8"><span class="yellow-number button square--x30 border background--c6"></span></span>
-        </div>
-    </div>
-    <div class="row-1-4">
-        <div class="columns margin--x5">
-            <span class="column-1-8"><span class="circle1-color button square--x30 border background--c0"></span></span>
-            <span class="column-1-8"><span class="black-circle1 button square--x30 border background--c0"></span></span>
-            <span class="column-1-8"><span class="gray-circle1 button square--x30 border background--c1"></span></span>
-            <span class="column-1-8"><span class="silver-circle1 button square--x30 border background--c2"></span></span>
-            <span class="column-1-8"><span class="white-circle1 button square--x30 border background--c3"></span></span>
-            <span class="column-1-8"><span class="red-circle1 button square--x30 border background--c4"></span></span>
-            <span class="column-1-8"><span class="orange-circle1 button square--x30 border background--c5"></span></span>
-            <span class="column-1-8"><span class="yellow-circle1 button square--x30 border background--c6"></span></span>
-        </div>
-    </div>
-    <div class="row-1-4">
-        <div class="columns margin--x5">
-            <span class="column-1-8"><span class="circle2-color button square--x30 border background--c0"></span></span>
-            <span class="column-1-8"><span class="black-circle2 button square--x30 border background--c0"></span></span>
-            <span class="column-1-8"><span class="gray-circle2 button square--x30 border background--c1"></span></span>
-            <span class="column-1-8"><span class="silver-circle2 button square--x30 border background--c2"></span></span>
-            <span class="column-1-8"><span class="white-circle2 button square--x30 border background--c3"></span></span>
-            <span class="column-1-8"><span class="red-circle2 button square--x30 border background--c4"></span></span>
-            <span class="column-1-8"><span class="orange-circle2 button square--x30 border background--c5"></span></span>
-            <span class="column-1-8"><span class="yellow-circle2 button square--x30 border background--c6"></span></span>
+<!-- profile -->
+<div class="profiles on-top-left css-trans margin--x5 opacity--x0 opacity--x100--at columns" style="align-items:center;">
+    <div class="column-1-profile-count">
+        <div class="profile-profile-number rounded--x50 margin--x5 border--x4 border--c3">
+            <span class="load button top-child fcBackground background--c1 background--c0--at padding--x10 symbol sym-folder-open symbol--c3"></span>
+            <div class="durations button child fcBackground background--c1 background--c0--at padding--x5">
+                <div class="zoom">
+                    <div class="number-durations center-text text--x1 text--c3">6|1|6|1</div>
+                </div>
+            </div>
+            <div class="range button child fcBackground background--c1 background--c0--at padding--x5 center-text">
+                <div class="zoom">
+                    <div class="number-range center-text text--x1 text--c3">0|59</div>
+                </div>
+            </div>
+            <div class="indexes button child fcBackground background--c1 background--c0--at padding--x5">
+                <div class="zoom">
+                    <div class="number-indexes center-text text--x1 text--c3">0|0</div>
+                </div>
+            </div>
+            <div class="colors button child fcBackground background--c1 background--c0--at padding--x5">
+                <div class="color-back rounded--x7 background--c3 padding--x5">
+                    <div class="color-circle rounded--x50 border--x7">
+                        <div class="color-number center-text padding--x5" style="font-weight:700;">1</div>
+                    </div>
+                </div>
+            </div>
+            <div class="actions child columns fcBackground background--c1 height--x20">
+                <div class="remove column-1-2 button fcBackground background--c1 background--c0--at height--x20 background--c3 text--c3" title="remove this profile">-</div>
+                <div class="add column-1-2 button fcBackground background--c1 background--c0--at height--x20 background--c3 text--c3" title="add new profile">+</div>
+            </div>
+            <span class="save button bottom-child fcBackground background--c1 background--c0--at padding--x10 symbol sym-save symbol--c3"></span>
         </div>
     </div>
 </div>
 
 <!-- input -->
 <div class="max-number-input-panel opacity--x0" style="overflow:hidden;max-width:0px;">
-    <div class="text--c0">Please enter value:</div>
-    <input id="max-number-iput" type="text" value="10" class="max-number-input text--c0 width--fit"/>
+    <label class="text--c0">Please enter value:</label><br/>
+    <input id="max-number-input" type="number" value="10" class="max-number-input text--c0 width--fit"/>
+</div>
+<div class="text-input-panel opacity--x0" style="overflow:hidden;max-width:0px;">
+    <b><label class="text--c0">Please enter value:</label></b><br/>
+    <input type="text" class="padding--x5 text--c0 width--x300"/>
 </div>
 
 <!-- JS -->
 <script type="text/javascript" src="http://localhost/jquery/1.11/jquery.js"></script>
 <script type="text/javascript" src="../dist/jquery.panel.suite.min.js"></script>
-<script type="text/javascript" src="focus-3.js?refresh=143"></script>
+<script type="text/javascript" src="demo-util.js?refresh=1"></script>
+<script type="text/javascript" src="focus-3.js?refresh=146"></script>
 
 </body>
+
 </html>

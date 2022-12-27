@@ -113,6 +113,25 @@ Appanel({
             Appanel.focus.debugPad[0].innerText = "play:" + this.play + " timing:" + this.timing + " duration:" + this.duration + "s";
         },
 
+        /**
+         * when the numbers array is not empty then
+         * - number is index of numbers array
+         * - max is replaced with last index (length - 1) of numbers array
+         * - zeroNumber is replaced with first index of numbers array
+         */
+        numbers: [],
+
+        setNumbers: function (numbers) {
+            if (numbers === undefined) numbers = [];
+
+            this.numbers = numbers;
+            if (this.numbers.length > 0) {
+                this.setZeroNumber(0);
+                this.setMaxNumber(numbers.length - 1);
+                this.set(this.zeroNumber);
+            }
+        },
+
         nextNumber: [
             function (/* 0: count up from zeroNumber to max */) {
                 var focus = Appanel.focus,
@@ -230,7 +249,8 @@ Appanel({
 
             Appanel.map([
                 [dialogue, 'selection:open', function (ev, button) {
-                    var $input = $(ev.target).find('.max-number-input');
+                    var $target = $(ev.target),
+                        $input = $target.find('.max-number-input');
                     $input[0].select();
                     $input.focus();
                 }],
@@ -273,8 +293,15 @@ Appanel({
 
         set: function (number) {
             this.number = number;
-            this.mon1.html(number);
-            this.mon2.html(number);
+            if (this.numbers.length > 0) {
+                if (this.numbers.length > number) {
+                    this.mon1.html(this.numbers[number]);
+                    this.mon2.html(this.numbers[number]);
+                }
+            } else {
+                this.mon1.html(number);
+                this.mon2.html(number);
+            }
             if (number === this.zeroNumber) this.maxTick = 0;
         },
 
@@ -455,9 +482,13 @@ Appanel({
         speedElement: $('.speed-number')[0],
 
         setMaxNumber: function (max) {
-            this.max = max;
-            $(".max-number").html(max);
-            this.maxTick = 0;
+            if (this.numbers.length === 0) {
+                this.max = max;
+            } else {
+                this.max = max >= this.numbers.length ? this.numbers.length - 1 : max;
+            }
+            $(".max-number").html(this.max);
+            this.maxTick = this.zeroNumber;
         },
 
         setTargetMax: function (targetMax) {
@@ -598,6 +629,7 @@ Appanel({
                 }
 
                 if (loadRange) {
+                    this.setNumbers(profile.numbers);
                     this.set(profile.startNumber);
                     this.setZeroNumber(profile.zeroNumber);
                     this.setMaxNumber(profile.max);
@@ -660,6 +692,7 @@ Appanel({
                     targetMax: this.targetMax,
                     startNumber: this.number,
 
+                    numbers: this.numbers,
                     animationIndex: this.animationIndex,
                     counterIndex: this.counterIndex,
                     countDown: this.countDown,
@@ -761,6 +794,7 @@ Appanel({
                     max: 9,
                     startNumber: 0,
 
+                    numbers: [],
                     animationIndex: 2,
                     counterIndex: 0,
                     countDown: false,
@@ -795,7 +829,9 @@ Appanel({
             $numbers.find('.number-durations')[0].innerText = durations;
             $numbers.find('.durations .zoom').css('zoom', 1 - (durations.length * 0.02));
 
-            $numbers.find('.number-range')[0].innerText = profile.zeroNumber + '|' + profile.max + '\n' + toPrecision(profile.speed) + 'x';
+            $numbers.find('.number-range')[0].innerText = (profile.numbers === undefined || profile.numbers.length === 0)
+                ? (profile.zeroNumber + '|' + profile.max + '\n' + toPrecision(profile.speed) + 'x')
+                : (profile.numbers[0] + '|' + profile.numbers[profile.numbers.length - 1] + '\n' + toPrecision(profile.speed) + 'x');
             $numbers.find('.range .zoom').css('zoom', 1 - (durations.length * 0.03));
 
             $numbers.find('.number-indexes')[0].innerText = profile.animationIndex + '|' + profile.counterIndex;
@@ -819,6 +855,40 @@ Appanel({
 
             // listener mapper
             Appanel.map([
+                ['.numbers', "click", function () {
+                    let defaultValue = '',
+                        numbers = Appanel.focus.numbers,
+                        length = numbers.length;
+                    if (length > 0) {
+                        for (let i = 0; i < length; i++) {
+                            defaultValue += ',' + numbers[i];
+                        }
+                        defaultValue = defaultValue.substring(1);
+                    }
+
+                    Appanel.util.input({
+                        title: 'Numbers',
+                        label: 'Comma separated values :',
+                        placeHolder: 'leave blank to use default 0,1,2,3,..',
+                        defaultValue: defaultValue,
+                        handler: function (ev) {
+                            var values = ev.value.split(','),
+                                numbers = [],
+                                item;
+                            for (let i = 0; i < values.length; i++) {
+                                item = values[i].trim();
+                                if (item !== '')
+                                    numbers.push(item);
+                            }
+                            Appanel.focus.setNumbers(numbers);
+                            config.call(Appanel.focus);
+                            /*refresh();*/
+                        },
+                        panelSelector: '.text-input-panel',
+                        labelSelector: 'label',
+                        inputSelector: 'input'
+                    });
+                }],
                 ['.after-in-number', "click", function () {
                     Appanel.focus.inputNumber('After In Animated Duration', Appanel.focus.afterIn, function (number) {
                         Appanel.focus.setAfterInNumber(number);

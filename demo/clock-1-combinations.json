@@ -18,7 +18,7 @@
   {
     "name": "shard",
     "display": "Many Shard",
-    "clock": "original",
+    "clock": "twelve",
     "theme": "Classic 2",
     "background": "shard",
     "analogue": true
