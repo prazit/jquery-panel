@@ -32,7 +32,8 @@ Appanel({
                 '            stroke-width="0.2"' +
                 '            stroke-dashoffset="0"' +
                 '            stroke-dasharray="31.415926535897932384626433832795"/>' +
-                '</svg>'
+                '</svg>',
+            seeNMove: ''
         },
 
         input: function (title, label, defaultValue, handler, data) {
@@ -95,69 +96,64 @@ Appanel({
             ]);
         },
 
-        seeNMove: function (selector, functionName, propertyX, propertyY, step) {
+        seeNMove: function (selector, functionName, properties, step) {
             var inputPanel = $('.seenmove-panel'),
                 target = typeof (selector) === 'string' ? $(selector) : selector,
-                x = target[functionName](propertyX),
-                y = target[functionName](propertyY),
-                num;
+                propertyHtml = inputPanel[0].innerHTML,
+                html = '',
+                x, unitX, num;
 
-            num = parseFloat(x);
-            unitX = (x + '').substr(num.toString().length);
-            x = num;
+            if (step === undefined) step = 1;
 
-            num = parseFloat(y);
-            unitY = (y + '').substr(num.toString().length);
-            y = num;
+            for (let i = 0; i < properties.length; i++) {
+                x = target[functionName](properties[i]);
+                num = parseFloat(x);
+                unitX = (x + '').substr(num.toString().length);
+                x = num;
 
-            inputPanel.find('.label-x').text(propertyX + ':');
-            inputPanel.find('.label-y').text(propertyY + ':');
-
-            inputPanel.find('.unit-x').text(unitX);
-            inputPanel.find('.unit-y').text(unitY);
-
-            if (step !== undefined) {
-                inputPanel.find('.input-x').attr('step', step);
-                inputPanel.find('.input-y').attr('step', step);
+                html += propertyHtml
+                    .replace('property', 'property-' + properties[i])
+                    .replace('property-label', properties[i])
+                    .replace('property-value', x)
+                    .replace('property-display', x)
+                    .replace('property-step', step)
+                    .replace('property-unit', unitX);
             }
 
             // show dialog with max-number-input
-            var dialogue = Appanel.selection('information', 'See n Move', inputPanel[0].innerHTML, {buttons: ['Close']});
+            var dialogue = Appanel.selection('information', 'See n Move', html, {buttons: ['Close']});
 
             Appanel.map([
                 [dialogue, 'selection:open', function (ev) {
                     var panel = $(ev.target),
-                        inputX = panel.find('.input-x'),
-                        inputY = panel.find('.input-y'),
-                        displayX = panel.find('.display-x'),
-                        displayY = panel.find('.display-y'),
-                        data = ev.data;
+                        mapper = [],
+                        property, inputX, firstInput, displayX,
+                        keyupHandler = function (ev) {
+                            var value = ev.currentTarget.value,
+                                data = ev.data;
+                            data.target[data.functionName](data.property, value + data.unit);
+                            data.display.text(data.target[data.functionName](data.property));
+                        };
 
                     /*on keyup then set property*/
-                    Appanel.map([
-                        [inputX, 'keyup', function (ev) {
-                            var value = ev.currentTarget.value,
-                                data = ev.data;
-                            data.target[data.functionName](data.property, value + data.unit);
-                            data.display.text(data.target[data.functionName](data.property));
-                        }, {target: ev.data.target, property: data.propertyX, display: displayX, functionName: data.functionName, unit: data.unitX}],
-                        [inputY, 'keyup', function (ev) {
-                            var value = ev.currentTarget.value,
-                                data = ev.data;
-                            data.target[data.functionName](data.property, value + data.unit);
-                            data.display.text(data.target[data.functionName](data.property));
-                        }, {target: ev.data.target, property: data.propertyY, display: displayY, functionName: data.functionName, unit: data.unitY}]
-                    ]);
+                    for (let i = 0; i < properties.length; i++) {
+                        property = panel.find('.property-' + properties[i]);
+                        inputX =  property.find('.input');
+                        if (i === 0) firstInput = inputX;
+                        mapper.push([inputX, 'keyup', keyupHandler, {
+                            target: target,
+                            property: properties[i],
+                            display: property.find('.display'),
+                            functionName: functionName,
+                            unit: property.find('.unit')[0].innerText
+                        }]);
+                    }
+                    Appanel.map(mapper);
 
-                    inputX[0].value = parseFloat(data.target[data.functionName](data.propertyX));
-                    inputY[0].value = parseFloat(data.target[data.functionName](data.propertyY));
-
-                    displayX.text(inputX[0].value);
-                    displayY.text(inputY[0].value);
-
-                    inputX[0].select();
-                    inputX.focus();
-                }, {target: target, propertyX: propertyX, propertyY: propertyY, functionName: functionName, unitX: unitX, unitY: unitY}]
+                    /*focus on first input*/
+                    firstInput[0].select();
+                    firstInput.focus();
+                }]
             ]);
         },
 

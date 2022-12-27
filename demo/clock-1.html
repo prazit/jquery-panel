@@ -72,7 +72,9 @@
 
 <!-- clock -->
 <div class="cover">
-    <!-- this content will be replaced by clock -->
+    <div class="clock wrapper">
+        <!-- this content will be replaced by clock -->
+    </div>
 </div>
 
 <!-- filter -->
@@ -156,30 +158,14 @@
     <input type="text" value="10" class="text--c0 width--fit"/>
 </div>
 <div class="seenmove-panel opacity--x0" style="overflow:hidden;max-width:0px;">
-    <div class="columns width--fit">
-        <div class="column-1-2">
-            <label class="label-x">X value:</label>
-            <label class="unit-x">unit</label>
+    <div class="property fit-width">
+        <div>
+            <b class="label fweight--x700">property-label:</b>
+            ( <span class="unit">property-unit</span> )
         </div>
-        <div class="column-1-2">
-            <label class="label-y">Y value:</label>
-            <label class="unit-y">unit</label>
-        </div>
-    </div>
-    <div class="columns width--fit">
-        <div class="column-1-2">
-            <input class="input-x" type="number" value="0" step="1" class="text--c0 width--fit"/>
-        </div>
-        <div class="column-1-2">
-            <input class="input-y" type="number" value="0" step="1" class="text--c0 width--fit"/>
-        </div>
-    </div>
-    <div class="columns width--fit">
-        <div class="column-1-2">
-            <label class="display-x">0</label>
-        </div>
-        <div class="column-1-2">
-            <label class="display-y">0</label>
+        <div class="columns fit-width">
+            <input class="input column-1-2" type="number" value="property-value" step="property-step" class="text--c0"/>
+            <label class="display column-1-2 right-text">property-display</label>
         </div>
     </div>
 </div>
@@ -196,21 +182,21 @@
      style="width:100%;"
      fill="transparent">
     <line x1="0" y1="1" x2="31.415926535897932384626433832795" y2="1"
-            class="opacity--x30"
-            stroke="silver"
-            stroke-linecap="butt"
-            stroke-opacity="1"
-            stroke-width="0.2"
-            stroke-dashoffset="0"
-            stroke-dasharray="31.415926535897932384626433832795"/>
+          class="opacity--x30"
+          stroke="silver"
+          stroke-linecap="butt"
+          stroke-opacity="1"
+          stroke-width="0.2"
+          stroke-dashoffset="0"
+          stroke-dasharray="31.415926535897932384626433832795"/>
     <line x1="0" y1="1" x2="31.415926535897932384626433832795" y2="1"
-            class="progress"
-            stroke="red"
-            stroke-linecap="butt"
-            stroke-opacity="1"
-            stroke-width="0.2"
-            stroke-dashoffset="0"
-            stroke-dasharray="31.415926535897932384626433832795"/>
+          class="progress"
+          stroke="red"
+          stroke-linecap="butt"
+          stroke-opacity="1"
+          stroke-width="0.2"
+          stroke-dashoffset="0"
+          stroke-dasharray="31.415926535897932384626433832795"/>
 </svg>
 <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
      viewBox="0 0 12 12"
@@ -773,7 +759,7 @@
 
                     console.info('load clock completed at ', new Date().toLocaleTimeString());
                     clockHtml = clockHtml.substring(0, headStart) + clockHtml.substring(headEnd + 1);
-                    $('.cover').html(clockHtml);
+                    $('.cover > .wrapper').html(clockHtml);
 
                     if (callback !== undefined) {
                         Appanel.clock.setTimeout(function () {
@@ -881,7 +867,8 @@
 
                         a.cover
                             .css('top', a.coverY + 'px')
-                            .css('left', a.coverX + 'px');
+                            .css('left', a.coverX + 'px')
+                            .find('.wrapper').css('transform', `rotate(${a.clockDegree}deg)`);
 
                         a.clock
                             .css('width', a.coverSize)
@@ -898,6 +885,10 @@
                         }
                     }
                 });
+
+                if (attributes.clockDegree === undefined) {
+                    this.backgroundAttributes.clockDegree = 0;
+                }
 
                 $('.out-side').css('opacity', (100 * this.backgroundAttributes.imageFilter) + '%');
 

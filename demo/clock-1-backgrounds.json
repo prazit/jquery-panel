@@ -73,5 +73,22 @@
 
     "clockWInPercent": 0.555,
     "clockHInPercent": 0.857
+  },
+  {
+    "name": "watch1",
+    "display": "Hand Watch #1",
+
+    "image": "img/wallpaperaccess.com.861191.jpg",
+    "imageWidth": 1280,
+    "imageHeight": 720,
+    "imageFilter": 0.25,
+
+    "clockXInPercent": 0.1203,
+    "clockYInPercent": 0.232,
+
+    "clockWInPercent": 0.3,
+    "clockHInPercent": 0.533,
+
+    "clockDegree": -7.7
   }
 ]
