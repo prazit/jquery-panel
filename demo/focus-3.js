@@ -153,8 +153,7 @@ Appanel({
 
                 focus.debugFunc.call(this);
 
-                focus.set(number);
-                focus.initCircle(number);
+                focus.initCircle(focus.set(number));
 
                 if (focus.targetMax !== focus.max) focus.setTargetMax(focus.max);
 
@@ -194,8 +193,7 @@ Appanel({
                 focus.debugFunc.call(this);
 
                 focus.setTargetMax(max);
-                focus.set(number);
-                focus.initCircle(number);
+                focus.initCircle(focus.set(number));
 
                 // update config
                 focus.saveDefaultProfile();
@@ -293,16 +291,13 @@ Appanel({
 
         set: function (number) {
             this.number = number;
-            if (this.numbers.length > 0) {
-                if (this.numbers.length > number) {
-                    this.mon1.html(this.numbers[number]);
-                    this.mon2.html(this.numbers[number]);
-                }
-            } else {
-                this.mon1.html(number);
-                this.mon2.html(number);
-            }
+
+            var display = this.numbers.length > 0 ? (this.numbers.length > number ? this.numbers[number] : this.numbers[this.numbers.length - 1]) : number;
+            this.mon1.html(display);
+            this.mon2.html(display);
+
             if (number === this.zeroNumber) this.maxTick = 0;
+            return display;
         },
 
         countDown: false,
@@ -846,8 +841,7 @@ Appanel({
             this.loadProfile(0);
 
             // start number
-            this.set(this.startNumber);
-            this.initCircle(this.startNumber);
+            this.initCircle(this.set(this.startNumber));
 
             // animation when speed is changed
             var speed = this.aniShowSpeedX,
