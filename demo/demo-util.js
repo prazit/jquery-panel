@@ -5,13 +5,14 @@ Appanel({
             input: '<b><label class="text--c0">Please enter value:</label></b><br/>' +
                 '<input type="text" class="padding--x5 text--c0 width--x300"/>',
             warn: {
-                container: '<div class="message-container on-top-left css-trans layer-5"></div>',
+                container: '<div class="message-container on-top-left css-trans layer-9"></div>',
                 message: '<div class="warning-message hidden css-trans rounded--x10 margin--x10 padding--x10 background--c3 text--cred background--cyellow">' +
                     '    <h1 class="symbol sym-warning"> message-title</h1>' +
                     '    <p class="text--c0">message-text</p>' +
                     '</div>'
             },
-            removeAfter: '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"' +
+            removeAfter: [
+                /*0*/'<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"' +
                 '     viewBox="0 0 31.415926535897932384626433832795 2"' +
                 '     class="circle-progress pull-right hidden"' +
                 '     style="width:100%;"' +
@@ -33,6 +34,29 @@ Appanel({
                 '            stroke-dashoffset="0"' +
                 '            stroke-dasharray="31.415926535897932384626433832795"/>' +
                 '</svg>',
+                /*1*/'<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"' +
+                '     viewBox="0 0 12 12"' +
+                '     class="circle-progress pull-right hidden"' +
+                '     style="width:20px;transform:rotate(-90deg);"' +
+                '     fill="transparent">' +
+                '    <circle cx="6" cy="6" r="5"' +
+                '            class="opacity--x30"' +
+                '            stroke="silver"' +
+                '            stroke-linecap="round"' +
+                '            stroke-opacity="1"' +
+                '            stroke-width="2"' +
+                '            stroke-dashoffset="0"' +
+                '            stroke-dasharray="31.415926535897932384626433832795"/>' +
+                '    <circle cx="6" cy="6" r="5"' +
+                '            class="progress"' +
+                '            stroke="red"' +
+                '            stroke-linecap="round"' +
+                '            stroke-opacity="1"' +
+                '            stroke-width="2"' +
+                '            stroke-dashoffset="0"' +
+                '            stroke-dasharray="31.415926535897932384626433832795"/>' +
+                '</svg>'
+            ],
             seeNMove: ''
         },
 
@@ -192,9 +216,9 @@ Appanel({
             }, seconds * 1000);
         },
 
-        removeAfter: function (seconds, $e) {
+        removeAfter: function (seconds, $e, progressType) {
             var $progressBar = $('.circle-progress'),
-                html = $progressBar.length === 0 ? this.defaults.removeAfter : $('.circle-progress')[0].outerHTML;
+                html = $progressBar.length === 0 ? this.defaults.removeAfter[progressType === undefined ? 0 : progressType] : $('.circle-progress')[0].outerHTML;
             $e.append(html.replace('hidden', ''));
             var timeout = setTimeout(function () {
                 clearTimeout(timeout);

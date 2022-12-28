@@ -35,6 +35,8 @@ function toPrecision(number) {
     return Number(Math.abs(string).toPrecision(indexOfDot + precision));
 }
 
+const cclick = 'click touchstart';
+
 Appanel({
     focus: {
 
@@ -457,19 +459,19 @@ Appanel({
 
             /*reset before play*/
             this.playButton
-                .off('click')
+                .off(cclick)
                 .off('sweep:ready')
                 .removeClass('hidden');
             this.pauseButton
-                .off('click');
+                .off(cclick);
             this.resumeButton
-                .off('click');
+                .off(cclick);
 
             /*handle play pause resume*/
             this.animated = animation.sweeper;
             $(this.playButton.selector + ',' + this.pauseButton.selector + ',' + this.resumeButton.selector)
-                .off('click')
-                .on('click', function () {
+                .off(cclick)
+                .on(cclick, function () {
                     Appanel.focus.togglePlay()
                 });
         },

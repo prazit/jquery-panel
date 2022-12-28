@@ -155,75 +155,6 @@
     <span class="add-combination bottom-child button background--c3 background--c0--at opacity--x70 padding--x10 center-text">+</span>
 </div>
 
-<!-- input -->
-<div class="input-panel opacity--x0" style="overflow:hidden;max-width:0px;">
-    <label>Please enter value:</label>
-    <input type="text" value="10" class="text--c0 width--fit"/>
-</div>
-<div class="seenmove-panel opacity--x0" style="overflow:hidden;max-width:0px;">
-    <div class="property fit-width">
-        <div>
-            <b class="label fweight--x700">property-label:</b>
-            ( <span class="unit">property-unit</span> )
-        </div>
-        <div class="columns fit-width">
-            <input class="input column-1-2" type="number" value="property-value" step="property-step" class="text--c0"/>
-            <label class="display column-1-2 right-text">property-display</label>
-        </div>
-    </div>
-</div>
-
-<!-- message -->
-<div class="message-container on-top-left css-trans"></div>
-<div class="warning-message hidden css-trans rounded--x10 margin--x10 padding--x10 background--c3 text--cred background--cyellow">
-    <h1 class="symbol sym-warning"> message-title</h1>
-    <p class="text--c0">message-text</p>
-</div>
-<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
-     viewBox="0 0 31.415926535897932384626433832795 2"
-     class="circle-progress pull-right hidden"
-     style="width:100%;"
-     fill="transparent">
-    <line x1="0" y1="1" x2="31.415926535897932384626433832795" y2="1"
-          class="opacity--x30"
-          stroke="silver"
-          stroke-linecap="butt"
-          stroke-opacity="1"
-          stroke-width="0.2"
-          stroke-dashoffset="0"
-          stroke-dasharray="31.415926535897932384626433832795"/>
-    <line x1="0" y1="1" x2="31.415926535897932384626433832795" y2="1"
-          class="progress"
-          stroke="red"
-          stroke-linecap="butt"
-          stroke-opacity="1"
-          stroke-width="0.2"
-          stroke-dashoffset="0"
-          stroke-dasharray="31.415926535897932384626433832795"/>
-</svg>
-<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
-     viewBox="0 0 12 12"
-     class="original-circle-progress pull-right hidden"
-     style="width:20px;transform:rotate(-90deg);"
-     fill="transparent">
-    <circle cx="6" cy="6" r="5"
-            class="opacity--x30"
-            stroke="silver"
-            stroke-linecap="round"
-            stroke-opacity="1"
-            stroke-width="2"
-            stroke-dashoffset="0"
-            stroke-dasharray="31.415926535897932384626433832795"/>
-    <circle cx="6" cy="6" r="5"
-            class="progress"
-            stroke="red"
-            stroke-linecap="round"
-            stroke-opacity="1"
-            stroke-width="2"
-            stroke-dashoffset="0"
-            stroke-dasharray="31.415926535897932384626433832795"/>
-</svg>
-
 <!-- JS -->
 <script type="text/javascript" src="http://localhost/jquery/1.11/jquery.js"></script>
 <script type="text/javascript" src="../dist/jquery.panel.suite.min.js"></script>
@@ -371,7 +302,10 @@
 
             addProperty: function (theme, name, prop, target) {
                 $(theme.add(name, prop, target)).on('css-property:error', function (ev, data) {
-                    Appanel.util.warn('Invalid Color', `css-property '${data.property}' not supports the value '${data.value}'`);
+                    var title = 'Invalid Color',
+                        message = `css-property '${data.property}' not supports the value '${data.value}'`;
+                    console.warn(title + ': ', message);
+                    Appanel.util.warn(title, message);
                 });
             },
 
@@ -982,10 +916,16 @@
                     myJson = Appanel.util.myURL() + '-' + name + '.json?v=' + requestDate;
 
                 console.info("JSON URL: ", myJson);
-                $.getJSON(myJson).complete(function (json, status) {
-                    console.info('load ', name, 'completed at ', new Date().toLocaleTimeString());
-                    Appanel.clock[name] = json.responseJSON;
-                    if ($.isFunction(callback)) callback.call(Appanel.clock, json, status);
+                this.lastLoadJSON = $.getJSON(myJson)
+                    .complete(function (json, status) {
+                        console.info('load ', name, 'completed at ', new Date().toLocaleTimeString());
+                        Appanel.clock[name] = json.responseJSON;
+                        if ($.isFunction(callback)) callback.call(Appanel.clock, json, status);
+                    });
+                this.lastLoadJSON.fail(function (ev) {
+                    console.error('load ', name, 'failed at ', new Date().toLocaleTimeString(), ':', ev.status, ev.statusText);
+                    Appanel.util.warn('WARNING', 'load ' + name + ' json failed with ' + ev.status + ':' + ev.statusText, 30);
+                    if ($.isFunction(callback)) callback.call(Appanel.clock, {}, status);
                 });
             },
 
