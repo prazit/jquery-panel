@@ -5587,6 +5587,15 @@ anchor:before {
 .max-height--x50pc {
     max-height: 50%;
 }
+.max-height--x80pc {
+    max-height: 80%;
+}
+.max-height--x90pc {
+    max-height: 90%;
+}
+.max-height--x100pc {
+    max-height: 100%;
+}
 
 /* remain-height */
 .fit-width--x1 {
@@ -9070,6 +9079,7 @@ anchor:before {
 }
 .opacity--x100--at:hover {
     opacity: 1;
+    z-index: 4500;
 }
 
 /* gradient with custom color (gradient--cX) */

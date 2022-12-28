@@ -70,20 +70,23 @@
 
 <body class="css-trans fixed background--c0 fit-width fit-height" style="font-family: Arial,sans-serif;">
 
+<!-- background -->
+<div class="background-image layer-1"></div>
+
 <!-- clock -->
-<div class="cover">
+<div class="cover layer-2">
     <div class="clock wrapper">
         <!-- this content will be replaced by clock -->
     </div>
 </div>
 
 <!-- filter -->
-<div class="out-side fixed fit-width fit-height">
+<div class="out-side fixed fit-width fit-height layer-3">
     <h1 class="on-top footprint padding--x10 opacity--x0 opacity--x100--at">Analogue Clock v1</h1>
 </div>
 
 <!-- animation selector -->
-<div class="on-top-left css-trans opacity--x0 opacity--x100--at margin--x20" style="display: inline-block">
+<div class="on-top-left css-trans opacity--x0 opacity--x100--at margin--x20 layer-4" style="display: inline-block">
     <div class="rounded--x50 center-text">
         <span class="analogue-move button left-child border--x4 background--c3 background--c0--at opacity--x70 border--x3 border--c3 padding--x10 symbol text--c0 text--c3--at" title="count up to max">Analogue Move</span>
         <span class="smooth-move button right-child border--x4 background--c3 background--c0--at opacity--x70 border--x3 border--c3 padding--x10 symbol text--c0 text--c3--at" title="count up to last-max and increase last-max every loop">Smooth Move</span>
@@ -91,12 +94,12 @@
 </div>
 
 <!-- clocks & backgrounds -->
-<div class="css-trans on-bottom-left columns opacity--x0 opacity--x100--at">
+<div class="css-trans on-bottom-left columns opacity--x0 opacity--x100--at layer-4">
     <!-- backgrounds -->
     <div class="column-1-2">
         <div class="backgrounds margin--x10 rounded--x20 border--x4 border--c3">
             <span class="background-list top-child background--c3 opacity--x70 padding--x10 center-text">Backgrounds</span>
-            <div class="background-container">
+            <div class="background-container max-height--x500 scrollable">
                 <span class="background-item button child background--c1 background--c0--at padding--x10 left-text">background-name</span>
             </div>
             <span class="auto-change-background bottom-child button background--c3 background--c0--at opacity--x70 padding--x10 center-text">Auto Change</span>
@@ -107,7 +110,7 @@
     <div class="column-1-2">
         <div class="clocks margin--x10 rounded--x20 border--x4 border--c3">
             <span class="clock-list top-child background--c3 opacity--x70 padding--x10 center-text">Clocks</span>
-            <div class="clock-container">
+            <div class="clock-container max-height--x500 scrollable">
                 <span class="clock-item button child background--c1 background--c0--at padding--x10 left-text">clock-name</span>
             </div>
             <span class="bottom-child background--c1 padding--x10 center-text"></span>
@@ -116,9 +119,9 @@
 </div>
 
 <!-- colors -->
-<div class="css-trans on-top-right theme margin--x10 opacity--x0 opacity--x100--at columns">
+<div class="css-trans on-top-right theme margin--x10 opacity--x0 opacity--x100--at columns layer-4">
     <div class="column-1-2">
-        <div class="rounded--x20 border--x4 border--c3 colors">
+        <div class="colors rounded--x20 border--x4 border--c3 margin--x10">
             <span class="profile-name button top-child background--c3 background--c0--at opacity--x70 padding--x10 center-text">Profile</span>
             <span class="color-handSecond button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Second Hand</span>
             <span class="color-handMinute button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Minute Hand</span>
@@ -133,9 +136,9 @@
         </div>
     </div>
     <div class="column-1-2">
-        <div class="rounded--x20 border--x4 border--c3">
+        <div class="rounded--x20 border--x4 border--c3 margin--x10">
             <span class="profile-list top-child background--c3 opacity--x70 padding--x10 center-text">Themes</span>
-            <div class="profile-container">
+            <div class="profile-container max-height--x50pc scrollable">
                 <span class="profile button child background--c1 background--c0--at padding--x10 left-text">profile-name</span>
             </div>
             <span class="add-profile button bottom-child background--c3 background--c0--at opacity--x70 padding--x10 center-text">+</span>
@@ -144,9 +147,9 @@
 </div>
 
 <!-- combination -->
-<div class="combinations css-trans on-bottom-right margin--x10 opacity--x0 opacity--x100--at rounded--x20 border--x4 border--c3">
+<div class="combinations css-trans on-bottom-right margin--x10 opacity--x0 opacity--x100--at rounded--x20 border--x4 border--c3 layer-4">
     <span class="combination-list top-child background--c3 opacity--x70 padding--x10 center-text">Presets</span>
-    <div class="combination-container">
+    <div class="combination-container max-height--x500 scrollable">
         <span class="combination-item button child background--c1 background--c0--at padding--x10 left-text">combination-name</span>
     </div>
     <span class="add-combination bottom-child button background--c3 background--c0--at opacity--x70 padding--x10 center-text">+</span>
@@ -521,6 +524,7 @@
                                 Appanel.util.warn(name + ' theme already exists!', 'Try again with another name that not in the list.', 10);
                             } else {
                                 Appanel.profile.save(name);
+                                Appanel.profile.setCurrent(name);
                                 Appanel.util.refresh();
                             }
                         });

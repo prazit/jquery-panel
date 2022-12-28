@@ -5,7 +5,7 @@ Appanel({
             input: '<b><label class="text--c0">Please enter value:</label></b><br/>' +
                 '<input type="text" class="padding--x5 text--c0 width--x300"/>',
             warn: {
-                container: '<div class="message-container on-top-left css-trans"></div>',
+                container: '<div class="message-container on-top-left css-trans layer-5"></div>',
                 message: '<div class="warning-message hidden css-trans rounded--x10 margin--x10 padding--x10 background--c3 text--cred background--cyellow">' +
                     '    <h1 class="symbol sym-warning"> message-title</h1>' +
                     '    <p class="text--c0">message-text</p>' +
@@ -58,9 +58,9 @@ Appanel({
                     title: title,
                     label: label,
                     defaultValue: defaultValue,
-                    handler: handler,
-                    data: data
+                    handler: handler
                 });
+                if (data !== undefined) o.data = data;
             }
 
             // show dialog with max-number-input
@@ -70,7 +70,7 @@ Appanel({
             });
 
             Appanel.map([
-                [dialogue, 'selection:open', function (ev, button) {
+                [dialogue, 'selection:open', function (ev) {
                     var $panel = $(ev.target),
                         $input = $panel.find(o.inputSelector);
 
@@ -144,7 +144,7 @@ Appanel({
                     /*on keyup then set property*/
                     for (let i = 0; i < properties.length; i++) {
                         property = panel.find('.property-' + properties[i]);
-                        inputX =  property.find('.input');
+                        inputX = property.find('.input');
                         if (i === 0) firstInput = inputX;
                         mapper.push([inputX, 'keyup', keyupHandler, {
                             target: target,
