@@ -34,8 +34,8 @@
   {
     "name": "watch1",
     "display": "Hand Watch No.1",
-    "clock": "twelve",
-    "theme": "Cream",
+    "clock": "original",
+    "theme": "Dark",
     "background": "watch1",
     "analogue": true
   }

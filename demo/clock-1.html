@@ -71,7 +71,7 @@
 <body class="css-trans fixed background--c0 fit-width fit-height" style="font-family: Arial,sans-serif;">
 
 <!-- background -->
-<div class="background-image layer-1"></div>
+<div class="background-image fit-height fit-width layer-1"></div>
 
 <!-- clock -->
 <div class="cover layer-2">
@@ -832,20 +832,22 @@
              * });
              */
             setAttributes: function (attributes) {
+                var $cover = $('.cover');
                 this.backgroundAttributes = Object.assign(attributes, {
                     relativeX: 0,
                     relativeY: 0,
-                    body: $('body')
+                    background: $('.background-image')
                         .removeClass('css-trans')
                         .css('background-image', 'url(' + attributes.image + ')')
                         .css('background-repeat', 'no-repeat'),
-                    cover: $('.cover'),
-                    clock: $('.clock'),
+                    cover: $cover,
+                    rotator: $cover.find('.wrapper'),
+                    clock: $cover.find('.clock'),
                     resize: function () {
                         var a = Appanel.clock.backgroundAttributes;
 
-                        a.screenW = parseInt(a.body.css('width'));
-                        a.screenH = parseInt(a.body.css('height'));
+                        a.screenW = window.innerWidth;
+                        a.screenH = window.innerHeight;
 
                         a.ratioW = a.screenW / a.imageWidth;
                         a.ratioH = a.screenH / a.imageHeight;
@@ -856,33 +858,65 @@
                             a.imageSize = a.screenW;
                             a.coverX = a.clockXInPercent * a.screenW;
                             a.coverY = a.imageY + (a.ratioW * a.imageHeight * a.clockYInPercent);
-                            a.coverSize = (100 * a.clockWInPercent) + 'vw';
+                            /*a.coverSize = (100 * a.clockWInPercent) + 'vw';*/
+                            a.coverSize = (100 * a.clockWInPercent) * a.screenW * 0.01;
                         } else {
                             a.imageX = (a.screenW - (a.ratioH * a.imageWidth)) / 2;
                             a.imageY = 0;
                             a.imageSize = a.imageWidth * a.ratioH;
                             a.coverX = a.imageX + (a.ratioH * a.imageWidth * a.clockXInPercent);
                             a.coverY = a.clockYInPercent * a.screenH;
-                            a.coverSize = (100 * a.clockHInPercent) + 'vh';
+                            /*a.coverSize = (100 * a.clockHInPercent) + 'vh';*/
+                            a.coverSize = (100 * a.clockHInPercent) * a.screenH * 0.01;
                         }
 
-                        /*TODO: IMPORTANT: change background-image to img object and move it with cover by (relativeX, relativeY)
-                         *    relativeX = (window.innerWidth - coverWrapperBoundaryRect.width) / 2;
-                         **/
+                        a.imageTall = a.imageSize * a.imageWidth / a.imageHeight;
 
-                        a.body
-                            .css('background-position-x', a.imageX + 'px')
-                            .css('background-position-y', a.imageY + 'px')
-                            .css('background-size', a.imageSize + 'px');
+                        /*use relativeX to make equal space between left and right*/
+                        let coverSpace = {
+                            left: a.coverX,
+                            right: (a.coverX + a.coverSize - a.screenW) * -1
+                        };
+                        if (coverSpace.left === coverSpace.right) {
+                            a.relativeX = 0;
+                        } else {
+                            /*let backgroundSpace = {
+                                left: a.imageX * -1,
+                                right: a.imageX + a.imageSize - a.screenW
+                            };*/
+                            coverSpace.target = (coverSpace.left + coverSpace.right) / 2;
+                            coverSpace.moveLeft = coverSpace.left > coverSpace.right;
+                            if (coverSpace.moveLeft) {
+                                backgroundSpace = a.imageX * -1;
+                                a.relativeX = Math.min(coverSpace.left - coverSpace.target, backgroundSpace, coverSpace.left) * -1;
+                            } else {
+                                backgroundSpace = a.imageX + a.imageSize - a.screenW;
+                                a.relativeX = Math.min(coverSpace.right - coverSpace.target, backgroundSpace, coverSpace.right);
+                            }
+                        }
+
+                        //a.relativeX = (a.coverX + a.coverSize - a.screenW) / 2;
+                        console.info('----------------------------');
+                        console.debug('Background Space: ', backgroundSpace);
+                        console.debug('Cover Space: ', coverSpace);
+
+                        a.background
+                            .css('left', (a.imageX + a.relativeX) + 'px')
+                            .css('top', (a.imageY + a.relativeY) + 'px')
+                            .css('background-size', a.imageSize + 'px')
+                            .css('width', a.imageSize + 'px')
+                            .css('height', a.imageTall + 'px');
 
                         a.cover
-                            .css('left', a.coverX + 'px')
-                            .css('top', a.coverY + 'px')
-                            .find('.wrapper').css('transform', `rotate(${a.clockDegree}deg)`);
+                            .css('left', (a.coverX + a.relativeX) + 'px')
+                            .css('top', (a.coverY + a.relativeY) + 'px');
+
+                        a.rotator
+                            .css('transform', `rotate(${a.clockDegree}deg)`);
 
                         a.clock
-                            .css('width', a.coverSize)
-                            .css('height', a.coverSize);
+                            .css('width', a.coverSize + 'px')
+                            .css('height', a.coverSize + 'px');
                     },
                     member: function (memberName, value) {
                         if (value === undefined) {
@@ -891,6 +925,7 @@
                         } else {
                             /* SET VALUE */
                             this[memberName] = value;
+                            console.debug('resize: this=', this);
                             this.resize();
                         }
                     }

@@ -87,10 +87,14 @@ Appanel({
                     $input.focus();
                 }],
                 [dialogue, 'selection:closed', function (ev, button) {
-                    //var o = ev.data;
                     if (button.button === 'OK') {
-                        o.data.value = $(ev.target).find(o.inputSelector)[0].value;
-                        o.handler(o.data, o.data.value);
+                        var $input = $(ev.target).find(o.inputSelector),
+                            value = $input[0].value;
+                        if ($input.attr('type').toLowerCase() === 'number') {
+                            value = value.indexOf('.') > 0 ? parseFloat(value) : parseInt(value);
+                        }
+                        o.data.value = value;
+                        o.handler(o.data, value);
                     }
                 }, o]
             ]);
@@ -101,6 +105,8 @@ Appanel({
          *
          * :: clock-1.html ::
          * Appanel.util.seeNMove(Appanel.clock.backgroundAttributes,'member',['clockXInPercent','clockYInPercent','clockWInPercent','clockHInPercent','clockDegree'],0.001);
+         * Appanel.util.seeNMove(Appanel.clock.backgroundAttributes,'member',['relativeX','relativeY'],1);
+         * Appanel.util.seeNMove($('.cover'),'css',['left','top','width','height'],1);
          */
         seeNMove: function (selector, functionName, properties, step) {
             var inputPanel = $('.seenmove-panel'),
@@ -136,8 +142,11 @@ Appanel({
                         property, inputX, firstInput, displayX,
                         keyupHandler = function (ev) {
                             var value = ev.currentTarget.value,
-                                data = ev.data;
-                            data.target[data.functionName](data.property, value + data.unit);
+                                data = ev.data,
+                                type = $(ev.currentTarget).attr('type').toLowerCase();
+                            if (type === 'number') value = value.indexOf('.') > 0 ? parseFloat(value) : parseInt(value);
+                            if (data.unit.trim() !== '') value += data.unit;
+                            data.target[data.functionName](data.property, value);
                             data.display.text(data.target[data.functionName](data.property));
                         };
 
