@@ -1,39 +1,34 @@
 [
   {
-    "name": "swissrailway",
-    "display": "Swiss Railway",
+    "name": "Swiss Railway",
     "clock": "station",
     "theme": "Station",
     "background": "railway",
     "analogue": true
   },
   {
-    "name": "onhand",
-    "display": "On My Hand",
+    "name": "On My Hand",
     "clock": "original",
     "theme": "Classic",
     "background": "onhand",
     "analogue": false
   },
   {
-    "name": "shard",
-    "display": "Many Shard",
+    "name": "Many Shard",
     "clock": "twelve",
     "theme": "Classic 2",
     "background": "shard",
     "analogue": true
   },
   {
-    "name": "miami2",
-    "display": "Colorful Miami",
+    "name": "Colorful Miami",
     "clock": "original",
     "theme": "Colorful",
     "background": "miami2",
     "analogue": true
   },
   {
-    "name": "watch1",
-    "display": "Hand Watch No.1",
+    "name": "Hand Watch No.1",
     "clock": "original",
     "theme": "Dark",
     "background": "watch1",

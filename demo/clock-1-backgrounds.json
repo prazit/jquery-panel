@@ -53,11 +53,12 @@
     "imageHeight": 912,
     "imageFilter": 0.0,
 
-    "clockXInPercent": 0.222,
-    "clockYInPercent": 0.068,
 
-    "clockWInPercent": 0.555,
-    "clockHInPercent": 0.857
+    "clockXInPercent": 0.797,
+    "clockYInPercent": 0.088,
+
+    "clockWInPercent": 0.17,
+    "clockHInPercent": 0.25
   },
   {
     "name": "miami2",
@@ -68,11 +69,11 @@
     "imageHeight": 704,
     "imageFilter": 0.075,
 
-    "clockXInPercent": 0.222,
-    "clockYInPercent": 0.068,
+    "clockXInPercent": 0.797,
+    "clockYInPercent": 0.088,
 
-    "clockWInPercent": 0.555,
-    "clockHInPercent": 0.857
+    "clockWInPercent": 0.17,
+    "clockHInPercent": 0.25
   },
   {
     "name": "watch1",
@@ -90,5 +91,65 @@
     "clockHInPercent": 0.533,
 
     "clockDegree": -7.7
+  },
+  {
+    "name": "alarmclock1",
+    "display": "Alarm Clock #1",
+
+    "image": "img/wallpaperaccess.com.2779065.jpg",
+    "imageWidth": 2560,
+    "imageHeight": 1440,
+    "imageFilter": 0.25,
+
+    "clockXInPercent": 0.6173,
+    "clockYInPercent": 0.301,
+
+    "clockWInPercent": 0.304,
+    "clockHInPercent": 0.537
+  },
+  {
+    "name": "alarmclock2",
+    "display": "Alarm Clock #2",
+
+    "image": "img/wallpaperaccess.com.2779024.jpg",
+    "imageWidth": 1332,
+    "imageHeight": 850,
+    "imageFilter": 0.25,
+
+    "clockXInPercent": 0.1203,
+    "clockYInPercent": 0.232,
+
+    "clockWInPercent": 0.3,
+    "clockHInPercent": 0.533
+  },
+  {
+    "name": "alarmclock3",
+    "display": "Alarm Clock #3",
+
+    "image": "img/wallpaperaccess.com.6906966.jpg",
+    "imageWidth": 5384,
+    "imageHeight": 3536,
+    "imageFilter": 0.25,
+
+    "clockXInPercent": 0.2555,
+    "clockYInPercent": 0.117,
+
+    "clockWInPercent": 0.484,
+    "clockHInPercent": 0.737
+  },
+  {
+    "name": "alarmclock4",
+    "display": "Alarm Clock #4",
+
+    "image": "img/wallpaperaccess.com.3234240.jpg",
+    "imageWidth": 1024,
+    "imageHeight": 768,
+    "imageFilter": 0.25,
+
+    "clockXInPercent": 0.5603,
+    "clockYInPercent": 0.437,
+
+    "clockWInPercent": 0.171,
+    "clockHInPercent": 0.227
   }
 ]

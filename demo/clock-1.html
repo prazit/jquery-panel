@@ -169,6 +169,27 @@
             name: 'analogue-clock',
             state: 'initialized',
 
+            defaults: {
+                clocks: [],
+                backgrounds: [],
+                combinations: [],
+                control: {
+                    forceLoad: {
+                        clocks: false,
+                        backgrounds: false,
+                        combainations: false
+                    }
+                }
+            },
+
+            control: {
+                forceLoad: {
+                    clocks: false,
+                    backgrounds: false,
+                    combainations: false
+                }
+            },
+
             setUseSweep: function (useSweep) {
                 if (useSweep == null) useSweep = false;
                 var changed = this.useSweep !== useSweep;
@@ -314,12 +335,12 @@
                 this.addProperty(theme, 'handSecond', ['stroke', 'fill'], $('.second svg'));
                 this.addProperty(theme, 'handMinute', ['stroke', 'fill'], $('.minute svg'));
                 this.addProperty(theme, 'handHour', ['stroke', 'fill'], $('.hour svg'));
-                this.addProperty(theme, 'numbers', ['stroke', 'fill'], $('.numbers text'));
+                this.addProperty(theme, 'numbers', ['stroke', 'fill'], $('.numbers svg'));
                 this.addProperty(theme, 'timer', ['stroke', 'fill'], $('.ticker'));
-                this.addProperty(theme, 'minutes', ['stroke', 'fill'], $('.one.minutes line'));
-                this.addProperty(theme, 'fiveMinutes', ['stroke', 'fill'], $('.five.minutes line'));
-                this.addProperty(theme, 'frame', 'stroke', $('.numbers circle'));
-                this.addProperty(theme, 'background', 'fill', $('.numbers circle'));
+                this.addProperty(theme, 'minutes', ['stroke', 'fill'], $('.one.minutes svg'));
+                this.addProperty(theme, 'fiveMinutes', ['stroke', 'fill'], $('.five.minutes svg'));
+                this.addProperty(theme, 'frame', 'stroke', $('.frame svg'));
+                this.addProperty(theme, 'background', 'fill', $('.background svg'));
                 this.addProperty(theme, 'outSide', 'background-color', $('.out-side'));
 
                 theme.add('chandSecond', 'background-color', $('.color-handSecond'), 'handSecond');
@@ -382,7 +403,7 @@
                 // handle combination buttons
                 comContainer[0].innerHTML = "";
                 for (var i = 0; i < this.combinations.length; i++) {
-                    comContainer.append(comTemplate.replace('combination-name', this.combinations[i].display));
+                    comContainer.append(comTemplate.replace('combination-name', this.combinations[i].name));
                     button = comContainer.find('.combination-item').removeClass('combination-item');
                     Appanel.map([
                         [button, 'click', function (ev) {
@@ -390,6 +411,19 @@
                         }, {name: this.combinations[i].name, index: i}]
                     ]);
                 }
+
+                // handle add combination button
+                Appanel.map([[$('.add-combination'), 'click', function (ev) {
+                    Appanel.util.input('Save Combination', 'Enter name:', Appanel.clock.background,
+                        function (data, name) {
+                            if (Appanel.clock.combinations.contains(name)) {
+                                Appanel.util.warn('The name ' + name + ' already exists!', 'Try new one that not appear in the list.', 10);
+                            } else {
+                                Appanel.clock.saveCombination(name);
+                                Appanel.util.refresh();
+                            }
+                        });
+                }]]);
 
                 // handle bakground buttons
                 bgContainer[0].innerHTML = "";
@@ -689,13 +723,13 @@
                 Appanel.set(this.name + ':clock', clockName);
 
                 // test: get clock from first element
-                console.info("Clock URL: ", url);
+                //console.info("Clock URL: ", url);
                 $.get(url).complete(function (result, status) {
                     var clockHtml = result.responseText,
                         headStart = clockHtml.indexOf('<head>'),
                         headEnd = clockHtml.indexOf('</head>') + 7;
 
-                    console.info('load clock completed at ', new Date().toLocaleTimeString());
+                    //console.info('load clock completed at ', new Date().toLocaleTimeString());
                     clockHtml = clockHtml.substring(0, headStart) + clockHtml.substring(headEnd + 1);
                     $('.cover > .wrapper').html(clockHtml);
 
@@ -829,11 +863,6 @@
                             }
                         }
 
-                        //a.relativeX = (a.coverX + a.coverSize - a.screenW) / 2;
-                        console.info('----------------------------');
-                        console.debug('Background Space: ', backgroundSpace);
-                        console.debug('Cover Space: ', coverSpace);
-
                         a.background
                             .css('left', (a.imageX + a.relativeX) + 'px')
                             .css('top', (a.imageY + a.relativeY) + 'px')
@@ -907,50 +936,90 @@
                 });
             },
 
-            addCombination: function () {
-                /*TODO: save and push to arrays*/
+            saveCombination: function (name) {
+                this.combinations.push({
+                    name: name,
+                    clock: this.clock,
+                    theme: Appanel.profile.current,
+                    background: this.background,
+                    analogue: !this.useSweep
+                });
+                Appanel.set(this.name + ':combinations', this.combinations);
+            },
+
+            loadJSONLocal: function (name, callback) {
+                if (name === 'control') return;
+
+                var localName = this.name + ':' + name,
+                    json = Appanel.get(localName);
+                if (json == null) return false;
+
+                this[name] = json;
+                if ($.isFunction(callback)) callback.call(this, localName);
+                return true;
             },
 
             loadJSON: function (name, callback) {
-                var requestDate = (new Date()).toLocaleTimeString(),
-                    myJson = Appanel.util.myURL() + '-' + name + '.json?v=' + requestDate;
+                if (!this.control.forceLoad[name]) {
+                    if (this.loadJSONLocal(name, callback)) return;
+                }
 
-                console.info("JSON URL: ", myJson);
+                var requestDate = (new Date()).toLocaleTimeString(),
+                    uri = Appanel.util.myURL() + '-' + name + '.json',
+                    myJson = encodeURI(uri + '?v=' + requestDate);
+
+                //console.info("JSON URL: ", myJson);
                 this.lastLoadJSON = $.getJSON(myJson)
                     .complete(function (json, status) {
-                        console.info('load ', name, 'completed at ', new Date().toLocaleTimeString());
+                        //console.info('load ', name, 'completed at ', new Date().toLocaleTimeString());
                         Appanel.clock[name] = json.responseJSON;
-                        if ($.isFunction(callback)) callback.call(Appanel.clock, json, status);
+                        if (name !== 'control') Appanel.set(Appanel.clock.name + ':' + name, json.responseJSON);
+                        if ($.isFunction(callback)) callback.call(Appanel.clock, uri);
                     });
                 this.lastLoadJSON.fail(function (ev) {
-                    console.error('load ', name, 'failed at ', new Date().toLocaleTimeString(), ':', ev.status, ev.statusText);
+                    //console.error('load ', name, 'failed at ', new Date().toLocaleTimeString(), ':', ev.status, ev.statusText);
                     Appanel.util.warn('WARNING', 'load ' + name + ' json failed with ' + ev.status + ':' + ev.statusText, 30);
-                    if ($.isFunction(callback)) callback.call(Appanel.clock, {}, status);
+                    Appanel.clock[name] = Appanel.clock.defaults[name];
+
+                    var loadStatus = ev.status;
+                    if (Appanel.clock.defaults[name] !== undefined) {
+                        loadStatus = 'default';
+                    } else {
+                        loadStatus = status /*ev.status*/;
+                    }
+
+                    if ($.isFunction(callback)) callback.call(Appanel.clock, loadStatus);
                 });
             },
 
             load: function () {
                 this.setUseSweep(Appanel.get(this.name + ':analogue'));
-                this.loadJSON('clocks', function () {
-                    if (status === 'parsererror') {
-                        this.clocks = [];
-                        Appanel.util.warn('IMPORTANT', 'load clock list failed the "' + Appanel.util.myURL() + '-clocks.json" may be corrupted', 20);
-                        return;
-                    }
-                    this.loadClock(this.clockIndex(Appanel.get(this.name + ':clock')), Appanel.clock.ready);
-                });
-                this.loadJSON('backgrounds', function (json, status) {
-                    if (status === 'parsererror') {
-                        this.backgrounds = [];
-                        Appanel.util.warn('IMPORTANT', 'load background list failed the "' + Appanel.util.myURL() + '-backgrounds.json" may be corrupted', 20);
-                        return;
-                    }
-                });
-                this.loadJSON('combinations', function (json, status) {
-                    if (status === 'parsererror') {
-                        this.backgrounds = [];
-                        Appanel.util.warn('IMPORTANT', 'load combination list failed the "' + Appanel.util.myURL() + '-combinations.json" may be corrupted', 20);
-                    }
+                this.loadJSON('control', function (status) {
+                    console.info('Control loaded from ' + status);
+                    this.loadJSON('clocks', function (status) {
+                        if (status === 'parsererror') {
+                            this.clocks = [];
+                            Appanel.util.warn('IMPORTANT', 'load clock list failed the "' + Appanel.util.myURL() + '-clocks.json" may be corrupted', 20);
+                            return;
+                        }
+                        console.info('Clocks loaded from ' + status);
+                        this.loadClock(this.clockIndex(Appanel.get(this.name + ':clock')), Appanel.clock.ready);
+                    });
+                    this.loadJSON('backgrounds', function (status) {
+                        if (status === 'parsererror') {
+                            this.backgrounds = [];
+                            Appanel.util.warn('IMPORTANT', 'load background list failed the "' + Appanel.util.myURL() + '-backgrounds.json" may be corrupted', 20);
+                            return;
+                        }
+                        console.info('Backgrounds loaded from ' + status);
+                    });
+                    this.loadJSON('combinations', function (status) {
+                        if (status === 'parsererror') {
+                            this.backgrounds = [];
+                            Appanel.util.warn('IMPORTANT', 'load combination list failed the "' + Appanel.util.myURL() + '-combinations.json" may be corrupted', 20);
+                        }
+                        console.info('Combinations loaded from ' + status);
+                    });
                 });
             },
 

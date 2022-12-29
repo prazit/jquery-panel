@@ -57,7 +57,18 @@ Appanel({
                 '            stroke-dasharray="31.415926535897932384626433832795"/>' +
                 '</svg>'
             ],
-            seeNMove: ''
+            seeNMove: /*'<div class="seenmove-panel opacity--x0" style="overflow:hidden;max-width:0px;">' +*/
+                '    <div class="property fit-width">' +
+                '        <div>' +
+                '            <b class="label fweight--x700">property-label:</b>' +
+                '            ( <span class="unit">property-unit</span> )' +
+                '        </div>' +
+                '        <div class="columns fit-width">' +
+                '            <input class="input column-1-2" type="number" value="property-value" step="property-step" class="text--c0"/>' +
+                '            <label class="display column-1-2 right-text">property-display</label>' +
+                '        </div>' +
+                '    </div>' /*+
+                '</div>'*/
         },
 
         input: function (title, label, defaultValue, handler, data) {
@@ -131,11 +142,12 @@ Appanel({
          * Appanel.util.seeNMove(Appanel.clock.backgroundAttributes,'member',['clockXInPercent','clockYInPercent','clockWInPercent','clockHInPercent','clockDegree'],0.001);
          * Appanel.util.seeNMove(Appanel.clock.backgroundAttributes,'member',['relativeX','relativeY'],1);
          * Appanel.util.seeNMove($('.cover'),'css',['left','top','width','height'],1);
+         * $('#panel-selection').css('left',450).css('top',100);
          */
         seeNMove: function (selector, functionName, properties, step) {
             var inputPanel = $('.seenmove-panel'),
                 target = typeof (selector) === 'string' ? $(selector) : selector,
-                propertyHtml = inputPanel[0].innerHTML,
+                propertyHtml = inputPanel.length > 0 ? inputPanel[0].innerHTML : this.defaults.seeNMove,
                 html = '',
                 x, unitX, num;
 
