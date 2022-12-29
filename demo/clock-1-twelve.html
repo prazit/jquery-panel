@@ -40,6 +40,7 @@
          viewBox="0 0 200 200"
          stroke="gold"
          fill="#000033"
+         class="sans"
          style="width:100%">
         <text x="92" y="24">12</text>
         <text x="56" y="34">11</text>
@@ -53,13 +54,6 @@
         <text x="179" y="106">3</text>
         <text x="167" y="63">2</text>
         <text x="136" y="33">1</text>
-        <!--
-            class="move-me"
-            Appanel.util.refresh();
-            Appanel.util.seeNMove('.move-me','attr','x','y');
-            Appanel.util.seeNMove('.move-me','css','left','top');
-            $('#panel-selection').css('left',220).css('top',80);
-        -->
     </svg>
 </div>
 
@@ -152,7 +146,7 @@
 </div>
 
 <script>
-    $(function(){
+    $(function () {
         Appanel.clock.createMinutes($('.five.minutes'), {
             "0": 0,
             "1": 30,

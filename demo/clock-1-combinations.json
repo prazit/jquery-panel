@@ -3,35 +3,56 @@
     "name": "Swiss Railway",
     "clock": "station",
     "theme": "Station",
-    "background": "railway",
+    "background": "Swiss Railway",
     "analogue": true
-  },
-  {
-    "name": "On My Hand",
-    "clock": "original",
-    "theme": "Classic",
-    "background": "onhand",
-    "analogue": false
   },
   {
     "name": "Many Shard",
     "clock": "twelve",
     "theme": "Classic 2",
-    "background": "shard",
+    "background": "Many Shard",
+    "analogue": true
+  },
+  {
+    "name": "Miami Beach",
+    "clock": "original",
+    "theme": "Colorful",
+    "background": "Miami Beach",
     "analogue": true
   },
   {
     "name": "Colorful Miami",
     "clock": "original",
     "theme": "Colorful",
-    "background": "miami2",
+    "background": "Colorful Miami",
     "analogue": true
   },
   {
-    "name": "Hand Watch No.1",
+    "name": "Hand Watch on the dark",
     "clock": "original",
     "theme": "Dark",
-    "background": "watch1",
+    "background": "Hand Watch on the dark",
     "analogue": true
+  },
+  {
+    "name": "Alarm On My Hand",
+    "clock": "original",
+    "theme": "Classic",
+    "background": "Alarm On My Hand",
+    "analogue": false
+  },
+  {
+    "name": "Alarm On The Heaven",
+    "clock": "twelve",
+    "theme": "Classic",
+    "background": "Alarm On The Heaven",
+    "analogue": false
+  },
+  {
+    "name": "Alarm On The Yard",
+    "clock": "twelve",
+    "theme": "Cream",
+    "background": "Alarm On The Yard",
+    "analogue": false
   }
 ]

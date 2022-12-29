@@ -1,7 +1,7 @@
 {
   "forceLoad": {
     "clocks": false,
-    "backgrounds": false,
-    "combainations": false
+    "backgrounds": true,
+    "combinations": true
   }
 }

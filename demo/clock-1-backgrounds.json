@@ -1,154 +1,117 @@
 [
   {
-    "name": "railway",
-    "display": "Swiss Railway",
-
+    "name": "Swiss Railway",
     "image": "img/swiss-railway-clock-scaled.webp",
     "imageWidth": 2560,
     "imageHeight": 1707,
     "imageFilter": 0.25,
-
     "clockYInPercent": 0.313,
     "clockXInPercent": 0.5715,
-
     "clockWInPercent": 0.2475,
     "clockHInPercent": 0.3715
   },
   {
-    "name": "onhand",
-    "display": "On Hand",
-
+    "name": "Alarm On My Hand",
     "image": "img/wallpaperaccess.com.3013992.jpg",
     "imageWidth": 1920,
     "imageHeight": 1080,
     "imageFilter": 0.25,
-
     "clockXInPercent": 0.585,
     "clockYInPercent": 0.3138,
-
     "clockWInPercent": 0.2475,
     "clockHInPercent": 0.44
   },
   {
-    "name": "shard",
-    "display": "Shard",
-
+    "name": "Many Shard",
     "image": "img/wallpaperaccess.com.5072490.jpg",
     "imageWidth": 1200,
     "imageHeight": 675,
     "imageFilter": 0.05,
-
     "clockXInPercent": 0.362,
     "clockYInPercent": 0.282,
-
     "clockWInPercent": 0.262,
     "clockHInPercent": 0.464
   },
   {
-    "name": "miami1",
-    "display": "Miami Beach",
-
+    "name": "Miami Beach",
     "image": "img/shutterstock-490898872.webp",
     "imageWidth": 1430,
     "imageHeight": 912,
     "imageFilter": 0.0,
-
-
     "clockXInPercent": 0.797,
     "clockYInPercent": 0.088,
-
     "clockWInPercent": 0.17,
     "clockHInPercent": 0.25
   },
   {
-    "name": "miami2",
-    "display": "Colorful Miami",
-
+    "name": "Colorful Miami",
     "image": "img/shutterstock-712625887.webp",
     "imageWidth": 1056,
     "imageHeight": 704,
     "imageFilter": 0.075,
-
     "clockXInPercent": 0.797,
     "clockYInPercent": 0.088,
-
     "clockWInPercent": 0.17,
     "clockHInPercent": 0.25
   },
   {
-    "name": "watch1",
-    "display": "Hand Watch #1",
-
+    "name": "Hand Watch on the dark",
     "image": "img/wallpaperaccess.com.861191.jpg",
     "imageWidth": 1280,
     "imageHeight": 720,
     "imageFilter": 0.25,
-
     "clockXInPercent": 0.1203,
     "clockYInPercent": 0.232,
-
     "clockWInPercent": 0.3,
     "clockHInPercent": 0.533,
-
-    "clockDegree": -7.7
+    "clockXDegree": 0,
+    "clockYDegree": 0,
+    "clockZDegree": -7.7
   },
   {
-    "name": "alarmclock1",
-    "display": "Alarm Clock #1",
-
+    "name": "Alarm On The Yard",
     "image": "img/wallpaperaccess.com.2779065.jpg",
     "imageWidth": 2560,
     "imageHeight": 1440,
     "imageFilter": 0.25,
-
     "clockXInPercent": 0.6173,
     "clockYInPercent": 0.301,
-
     "clockWInPercent": 0.304,
     "clockHInPercent": 0.537
   },
   {
-    "name": "alarmclock2",
-    "display": "Alarm Clock #2",
-
+    "name": "Alarm On The Heaven",
     "image": "img/wallpaperaccess.com.2779024.jpg",
     "imageWidth": 1332,
     "imageHeight": 850,
     "imageFilter": 0.25,
-
-    "clockXInPercent": 0.1203,
-    "clockYInPercent": 0.232,
-
-    "clockWInPercent": 0.3,
-    "clockHInPercent": 0.533
+    "clockXInPercent": 0.154,
+    "clockYInPercent": 0.352,
+    "clockWInPercent": 0.296,
+    "clockHInPercent": 0.463,
+    "clockXDegree": 10.6,
+    "clockYDegree": 18.3,
+    "clockZDegree": -3.3
   },
   {
-    "name": "alarmclock3",
-    "display": "Alarm Clock #3",
-
+    "name": "Wall Clock",
     "image": "img/wallpaperaccess.com.6906966.jpg",
     "imageWidth": 5384,
     "imageHeight": 3536,
     "imageFilter": 0.25,
-
     "clockXInPercent": 0.2555,
     "clockYInPercent": 0.117,
-
     "clockWInPercent": 0.484,
     "clockHInPercent": 0.737
   },
   {
-    "name": "alarmclock4",
-    "display": "Alarm Clock #4",
-
+    "name": "Clock Tower in The Dark Night",
     "image": "img/wallpaperaccess.com.3234240.jpg",
     "imageWidth": 1024,
     "imageHeight": 768,
     "imageFilter": 0.25,
-
     "clockXInPercent": 0.5603,
     "clockYInPercent": 0.437,
-
     "clockWInPercent": 0.171,
     "clockHInPercent": 0.227
   }
