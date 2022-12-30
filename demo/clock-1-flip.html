@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+
+<!-- excluded -->
+<head>
+    <title>Flip Clock for clock-1.html</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="focus-3.css" media="all"/>
+    <link rel="stylesheet" type="text/css" href="http://localhost/scbs/css/sym-fa.css" media="all"/>
+    <link rel="stylesheet" type="text/css" href="http://localhost/scbs/css/ani-anicss.css"/>
+
+    <style>
+        .clock {
+            position: absolute;
+            width: 100vh;
+            height: 100vh;
+            left: calc((100vw - 100vh) / 2);
+        }
+    </style>
+</head>
+
+<!-- inside body tag will be included -->
+<body class="css-trans fixed background--c0 fit-width fit-height" style="font-family: Arial,sans-serif;">
+
+<div class="clock background">
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
+         viewBox="0 0 200 200"
+         stroke="transparent"
+         fill="#000033"
+         style="width:100%">
+        <circle cx="100" cy="100" r="98"
+                stroke-opacity="1" stroke-width="2"
+                stroke-linecap="butt"
+                stroke-dashoffset="0" stroke-dasharray="0"/>
+    </svg>
+</div>
+
+<div class="clock ticker center-text middle-text"></div>
+
+<div class="clock numbers">
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
+         viewBox="0 0 200 200"
+         stroke="gold"
+         fill="#000033"
+         style="width:100%">
+        <text x="90.5" y="17">00</text>
+    </svg>
+</div>
+
+<div class="clock five minutes">
+    <div class="clock number-id">
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
+             viewBox="0 0 200 200"
+             stroke="gold"
+             fill="gold"
+             style="width:100%">
+            <line x1="100" x2="100" y1="3" y2="12" stroke-linecap="round" stroke-width="2"></line>
+        </svg>
+    </div>
+</div>
+
+<div class="clock one minutes">
+    <div class="clock number-id">
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
+             viewBox="0 0 200 200"
+             stroke="gold"
+             fill="gold"
+             style="width:100%">
+            <line x1="100" x2="100" y1="3" y2="7" stroke-linecap="round" stroke-width="1"></line>
+        </svg>
+    </div>
+</div>
+
+<div class="clock second">
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
+         viewBox="0 0 200 200"
+         stroke="gold"
+         fill="gold"
+         style="width:100%">
+    </svg>
+</div>
+
+<div class="clock minute">
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
+         viewBox="0 0 200 200"
+         stroke="silver"
+         fill="silver"
+         style="width:100%">
+    </svg>
+</div>
+
+<div class="clock hour">
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
+         viewBox="0 0 200 200"
+         stroke="red"
+         fill="red"
+         style="width:100%">
+    </svg>
+</div>
+
+<div class="clock frame">
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
+         viewBox="0 0 200 200"
+         stroke="gold"
+         fill="transparent"
+         style="width:100%">
+        <circle cx="100" cy="100" r="98"
+                stroke-opacity="1" stroke-width="2"
+                stroke-linecap="butt"
+                stroke-dashoffset="0" stroke-dasharray="0"/>
+    </svg>
+</div>
+
+<script>
+    Appanel({
+
+        /**
+         * Flip Clock reuse components of Analogue Clock
+         * background < background
+         * frame < frame
+         * hour number, minute number, second number < numbers
+         * not use < five-minutes, one-minutes
+         * frame of second number < second
+         * frame of minute number < minute
+         * frame of hour number < hour
+         */
+        flip: {
+
+            hours: 0,
+            minutes: 0,
+            seconds: 0,
+
+            setHour: function (hours) {
+                if (hours === this.hours) return;
+
+                this.hours = hours;
+            },
+
+            setMinute: function (minutes) {
+                if (minutes === this.minutes) return;
+
+                this.minutes = minutes;
+            },
+
+            /*TODO: IMPORTANT! need css for ani-top-flip(flip from top to half) and ani-bottom-flip(flip from half to bottom)*/
+            /*TODO: IMPORTANT! need static parts named top-part and bottom-part for second*/
+            /*TODO: IMPORTANT! need animation parts named top-flip and bottom-flip for second*/
+            sTopPartNumber: $('#second-top-part .number'),
+            sBottomPartNumber: $('#second-bottom-part .number'),
+            sTopFlip: $('#second-top-flip'),
+            sBottomFlip: $('#second-top-flip'),
+            sTopFlipNumber: topFlip.find('.number'),
+            sBottomFlipNumber: bottomFlip.find('.number'),
+            sFlipEnd: function (ev) {
+                /*set new number to bottom-part before hide*/
+                this.sBottomPartNumber.text(this.seconds);
+
+                /*hide animation parts*/
+                this.sTopFlip.addClass('hidden');
+                this.sBottomFlip.addClass('hidden');
+
+                /*set new number to top-flip for next flip*/
+                this.sTopFlip.text(this.seconds);
+            },
+
+            setSecond: function (seconds) {
+                if (seconds === this.seconds) return;
+
+                /*set old number to animation parts and show animation parts*/
+                this.sTopFlipNumber.text(this.seconds).removeClass('hidden');
+                this.sBottomFlipNumber.text(this.seconds).removeClass('hidden');
+
+                /*set new number to top-part and bottom-flip*/
+                this.sTopPartNumber.text(seconds);
+                this.sBottomFlipNumber.text(seconds);
+
+                /*update to new number for sweep:end*/
+                this.seconds = seconds;
+
+                /*Notice: IMPORTANT! need to capture event 'sweep:end' to complete the flip-animation*/
+                /*play animation*/
+                Appanel.chains(`ani-top-flip:0.25${this.sTopFlip.selector},ani-bottom-flip:0.25${this.sBottomFlip.selector}`);
+            },
+
+            start: function () {
+                /*to complete the flip-animation*/
+                this.sTopFlip.on('sweep:end', this.sFlipEnd);
+
+                /*Core of the clock*/
+                $('.ticker').on('html:changed', function (ev, type) {
+                    if (type === 'text') {
+                        var time = ev.currentTarget.innerHTML;
+                        var times = time.split(':');
+                        console.debug('ticked at:', time);
+                        Appanel.flip.setHour(times[0]);
+                        Appanel.flip.setMinute(times[1]);
+                        Appanel.flip.setSecond(times[2]);
+                    }
+                });
+            }
+        },
+
+        ready: function () {
+            this.flip.start();
+        }
+    });
+</script>
+
+</body>
+</html>
