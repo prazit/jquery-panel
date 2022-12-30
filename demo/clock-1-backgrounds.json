@@ -85,13 +85,16 @@
     "imageWidth": 1332,
     "imageHeight": 850,
     "imageFilter": 0.25,
-    "clockXInPercent": 0.154,
-    "clockYInPercent": 0.352,
-    "clockWInPercent": 0.296,
-    "clockHInPercent": 0.463,
-    "clockXDegree": 10.6,
-    "clockYDegree": 18.3,
-    "clockZDegree": -3.3
+    "clockXInPercent": 0.16,
+    "clockYInPercent": 0.343,
+    "clockWInPercent": 0.292,
+    "clockHInPercent": 0.459,
+    "clockXDegree": 10,
+    "clockYDegree": 8.5,
+    "clockZDegree": -1,
+    "clockPerspective": 800,
+    "clockPerspectiveXOrigin": 0,
+    "clockPerspectiveYOrigin": 90
   },
   {
     "name": "Wall Clock",
@@ -110,9 +113,15 @@
     "imageWidth": 1024,
     "imageHeight": 768,
     "imageFilter": 0.25,
-    "clockXInPercent": 0.5603,
-    "clockYInPercent": 0.437,
-    "clockWInPercent": 0.171,
-    "clockHInPercent": 0.227
-  }
+    "clockXInPercent": 0.5703,
+    "clockYInPercent": 0.45,
+    "clockWInPercent": 0.152,
+    "clockHInPercent": 0.202,
+    "clockXDegree": 0,
+    "clockYDegree": -0.5,
+    "clockZDegree": -0.5,
+    "clockPerspective": 2000,
+	"clockPerspectiveXOrigin": 225,
+    "clockPerspectiveYOrigin": 180
+ }
 ]

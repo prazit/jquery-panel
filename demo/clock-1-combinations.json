@@ -51,8 +51,22 @@
   {
     "name": "Alarm On The Yard",
     "clock": "twelve",
-    "theme": "Cream",
+    "theme": "Alarm On The Yard",
     "background": "Alarm On The Yard",
     "analogue": false
+  },
+  {
+    "name": "Clock Tower in The Dark Night",
+    "clock": "station",
+    "theme": "Clock Tower in The Dark Night",
+    "background": "Clock Tower in The Dark Night",
+    "analogue": true
+  },
+  {
+    "name": "Wall Clock",
+    "clock": "twelve",
+    "theme": "Wall Clock",
+    "background": "Wall Clock",
+    "analogue": true
   }
 ]

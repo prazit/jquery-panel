@@ -2282,6 +2282,10 @@ button, .button, .badge {
 }
 
 /* rotation */
+.perspective-3d {
+    transform-style:preserve-3d;
+    transform:perspective(1000px);
+}
 .rotate--x45 {
     -webkit-transform: perspective(1vw) rotate3d(0,0,1, 45deg);
     transform: perspective(1vw) rotate3d(0,0,1, 45deg);

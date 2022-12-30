@@ -75,7 +75,7 @@
 
 <!-- clock -->
 <div class="cover layer-2">
-    <div class="clock wrapper">
+    <div class="clock wrapper rounded--x20" style="">
         <!-- this content will be replaced by clock -->
     </div>
 </div>
@@ -167,19 +167,9 @@
                 backgrounds: [],
                 combinations: [],
                 control: {
-                    forceLoad: {
-                        clocks: false,
-                        backgrounds: false,
-                        combainations: false
-                    }
-                }
-            },
-
-            control: {
-                forceLoad: {
-                    clocks: false,
-                    backgrounds: false,
-                    combainations: false
+                    clocks: 0,
+                    backgrounds: 0,
+                    combainations: 0
                 }
             },
 
@@ -407,7 +397,7 @@
 
                 // handle add combination button
                 Appanel.map([[$('.add-combination'), 'click', function (ev) {
-                    Appanel.util.input('Save Preset', 'Enter name:', Appanel.clock.background,
+                    Appanel.util.input('New Preset', 'Enter preset name:', Appanel.clock.background,
                         function (data, name) {
                             if (Appanel.clock.combinationIndex(name) >= 0) {
                                 Appanel.util.warn('The name ' + name + ' already exists!', 'Try new one that not appear in the list.', 10);
@@ -479,7 +469,7 @@
 
                 // handle add profile button
                 Appanel.map([[$('.theme .add-profile'), 'click', function (ev) {
-                    Appanel.util.input('New Theme', 'Enter theme name:', 'default',
+                    Appanel.util.input('New Theme', 'Enter theme name:', Appanel.clock.background,
                         function (data, name) {
                             if (Appanel.profile.contains(name)) {
                                 Appanel.util.warn(name + ' theme already exists!', 'Try again with another name that not in the list.', 10);
@@ -552,6 +542,35 @@
                 }
             },
 
+            clearSweep: function ($element, callback) {
+                var e, $e, length = $element.length;
+                if (length == 0) {
+                    console.warn('Ignore clearSweep with zero length');
+                    return;
+                }
+
+                for (let i = 0; i < $element.length; i++) {
+                    e = $element[i];
+                    delete e.sweepID;
+                    delete e.sweepContext;
+                    delete e.chainsID;
+                    $e = $(e)
+                        .removeClass('ani-clock')
+                        .removeClass('css-trans')
+                        .css('transform', '')
+                        .css('animation-duration', '')
+                        .css('animation-iteration-count', '')
+                        .css('animation-timing-function', '');
+                    Appanel.chains($e, 'ani-clock-reset:0.001');
+                }
+
+                if (callback !== undefined) Appanel.clock.setTimeout(function () {
+                    callback.call(Appanel.clock);
+                }, 10);
+
+                return this;
+            },
+
             updateElements: function () {
                 this.$second = $(this.$second.selector);
                 this.$minute = $(this.$minute.selector);
@@ -579,7 +598,7 @@
                 this.sweeper
                     .off('sweep:ready')
                     .sweep('pause');
-                Appanel.util
+                this
                     .clearSweep(this.sweeper)
                     .clearSweep(this.secondHand)
                     .clearSweep(this.minuteHand)
@@ -900,12 +919,21 @@
                             .css('width', a.imageSize + 'px')
                             .css('height', a.imageTall + 'px');
 
+                        if (a.clockPerspective === 0) {
+                            a.cover.css('transform-style', 'flat');
+                        } else {
+                            a.cover
+                                .css('transform-style', 'preserve-3d')
+                                .css('transform-origin', a.clockPerspectiveXOrigin + 'px '+a.clockPerspectiveYOrigin + 'px')
+                                .css('transform', 'perspective(' + a.clockPerspective + 'px)');
+                        }
+
                         a.cover
                             .css('left', (a.coverX + a.relativeX) + 'px')
                             .css('top', (a.coverY + a.relativeY) + 'px');
 
                         a.rotator
-                            .css('transform', `rotate3d(1,0,0,${a.clockXDegree}deg) rotate3d(0,1,0,${a.clockYDegree}deg) rotate3d(0,0,1,${a.clockZDegree}deg)`);
+                            .css('transform', 'rotate3d(1,0,0,' + a.clockXDegree + 'deg) rotate3d(0,1,0,' + a.clockYDegree + 'deg) rotate3d(0,0,1,' + a.clockZDegree + 'deg)');
 
                         a.clock
                             .css('width', a.coverSize + 'px')
@@ -918,7 +946,6 @@
                         } else {
                             /* SET VALUE */
                             this[memberName] = value;
-                            console.debug('resize: this=', this);
                             this.resize();
                         }
                     }
@@ -927,7 +954,10 @@
                 this.backgroundAttributes = Object.assign({
                     clockXDegree: 0,
                     clockYDegree: 0,
-                    clockZDegree: 0
+                    clockZDegree: 0,
+                    clockPerspective: 0,
+                    clockPerspectiveXOrigin: 0,
+                    clockPerspectiveYOrigin: 0
                 }, this.backgroundAttributes);
 
                 $('.out-side').css('opacity', (100 * this.backgroundAttributes.imageFilter) + '%');
@@ -985,8 +1015,6 @@
             },
 
             loadJSONLocal: function (name, callback) {
-                if (name === 'control') return;
-
                 var localName = this.name + ':' + name,
                     json = Appanel.get(localName);
                 if (json == null) return false;
@@ -997,7 +1025,7 @@
             },
 
             loadJSON: function (name, callback) {
-                if (!this.control.forceLoad[name]) {
+                if (name !== 'control' && this.control[name] <= this.defaults.control[name]) {
                     if (this.loadJSONLocal(name, callback)) return;
                 }
 
@@ -1010,7 +1038,7 @@
                     .complete(function (json, status) {
                         //console.info('load ', name, 'completed at ', new Date().toLocaleTimeString());
                         Appanel.clock[name] = json.responseJSON;
-                        if (name !== 'control') Appanel.set(Appanel.clock.name + ':' + name, json.responseJSON);
+                        Appanel.set(Appanel.clock.name + ':' + name, json.responseJSON);
                         if ($.isFunction(callback)) callback.call(Appanel.clock, uri);
                     });
                 this.lastLoadJSON.fail(function (ev) {
@@ -1030,6 +1058,9 @@
             },
 
             load: function () {
+                var control = Appanel.get(this.name + ':control');
+                if (control !== null) this.defaults.control = control;
+
                 this.setUseSweep(Appanel.get(this.name + ':analogue'));
                 this.loadJSON('control', function (status) {
                     console.info('Control loaded from ' + status);

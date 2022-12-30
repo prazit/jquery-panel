@@ -136,15 +136,15 @@ Appanel({
         },
 
         /**
-         * Often Use
+         *  TODO: Notice: parameters for flip clock: perspective:800px, origin:180px 0, flip on X-Axis:0deg - 180deg
          *
-         * :: clock-1.html ::
+         * Often Use:
+         * Appanel.clock.disableActivated = true;
          * Appanel.util.seeNMove('.move-me','attr','x','y');
          * Appanel.util.seeNMove('.move-me','css','left','top');
-         * Appanel.util.seeNMove(Appanel.clock.backgroundAttributes,'member',['clockXInPercent','clockYInPercent','clockWInPercent','clockHInPercent','clockDegree'],0.001);
-         * Appanel.util.seeNMove(Appanel.clock.backgroundAttributes,'member',['relativeX','relativeY'],1);
-         * Appanel.util.seeNMove($('.cover'),'css',['left','top','width','height'],1);
-         * $('#panel-selection').css('left',450).css('top',100);
+         * Appanel.util.seeNMove(Appanel.clock.backgroundAttributes,'member',['clockXInPercent','clockYInPercent','clockWInPercent','clockHInPercent'],0.001);
+         * Appanel.util.seeNMove(Appanel.clock.backgroundAttributes,'member',['clockXDegree','clockYDegree','clockZDegree','clockPerspective','clockPerspectiveXOrigin','clockPerspectiveYOrigin'],0.5);
+         * Appanel.util.timeout = setTimeout(function(){clearTimeout(Appanel.util.timeout);$('#panel-selection').css('left',100).css('top',100);},200);
          */
         seeNMove: function (selector, functionName, properties, step) {
             var inputPanel = $('.seenmove-panel'),
