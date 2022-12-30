@@ -98,7 +98,7 @@
     <!-- backgrounds -->
     <div class="pull-left backgrounds margin--x10 rounded--x20 border--x4 border--c3">
         <span class="background-list top-child background--c3 opacity--x70 padding--x10 center-text">Backgrounds</span>
-        <div class="background-container max-height--x500 scrollable">
+        <div class="ui scrollable background-container">
             <span class="background-item button child background--c1 background--c0--at padding--x10 left-text">background-name</span>
         </div>
         <span class="auto-change-background bottom-child button background--c3 background--c0--at opacity--x70 padding--x10 center-text">Auto Change</span>
@@ -107,7 +107,7 @@
     <!-- clocks -->
     <div class="pull-right clocks margin--x10 rounded--x20 border--x4 border--c3">
         <span class="clock-list top-child background--c3 opacity--x70 padding--x10 center-text">Clocks</span>
-        <div class="clock-container max-height--x500 scrollable">
+        <div class="ui scrollable clock-container">
             <span class="clock-item button child background--c1 background--c0--at padding--x10 left-text">clock-name</span>
         </div>
         <span class="bottom-child background--c3 opacity--x70 padding--x10"></span>
@@ -118,21 +118,23 @@
 <div class="css-trans on-top-right theme margin--x10 opacity--x0 opacity--x100--at layer-4">
     <div class="pull-left colors rounded--x20 border--x4 border--c3 margin--x10">
         <span class="profile-name button top-child background--c3 background--c0--at opacity--x70 padding--x10 center-text">Profile</span>
-        <span class="color-handSecond button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Second Hand</span>
-        <span class="color-handMinute button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Minute Hand</span>
-        <span class="color-handHour button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Hour Hand</span>
-        <span class="color-numbers button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Numbers</span>
-        <span class="color-timer button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Timer</span>
-        <span class="color-minutes button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Minutes</span>
-        <span class="color-fiveMinutes button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Five Minutes</span>
-        <span class="color-frame button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Frame</span>
-        <span class="color-background button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Background</span>
-        <span class="color-outSide button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Outside</span>
+        <div class="ui scrollable">
+            <span class="color-handSecond button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Second Hand</span>
+            <span class="color-handMinute button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Minute Hand</span>
+            <span class="color-handHour button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Hour Hand</span>
+            <span class="color-numbers button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Numbers</span>
+            <span class="color-timer button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Timer</span>
+            <span class="color-minutes button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Minutes</span>
+            <span class="color-fiveMinutes button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Five Minutes</span>
+            <span class="color-frame button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Frame</span>
+            <span class="color-background button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Background</span>
+            <span class="color-outSide button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Outside</span>
+        </div>
         <span class="bottom-child background--c3 opacity--x70 padding--x10"></span>
     </div>
     <div class="pull-right rounded--x20 border--x4 border--c3 margin--x10">
         <span class="profile-list top-child background--c3 opacity--x70 padding--x10 center-text">Themes</span>
-        <div class="profile-container max-height--x50pc scrollable">
+        <div class="ui scrollable profile-container">
             <span class="profile button child background--c1 background--c0--at padding--x10 left-text">profile-name</span>
         </div>
         <span class="add-profile button bottom-child background--c3 background--c0--at opacity--x70 padding--x10 center-text">+</span>
@@ -142,7 +144,7 @@
 <!-- combination -->
 <div class="combinations css-trans on-bottom-right margin--x10 opacity--x0 opacity--x100--at rounded--x20 border--x4 border--c3 layer-4">
     <span class="combination-list top-child background--c3 opacity--x70 padding--x10 center-text">Presets</span>
-    <div class="combination-container max-height--x500 scrollable">
+    <div class="ui scrollable combination-container">
         <span class="combination-item button child background--c1 background--c0--at padding--x10 left-text">combination-name</span>
     </div>
     <span class="add-combination bottom-child button background--c3 background--c0--at opacity--x70 padding--x10 center-text">+</span>
@@ -849,6 +851,8 @@
              * });
              */
             setAttributes: function (attributes) {
+                if (this.backgroundAttributes !== undefined) $(window).off('resize', this.backgroundAttributes.resize);
+
                 var $cover = $('.cover');
                 this.backgroundAttributes = Object.assign(attributes, {
                     relativeX: 0,
@@ -875,7 +879,7 @@
                             a.imageSize = a.screenW;
                             a.coverX = a.clockXInPercent * a.screenW;
                             a.coverY = a.imageY + (a.ratioW * a.imageHeight * a.clockYInPercent);
-                            /*a.coverSize = (100 * a.clockWInPercent) + 'vw';*/
+                            /*Notice: a.coverSize = (100 * a.clockWInPercent) + 'vw';*/
                             a.coverSize = (100 * a.clockWInPercent) * a.screenW * 0.01;
                         } else {
                             a.imageX = (a.screenW - (a.ratioH * a.imageWidth)) / 2;
@@ -883,7 +887,7 @@
                             a.imageSize = a.imageWidth * a.ratioH;
                             a.coverX = a.imageX + (a.ratioH * a.imageWidth * a.clockXInPercent);
                             a.coverY = a.clockYInPercent * a.screenH;
-                            /*a.coverSize = (100 * a.clockHInPercent) + 'vh';*/
+                            /*Notice: a.coverSize = (100 * a.clockHInPercent) + 'vh';*/
                             a.coverSize = (100 * a.clockHInPercent) * a.screenH * 0.01;
                         }
 
@@ -897,7 +901,7 @@
                         if (coverSpace.left === coverSpace.right) {
                             a.relativeX = 0;
                         } else {
-                            /*let backgroundSpace = {
+                            /*Notice: let backgroundSpace = {
                                 left: a.imageX * -1,
                                 right: a.imageX + a.imageSize - a.screenW
                             };*/
@@ -919,12 +923,12 @@
                             .css('width', a.imageSize + 'px')
                             .css('height', a.imageTall + 'px');
 
-                        if (a.clockPerspective === 0) {
+                        if (a.clockPerspective <= 0) {
                             a.cover.css('transform-style', 'flat');
                         } else {
                             a.cover
                                 .css('transform-style', 'preserve-3d')
-                                .css('transform-origin', a.clockPerspectiveXOrigin + 'px '+a.clockPerspectiveYOrigin + 'px')
+                                .css('transform-origin', a.clockPerspectiveXOrigin + 'px ' + a.clockPerspectiveYOrigin + 'px')
                                 .css('transform', 'perspective(' + a.clockPerspective + 'px)');
                         }
 
@@ -1140,8 +1144,36 @@
 
         },
 
+        ui: {
+            setTimeout: function (func, millisec) {
+                this.clearTimeout();
+                this.timeout = window.setTimeout(func, millisec);
+            },
+
+            clearTimeout: function () {
+                if (this.timeout !== undefined) {
+                    clearTimeout(this.timeout);
+                    delete this.timeout;
+                }
+            },
+
+            resize: function () {
+                var ui = Appanel.ui;
+                ui.setTimeout(function () {
+                    var maxHeight = window.innerHeight * 0.7;
+                    $('.ui.scrollable').css('max-height', maxHeight);
+                }, 1000);
+            },
+
+            init: function () {
+                this.resize();
+                $(window).on('resize', this.resize);
+            }
+        },
+
         ready: function () {
             Appanel.clock.load();
+            Appanel.ui.init();
             Appanel.util.refreshAfter(3600);
         }
     });
