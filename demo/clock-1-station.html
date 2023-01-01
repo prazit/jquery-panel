@@ -22,23 +22,24 @@
 <!-- inside body tag will be included -->
 <body class="css-trans fixed background--c0 fit-width fit-height">
 
-<div class="clock background">
+<div class="clock background layer-1">
     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
          viewBox="0 0 200 200"
          stroke="transparent"
          fill="#000033"
          style="width:100%">
         <circle cx="100" cy="100" r="98"
-                stroke-opacity="1" stroke-width="2"
+                stroke-opacity="1"
+                stroke-width="2"
                 stroke-linecap="butt"
                 stroke-dashoffset="0" stroke-dasharray="0"/>
     </svg>
 </div>
 
-<div class="clock numbers">
+<div class="clock numbers layer-2">
 </div>
 
-<div class="clock five minutes">
+<div class="clock five minutes layer-3">
     <div class="clock number-id">
         <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
              viewBox="0 0 200 200"
@@ -50,7 +51,7 @@
     </div>
 </div>
 
-<div class="clock one minutes">
+<div class="clock one minutes layer-4">
     <div class="clock number-id">
         <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
              viewBox="0 0 200 200"
@@ -62,7 +63,7 @@
     </div>
 </div>
 
-<div class="clock second">
+<div class="clock second layer-5">
     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
          viewBox="0 0 200 200"
          stroke="gold"
@@ -75,7 +76,7 @@
     </svg>
 </div>
 
-<div class="clock minute">
+<div class="clock minute layer-6">
     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
          viewBox="0 0 200 200"
          stroke="silver"
@@ -85,7 +86,7 @@
     </svg>
 </div>
 
-<div class="clock hour">
+<div class="clock hour layer-7">
     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
          viewBox="0 0 200 200"
          stroke="red"
@@ -95,16 +96,66 @@
     </svg>
 </div>
 
-<div class="clock frame">
+<div class="clock frame layer-8">
     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
          viewBox="0 0 200 200"
          stroke="gold"
          fill="transparent"
          style="width:100%">
         <circle cx="100" cy="100" r="98"
-                stroke-opacity="1" stroke-width="2"
+                stroke-opacity="1"
+                stroke-width="2"
                 stroke-linecap="butt"
-                stroke-dashoffset="0" stroke-dasharray="0"/>
+                stroke-dashoffset="0"
+                stroke-dasharray="0"/>
+    </svg>
+</div>
+
+<div class="decor clock second layer-2-5">
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
+         viewBox="0 0 200 200"
+         style="width:100%">
+        <defs>
+            <filter id="blur" x="0" y="0">
+              <feGaussianBlur in="parent" stdDeviation="1"/>
+            </filter>
+            <linearGradient id="gradient" x1="0%" y1="50%" x2="100%" y2="50%">
+                <stop offset="-5%" stop-color="rgba(0,0,0,0)"/>
+                <stop offset="5%" stop-color="rgba(0,0,0,0.5)"/>
+                <stop offset="40%" stop-color="rgba(255,255,255,0.05)"/>
+                <stop offset="50%" stop-color="rgba(255,255,255,.9)"/>
+                <stop offset="60%" stop-color="rgba(255,255,255,0.05)"/>
+                <stop offset="95%" stop-color="rgba(0,0,0,0.3)"/>
+                <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
+            </linearGradient>
+        </defs>
+        <circle cx="100" cy="100" r="98"
+                stroke-opacity="0"
+                fill="url(#gradient)"
+                filter="url(#blur)"
+        />
+    </svg>
+</div>
+
+<div class="decor clock second layer-2-9">
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
+         viewBox="0 0 200 200"
+         style="width:100%">
+        <defs>
+            <filter id="light2blur" x="0" y="0">
+              <feGaussianBlur in="parent" stdDeviation="1"/>
+            </filter>
+            <linearGradient id="light2" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="rgba(255,255,255,0)"/>
+                <stop offset="50%" stop-color="rgba(255,255,255,.9)"/>
+                <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+            </linearGradient>
+        </defs>
+        <circle cx="100" cy="100" r="95"
+                stroke-opacity="0"
+                fill="url(#light2)"
+                style="overflow:hidden"
+        />
     </svg>
 </div>
 

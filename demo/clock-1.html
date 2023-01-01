@@ -75,8 +75,13 @@
 
 <!-- clock -->
 <div class="cover layer-2">
-    <div class="clock wrapper rounded--x20" style="">
-        <!-- this content will be replaced by clock -->
+    <div class="clock wrapper rounded--x20">
+        <div class="clock background">
+            <!-- store background to avoid flash during loadClock process -->
+        </div>
+        <div class="clock foreground">
+            <!-- this content will be replaced by clock -->
+        </div>
     </div>
 </div>
 
@@ -741,11 +746,15 @@
                 $.get(url).complete(function (result, status) {
                     var clockHtml = result.responseText,
                         headStart = clockHtml.indexOf('<head>'),
-                        headEnd = clockHtml.indexOf('</head>') + 7;
+                        headEnd = clockHtml.indexOf('</head>') + 7,
+                        $cover = $('.cover');
 
                     //console.info('load clock completed at ', new Date().toLocaleTimeString());
                     clockHtml = clockHtml.substring(0, headStart) + clockHtml.substring(headEnd + 1);
-                    $('.cover > .wrapper').html(clockHtml);
+                    $cover.find('.wrapper > .background')
+                        .text('')
+                        .append($cover.find('.wrapper > .foreground > .background').html());
+                    $cover.find('.wrapper > .foreground').html(clockHtml);
 
                     if (callback !== undefined) {
                         Appanel.clock.setTimeout(function () {
@@ -780,7 +789,6 @@
                 this.background = bgName;
                 Appanel.set(this.name + ':background', bgName);
 
-                /*TODO: preload background-image before switch to it to avoid screen flash*/
                 this.setAttributes(this.backgrounds[backgroundIndex]);
             },
 
