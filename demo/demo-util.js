@@ -71,6 +71,14 @@ Appanel({
                 '</div>'*/
         },
 
+        merge: function (jQueries) {
+            var merged = jQueries[0];
+            for (let i = 1; i < jQueries.length; i++) {
+                merged = merged.add(jQueries[i]);
+            }
+            return merged;
+        },
+
         input: function (title, label, defaultValue, handler, data) {
             var o = {
                 title: 'Title',
@@ -136,12 +144,10 @@ Appanel({
         },
 
         /**
-         *  TODO: Notice: parameters for flip clock: perspective:800px, origin:180px 0, flip on X-Axis:0deg - 180deg
-         *
          * Often Use:
          * Appanel.clock.disableActivated = true;
          * Appanel.util.seeNMove('.move-me','attr','x','y');
-         * Appanel.util.seeNMove('.move-me','css','left','top');
+         * Appanel.util.seeNMove('.move-me','css',['left','top'],1);
          * Appanel.util.seeNMove(Appanel.clock.backgroundAttributes,'member',['clockXInPercent','clockYInPercent','clockWInPercent','clockHInPercent'],0.001);
          * Appanel.util.seeNMove(Appanel.clock.backgroundAttributes,'member',['clockXDegree','clockYDegree','clockZDegree','clockPerspective','clockPerspectiveXOrigin','clockPerspectiveYOrigin'],0.5);
          * Appanel.util.timeout = setTimeout(function(){clearTimeout(Appanel.util.timeout);$('#panel-selection').css('left',100).css('top',100);},200);

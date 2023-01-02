@@ -10,5 +10,9 @@
   {
     "name": "twelve",
     "display": "Twelve Numbers"
+  },
+  {
+    "name": "flip",
+    "display": "Flip Clock"
   }
 ]

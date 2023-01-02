@@ -22,6 +22,62 @@
 <!-- inside body tag will be included -->
 <body class="css-trans fixed background--c0 fit-width fit-height" style="font-family: Arial,sans-serif;">
 
+<style>
+    /*TODO: Notice: parameters for flip clock: perspective:800px, origin:180px 0, flip on X-Axis:0deg - 180deg*/
+    .flipper {
+        font-size: 74px;
+        transform: perspective(888px);
+        transform-origin: 180px 180px;
+        transform-style: preserve-3d;
+    }
+
+    .ani-reset-top-flip {
+        transform: rotateX(0deg);
+    }
+
+    .ani-reset-bottom-flip {
+        transform: rotateX(90deg);
+    }
+
+    @keyframes ani-top-flip {
+        0% {
+            transform: rotateX(0deg);
+        }
+        100% {
+            transform: rotateX(-90deg);
+        }
+    }
+
+    .ani-top-flip {
+        -webkit-animation-name: ani-top-flip;
+        animation-name: ani-top-flip;
+    }
+
+    @keyframes ani-bottom-flip {
+        0% {
+            transform: rotateX(90deg);
+        }
+        100% {
+            transform: rotateX(0deg);
+        }
+    }
+
+    .ani-bottom-flip {
+        -webkit-animation-name: ani-bottom-flip;
+        animation-name: ani-bottom-flip;
+    }
+
+    #second-parts svg,
+    #minute-parts svg,
+    #hour-parts svg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+</style>
+
 <div class="clock background">
     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
          viewBox="0 0 200 200"
@@ -35,27 +91,13 @@
     </svg>
 </div>
 
-<div class="clock ticker center-text middle-text"></div>
-
 <div class="clock numbers">
-    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
-         viewBox="0 0 200 200"
-         stroke="gold"
-         fill="#000033"
-         style="width:100%">
-        <text x="90.5" y="17">00</text>
-    </svg>
+    <svg></svg>
 </div>
 
 <div class="clock five minutes">
     <div class="clock number-id">
-        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
-             viewBox="0 0 200 200"
-             stroke="gold"
-             fill="gold"
-             style="width:100%">
-            <line x1="100" x2="100" y1="3" y2="12" stroke-linecap="round" stroke-width="2"></line>
-        </svg>
+        <svg></svg>
     </div>
 </div>
 
@@ -63,10 +105,9 @@
     <div class="clock number-id">
         <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
              viewBox="0 0 200 200"
-             stroke="gold"
-             fill="gold"
+             class="opacity--x50"
              style="width:100%">
-            <line x1="100" x2="100" y1="3" y2="7" stroke-linecap="round" stroke-width="1"></line>
+            <line x1="100" x2="100" y1="5" y2="5" stroke-linecap="round" stroke-width="2"></line>
         </svg>
     </div>
 </div>
@@ -77,6 +118,12 @@
          stroke="gold"
          fill="gold"
          style="width:100%">
+        <circle class='opacity--x50' cx="100" cy="100" r="78"
+                fill="transparent"
+                stroke-opacity="1" stroke-width="2"
+                stroke-linecap="butt"
+                stroke-dashoffset="0" stroke-dasharray="2"/>
+        <line x1="100" x2="100" y1="21" y2="23" stroke-width="2" stroke-linecap="round"></line>
     </svg>
 </div>
 
@@ -86,6 +133,12 @@
          stroke="silver"
          fill="silver"
          style="width:100%">
+        <circle class='opacity--x50' cx="100" cy="100" r="60"
+                fill="transparent"
+                stroke-opacity="1" stroke-width="5"
+                stroke-linecap="butt"
+                stroke-dashoffset="0" stroke-dasharray="2"/>
+        <line x1="100" x2="100" y1="38" y2="42" stroke-width="2.7" stroke-linecap="round"></line>
     </svg>
 </div>
 
@@ -95,6 +148,12 @@
          stroke="red"
          fill="red"
          style="width:100%">
+        <circle class='opacity--x50' cx="100" cy="100" r="40"
+                fill="transparent"
+                stroke-opacity="1" stroke-width="7"
+                stroke-linecap="butt"
+                stroke-dashoffset="0" stroke-dasharray="2"/>
+        <line x1="100" x2="100" y1="57" y2="63" stroke-width="3.5" stroke-linecap="round"></line>
     </svg>
 </div>
 
@@ -111,7 +170,125 @@
     </svg>
 </div>
 
+<div id="second-parts" class="clock sysfont flipper">
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
+         viewBox="0 0 300 300"
+         id="top-part">
+        <clipPath id="top-mask" clipPathUnits="userSpaceOnUse">
+            <rect x="0" y="0" width="300" height="150"></rect>
+        </clipPath>
+        <rect id="pad" x="205" y="110" width="80" height="80" rx="10" clip-path="url(#top-mask)"></rect>
+        <text id="number" x="205" y="178" stroke-width="0" clip-path="url(#top-mask)">00</text>
+    </svg>
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
+         viewBox="0 0 300 300"
+         id="bottom-part">
+        <clipPath id="bottom-mask" clipPathUnits="userSpaceOnUse">
+            <rect x="0" y="150" width="300" height="150"></rect>
+        </clipPath>
+        <rect id="pad" x="205" y="110" width="80" height="80" rx="10" clip-path="url(#bottom-mask)"></rect>
+        <text id="number" x="205" y="178" stroke-width="0" clip-path="url(#bottom-mask)">00</text>
+    </svg>
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
+         viewBox="0 0 300 300"
+         id="top-flip" class="hidden ani-reset-top-flip">
+        <rect id="pad" x="205" y="110" width="80" height="80" rx="10" clip-path="url(#top-mask)"></rect>
+        <text id="number" x="205" y="178" stroke-width="0" clip-path="url(#top-mask)">00</text>
+    </svg>
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
+         viewBox="0 0 300 300"
+         id="bottom-flip" class="hidden ani-reset-bottom-flip">
+        <rect id="pad" x="205" y="110" width="80" height="80" rx="10" clip-path="url(#bottom-mask)"></rect>
+        <text id="number" x="205" y="178" stroke-width="0" clip-path="url(#bottom-mask)">00</text>
+    </svg>
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
+         viewBox="0 0 300 300"
+         id="center-line">
+        <rect x="205" y="150" width="80" height="1"></rect>
+    </svg>
+</div>
+
+<div id="minute-parts" class="clock sysfont flipper">
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
+         viewBox="0 0 300 300"
+         id="top-part">
+        <rect id="pad" x="110" y="110" width="80" height="80" rx="10" clip-path="url(#top-mask)"></rect>
+        <text id="number" x="109.5" y="178" stroke-width="0" clip-path="url(#top-mask)">00</text>
+    </svg>
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
+         viewBox="0 0 300 300"
+         id="bottom-part">
+        <rect id="pad" x="110" y="110" width="80" height="80" rx="10" clip-path="url(#bottom-mask)"></rect>
+        <text id="number" x="109.5" y="178" stroke-width="0" clip-path="url(#bottom-mask)">00</text>
+    </svg>
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
+         viewBox="0 0 300 300"
+         id="top-flip" class="hidden ani-reset-top-flip">
+        <rect id="pad" x="110" y="110" width="80" height="80" rx="10" clip-path="url(#top-mask)"></rect>
+        <text id="number" x="109.5" y="178" stroke-width="0" clip-path="url(#top-mask)">00</text>
+    </svg>
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
+         viewBox="0 0 300 300"
+         id="bottom-flip" class="hidden ani-reset-bottom-flip">
+        <rect id="pad" x="110" y="110" width="80" height="80" rx="10" clip-path="url(#bottom-mask)"></rect>
+        <text id="number" x="109.5" y="178" stroke-width="0" clip-path="url(#bottom-mask)">00</text>
+    </svg>
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
+         viewBox="0 0 300 300"
+         id="center-line">
+        <rect x="109.5" y="150" width="80" height="1"></rect>
+    </svg>
+</div>
+
+<div id="hour-parts" class="clock sysfont flipper">
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
+         viewBox="0 0 300 300"
+         id="top-part">
+        <rect id="pad" x="15" y="110" width="80" height="80" rx="10" clip-path="url(#top-mask)"></rect>
+        <text id="number" x="14.5" y="178" stroke-width="0" clip-path="url(#top-mask)">00</text>
+    </svg>
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
+         viewBox="0 0 300 300"
+         id="bottom-part">
+        <rect id="pad" x="15" y="110" width="80" height="80" rx="10" clip-path="url(#bottom-mask)"></rect>
+        <text id="number" x="14.5" y="178" stroke-width="0" clip-path="url(#bottom-mask)">00</text>
+    </svg>
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
+         viewBox="0 0 300 300"
+         id="top-flip" class="hidden ani-reset-top-flip">
+        <rect id="pad" x="15" y="110" width="80" height="80" rx="10" clip-path="url(#top-mask)"></rect>
+        <text id="number" x="14.5" y="178" stroke-width="0" clip-path="url(#top-mask)">00</text>
+    </svg>
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
+         viewBox="0 0 300 300"
+         id="bottom-flip" class="hidden ani-reset-bottom-flip">
+        <rect id="pad" x="15" y="110" width="80" height="80" rx="10" clip-path="url(#bottom-mask)"></rect>
+        <text id="number" x="14.5" y="178" stroke-width="0" clip-path="url(#bottom-mask)">00</text>
+    </svg>
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
+         viewBox="0 0 300 300"
+         id="center-line">
+        <rect x="14.5" y="150" width="80" height="1"></rect>
+    </svg>
+</div>
+
+<div class="hidden ticker center-text middle-text"></div>
+
 <script>
+    window['FlipGroup'] = function () {
+        this.number = '00';
+        this.setTimeout = function (func, millisec) {
+            this.clearTimeout();
+            this.timeout = window.setTimeout(func, millisec);
+        };
+        this.clearTimeout = function () {
+            if (this.timeout !== undefined) {
+                clearTimeout(this.timeout);
+                delete this.timeout;
+            }
+        };
+    };
+
     Appanel({
 
         /**
@@ -126,75 +303,157 @@
          */
         flip: {
 
-            hours: 0,
-            minutes: 0,
-            seconds: 0,
-
-            setHour: function (hours) {
-                if (hours === this.hours) return;
-
-                this.hours = hours;
+            flipStart: function (groupIndex) {
+                var group = this.groups[groupIndex];
+                group.topPartNumber.text(group.number);
             },
 
-            setMinute: function (minutes) {
-                if (minutes === this.minutes) return;
-
-                this.minutes = minutes;
+            flipEnd: function (groupIndex) {
+                var group = this.groups[groupIndex];
+                group.bottomPartNumber.text(group.number);
             },
 
-            /*TODO: IMPORTANT! need css for ani-top-flip(flip from top to half) and ani-bottom-flip(flip from half to bottom)*/
-            /*TODO: IMPORTANT! need static parts named top-part and bottom-part for second*/
-            /*TODO: IMPORTANT! need animation parts named top-flip and bottom-flip for second*/
-            sTopPartNumber: $('#second-top-part .number'),
-            sBottomPartNumber: $('#second-bottom-part .number'),
-            sTopFlip: $('#second-top-flip'),
-            sBottomFlip: $('#second-top-flip'),
-            sTopFlipNumber: topFlip.find('.number'),
-            sBottomFlipNumber: bottomFlip.find('.number'),
-            sFlipEnd: function (ev) {
-                /*set new number to bottom-part before hide*/
-                this.sBottomPartNumber.text(this.seconds);
-
-                /*hide animation parts*/
-                this.sTopFlip.addClass('hidden');
-                this.sBottomFlip.addClass('hidden');
-
-                /*set new number to top-flip for next flip*/
-                this.sTopFlip.text(this.seconds);
+            play: function (groupIndex) {
+                var group = this.groups[groupIndex];
+                console.debug(`play(${groupIndex}): group=${group}`);
+                group.bottomFlipNumber.text(group.number);
+                group.$.sweep(group.sweeper);
             },
 
-            setSecond: function (seconds) {
-                if (seconds === this.seconds) return;
+            /**
+             * Group Index: 0, 1, 2
+             * Group Name: Second, Minute, Hour
+             */
+            groups: [
+                new FlipGroup(),
+                new FlipGroup(),
+                new FlipGroup()
+            ],
 
-                /*set old number to animation parts and show animation parts*/
-                this.sTopFlipNumber.text(this.seconds).removeClass('hidden');
-                this.sBottomFlipNumber.text(this.seconds).removeClass('hidden');
+            setDirectNumber: function(number, groupIndex) {
+                var group = this.groups[groupIndex];
+                group.prevNumber = group.number;
+                group.number = number;
+                group.topPartNumber.text(number);
+                group.bottomPartNumber.text(number);
+                group.topFlipNumber.text(number);
+                group.bottomFlipNumber.text(number);
+            },
 
-                /*set new number to top-part and bottom-flip*/
-                this.sTopPartNumber.text(seconds);
-                this.sBottomFlipNumber.text(seconds);
+            setNumber: function (number, groupIndex) {
+                var group = this.groups[groupIndex];
 
-                /*update to new number for sweep:end*/
-                this.seconds = seconds;
+                if (number === group.number) return;
+                group.prevNumber = group.number;
+                group.number = number;
 
-                /*Notice: IMPORTANT! need to capture event 'sweep:end' to complete the flip-animation*/
-                /*play animation*/
-                Appanel.chains(`ani-top-flip:0.25${this.sTopFlip.selector},ani-bottom-flip:0.25${this.sBottomFlip.selector}`);
+                /*set old number*/
+                group.topFlipNumber.text(group.prevNumber);
+                group.topFlip.addClass('ani-reset-top-flip').removeClass('hidden');
+
+                group.bottomPartNumber.text(group.prevNumber);
+                group.bottomFlip.addClass('hidden ani-reset-top-flip');
+
+                /* delay start animation or waiting all above to take effect on screen*/
+                group.setTimeout(function () {
+                    Appanel.flip.play.call(Appanel.flip, groupIndex);
+                }, 100);
+            },
+
+            initGroup: function (selector, groupIndex) {
+                var group = this.groups[groupIndex];
+                group.$ = $(selector);
+                group.topPart = group.$.find('#top-part');
+                group.bottomPart = group.$.find('#bottom-part');
+                group.topFlip = group.$.find('#top-flip');
+                group.bottomFlip = group.$.find('#bottom-flip');
+                group.topPartNumber = group.topPart.find('#number');
+                group.bottomPartNumber = group.bottomPart.find('#number');
+                group.topFlipNumber = group.topFlip.find('#number');
+                group.bottomFlipNumber = group.bottomFlip.find('#number');
+                group.duration = 0.20 * (groupIndex + 1);
+                group.sweeper = {
+                    on: 'sweep:ready',
+                    remove: 'hidden',
+                    sweep: [{
+                        selector: group.topFlip,
+                        remove: 'hidden ani-reset-top-flip',
+                        play: 'ani-top-flip',
+                        duration: group.duration,
+                        timing: 'linear',
+                        sweep: [
+                            {
+                                selector: group.bottomFlip,
+                                play: 'ani-bottom-flip',
+                                duration: group.duration,
+                                timing: 'linear',
+                                groupIndex: groupIndex,
+                                run: function () {
+                                    Appanel.flip.flipStart.call(Appanel.flip, this.groupIndex);
+                                },
+                                sweep: [
+                                    {
+                                        selector: group.bottomFlip,
+                                        remove: 'ani-bottom-flip',
+                                        add: 'hidden ani-reset-bottom-flip',
+                                        groupIndex: groupIndex,
+                                        run: function () {
+                                            Appanel.flip.flipEnd.call(Appanel.flip, this.groupIndex);
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                selector: group.topFlip,
+                                remove: 'ani-top-flip',
+                                add: 'hidden ani-reset-top-flip'
+                            }
+                        ]
+                    }]
+                };
+            },
+
+            init: function () {
+                this.initGroup('#second-parts', 0);
+                this.initGroup('#minute-parts', 1);
+                this.initGroup('#hour-parts', 2);
+
+                this.initProfile = Appanel.clock.initProfile,
+                    postInitProfile = function () {
+                        var flip = Appanel.flip;
+                        Appanel.flip.initProfile.call(Appanel.clock);
+
+                        var theme = Appanel.profile.theme,
+                            util = Appanel.util,
+                            s = flip.groups[0],
+                            m = flip.groups[1],
+                            h = flip.groups[2];
+
+                        theme.add('flipSecond', 'fill', util.merge([s.topPart.find("#pad"), s.bottomPart.find("#pad"), s.topFlip.find("#pad"), s.bottomFlip.find("#pad")]), 'handSecond');
+                        theme.add('flipMinute', 'fill', util.merge([m.topPart.find("#pad"), m.bottomPart.find("#pad"), m.topFlip.find("#pad"), m.bottomFlip.find("#pad")]), 'handMinute');
+                        theme.add('flipHour', 'fill', util.merge([h.topPart.find("#pad"), h.bottomPart.find("#pad"), h.topFlip.find("#pad"), h.bottomFlip.find("#pad")]), 'handHour');
+                        theme.add('fnumbers', ['fill', 'stroke'], util.merge([
+                            s.topPartNumber, s.bottomPartNumber, s.topFlipNumber, s.bottomFlipNumber,
+                            m.topPartNumber, m.bottomPartNumber, m.topFlipNumber, m.bottomFlipNumber,
+                            h.topPartNumber, h.bottomPartNumber, h.topFlipNumber, h.bottomFlipNumber
+                        ]), 'numbers');
+                        theme.add('fline', 'fill', util.merge([s.$.find('#center-line'), m.$.find('#center-line'), h.$.find('#center-line')]), 'background');
+                        theme.refresh();
+                    };
+                Appanel.clock.initProfile = postInitProfile;
             },
 
             start: function () {
-                /*to complete the flip-animation*/
-                this.sTopFlip.on('sweep:end', this.sFlipEnd);
+                this.init();
 
                 /*Core of the clock*/
                 $('.ticker').on('html:changed', function (ev, type) {
                     if (type === 'text') {
-                        var time = ev.currentTarget.innerHTML;
-                        var times = time.split(':');
-                        console.debug('ticked at:', time);
-                        Appanel.flip.setHour(times[0]);
-                        Appanel.flip.setMinute(times[1]);
-                        Appanel.flip.setSecond(times[2]);
+                        var times = ev.currentTarget.innerHTML.split(':'),
+                            flip = Appanel.flip;
+                        flip.setNumber(times[0], 2);
+                        flip.setNumber(times[1], 1);
+                        flip.setNumber(times[2], 0);
                     }
                 });
             }
@@ -202,6 +461,68 @@
 
         ready: function () {
             this.flip.start();
+            Appanel.clock.createMinutes($('.one.minutes'), {
+                "0": 360,
+                "1": 6,
+                "2": 12,
+                "3": 18,
+                "4": 24,
+                "5": 30,
+                "6": 36,
+                "7": 42,
+                "8": 48,
+                "9": 54,
+                "10": 60,
+                "11": 66,
+                "12": 72,
+                "13": 78,
+                "14": 84,
+                "15": 90,
+                "16": 96,
+                "17": 102,
+                "18": 108,
+                "19": 114,
+                "20": 120,
+                "21": 125.99999999999999,
+                "22": 132,
+                "23": 138,
+                "24": 144,
+                "25": 150,
+                "26": 156,
+                "27": 162,
+                "28": 168,
+                "29": 174,
+                "30": 180,
+                "31": 186.00000000000003,
+                "32": 192,
+                "33": 198.00000000000003,
+                "34": 204,
+                "35": 210,
+                "36": 216,
+                "37": 222,
+                "38": 228,
+                "39": 234,
+                "40": 240,
+                "41": 246,
+                "42": 251.99999999999997,
+                "43": 258,
+                "44": 264,
+                "45": 270,
+                "46": 276,
+                "47": 282,
+                "48": 288,
+                "49": 294,
+                "50": 300,
+                "51": 306,
+                "52": 312,
+                "53": 318,
+                "54": 324,
+                "55": 330,
+                "56": 336,
+                "57": 342,
+                "58": 348,
+                "59": 354
+            }, 60);
         }
     });
 </script>

@@ -77,7 +77,7 @@
 <div class="cover layer-2">
     <div class="clock wrapper rounded--x20">
         <div class="clock background">
-            <!-- store background to avoid flash during loadClock process -->
+            <!-- store the copied of clock background to make it always hide the background-image under the clock -->
         </div>
         <div class="clock foreground">
             <!-- this content will be replaced by clock -->
@@ -742,14 +742,14 @@
                 Appanel.set(this.name + ':clock', clockName);
 
                 // test: get clock from first element
-                //console.info("Clock URL: ", url);
+                console.info("Clock URL: ", url);
                 $.get(url).complete(function (result, status) {
                     var clockHtml = result.responseText,
                         headStart = clockHtml.indexOf('<head>'),
                         headEnd = clockHtml.indexOf('</head>') + 7,
                         $cover = $('.cover');
 
-                    //console.info('load clock completed at ', new Date().toLocaleTimeString());
+                    console.info('load clock completed at ', new Date().toLocaleTimeString());
                     clockHtml = clockHtml.substring(0, headStart) + clockHtml.substring(headEnd + 1);
                     $cover.find('.wrapper > .background')
                         .text('')
