@@ -71,7 +71,8 @@
 <body class="css-trans fixed background--c0 fit-width fit-height" style="font-family: Arial,sans-serif;">
 
 <!-- background -->
-<div class="background-image fit-height fit-width layer-1"></div>
+<div class="background-image fit-height fit-width layer-1">
+</div>
 
 <!-- clock -->
 <div class="cover layer-2">
@@ -86,7 +87,7 @@
 </div>
 
 <!-- filter -->
-<div class="out-side fixed fit-width fit-height layer-3">
+<div class="out-side on-top-left fit-width fit-height layer-3">
     <h1 class="on-top footprint padding--x10 opacity--x0 opacity--x100--at">Analogue Clock v1</h1>
 </div>
 
@@ -799,10 +800,9 @@
                     this.backgrounds.push({});
                     index = this.backgrounds.length - 1;
                 }
-                this.backgrounds[index] = {
+                this.backgrounds[index] = Object.assign({
                     name: name,
 
-                    image: attributes.image,
                     imageWidth: attributes.imageWidth,
                     imageHeight: attributes.imageHeight,
                     imageFilter: attributes.imageFilter,
@@ -816,7 +816,7 @@
                     clockXDegree: attributes.clockXDegree,
                     clockYDegree: attributes.clockYDegree,
                     clockZDegree: attributes.clockZDegree
-                };
+                }, (attributes.image === undefined) ? {video: attributes.video} : {image: attributes.image});
                 Appanel.set(this.name + ':backgrounds', this.backgrounds);
             },
 
@@ -861,14 +861,14 @@
             setAttributes: function (attributes) {
                 if (this.backgroundAttributes !== undefined) $(window).off('resize', this.backgroundAttributes.resize);
 
-                var $cover = $('.cover');
+                var $cover = $('.cover'),
+                    $background = $('.background-image')
+                        .removeClass('css-trans')
+                        .css('background-repeat', 'no-repeat');
                 this.backgroundAttributes = Object.assign(attributes, {
                     relativeX: 0,
                     relativeY: 0,
-                    background: $('.background-image')
-                        .removeClass('css-trans')
-                        .css('background-image', 'url(' + attributes.image + ')')
-                        .css('background-repeat', 'no-repeat'),
+                    background: $background,
                     cover: $cover,
                     rotator: $cover.find('.wrapper'),
                     clock: $cover.find('.clock'),
@@ -974,6 +974,15 @@
                     clockPerspectiveXOrigin: 0,
                     clockPerspectiveYOrigin: 0
                 }, this.backgroundAttributes);
+
+                if (attributes.image === undefined) {
+                    $background.css('background-image', '');
+                    $background.html('<video autoplay muted loop class="fit-width on-top-left">' +
+                        '    <source src="' + attributes.video + '" type="video/mp4">' +
+                        '</video>');
+                } else {
+                    $background.css('background-image', 'url(' + attributes.image + ')');
+                }
 
                 $('.out-side').css('opacity', (100 * this.backgroundAttributes.imageFilter) + '%');
 

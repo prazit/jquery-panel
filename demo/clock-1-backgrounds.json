@@ -123,5 +123,16 @@
     "clockPerspective": 2000,
 	"clockPerspectiveXOrigin": 225,
     "clockPerspectiveYOrigin": 180
+ },
+  {
+    "name": "Lady Walk Behind The Clock",
+    "video": "video/pexels.com-koolshooters-7346137.mp4",
+    "imageWidth": 960,
+    "imageHeight": 720,
+    "imageFilter": 0.25,
+    "clockXInPercent": 0.3143,
+    "clockYInPercent": 0.37,
+    "clockWInPercent": 0.3625,
+    "clockHInPercent": 0.4818
  }
 ]
