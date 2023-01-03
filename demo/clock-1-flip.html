@@ -275,17 +275,78 @@
 
 <script>
     window['FlipGroup'] = function () {
-        this.number = '00';
-        this.setTimeout = function (func, millisec) {
-            this.clearTimeout();
-            this.timeout = window.setTimeout(func, millisec);
-        };
-        this.clearTimeout = function () {
-            if (this.timeout !== undefined) {
-                clearTimeout(this.timeout);
-                delete this.timeout;
+        Object.assign(this, {
+            number: '00',
+            setTimeout: function (func, millisec) {
+                this.clearTimeout();
+                this.timeout = setTimeout(func, millisec);
+            },
+            clearTimeout: function () {
+                if (this.timeout !== undefined) {
+                    clearTimeout(this.timeout);
+                    delete this.timeout;
+                }
+            },
+            originX: 0,
+            originY: 0,
+            perspective: 450,
+            screenCenterX: 0,
+            screenCenterY: 0,
+            attr: function (name, value) {
+                if (value === undefined)
+                    return this[name];
+                else {
+                    this[name] = value;
+                    this.reposition();
+                }
+            },
+            toCenterOfClock: function () {
+                /*Notice: move origin to center of clock*/
+                var width = parseFloat(this.$.css('width')),
+                    center = width * 0.5;
+                this.originX = center;
+                this.originY = center;
+            },
+            toCenterOfFlipper: function () {
+                /*Notice: move origin to center of flipper*/
+                var width = parseFloat(this.$.css('width')),
+                    center = width * 0.5,
+                    ratio = width / 300,
+                    flipperX = parseFloat(this.bottomFlipPad.css('x')) * ratio,
+                    flipperW = parseFloat(this.bottomFlipPad.css('width')) * ratio,
+                    centerX = (flipperW * 0.5) + flipperX;
+                console.debug('width:', width, ', centerX:', centerX, ', flipperX:', flipperX, ', flipperW:', flipperW);
+                this.originX = centerX;
+                this.originY = center;
+            },
+            toCenterOfScreen: function () {
+                /*Notice: move origin to center of screen*/
+                var screenW = parseFloat(window.innerWidth),
+                    screenH = parseFloat(window.innerHeight),
+                    screenCenterX = screenW * 0.5,
+                    screenCenterY = screenH * 0.5,
+                    width = parseFloat(this.$.css('width')),
+                    rect = this.$[0].getBoundingClientRect(),
+                    left = rect.left,
+                    top = rect.top,
+                    center = width * 0.5,
+                    diffX = screenCenterX - (center + left),
+                    diffY = screenCenterY - (center + top);
+                this.originX = center + diffX;
+                this.originY = center + diffY;
+            },
+            reposition: function () {
+                this.toCenterOfFlipper();
+                //this.toCenterOfClock();
+                //this.toCenterOfScreen();
+                this.attributeChanged();
+            },
+            attributeChanged: function () {
+                this.$
+                    .css('transform', `perspective(${this.perspective}px)`)
+                    .css('transform-origin', `${this.originX}px ${this.originY}px`);
             }
-        };
+        });
     };
 
     Appanel({
@@ -301,6 +362,16 @@
          * frame of hour number < hour
          */
         flip: {
+            setTimeout: function (func, millisec) {
+                this.clearTimeout();
+                this.timeout = setTimeout(func, millisec);
+            },
+            clearTimeout: function () {
+                if (this.timeout !== undefined) {
+                    clearTimeout(this.timeout);
+                    delete this.timeout;
+                }
+            },
 
             flipStart: function (groupIndex) {
                 var group = this.groups[groupIndex];
@@ -361,14 +432,20 @@
             initGroup: function (selector, groupIndex) {
                 var group = this.groups[groupIndex];
                 group.$ = $(selector);
+
                 group.topPart = group.$.find('#top-part');
                 group.bottomPart = group.$.find('#bottom-part');
+
                 group.topFlip = group.$.find('#top-flip');
                 group.bottomFlip = group.$.find('#bottom-flip');
+
                 group.topPartNumber = group.topPart.find('#number');
                 group.bottomPartNumber = group.bottomPart.find('#number');
                 group.topFlipNumber = group.topFlip.find('#number');
                 group.bottomFlipNumber = group.bottomFlip.find('#number');
+
+                group.bottomFlipPad = group.bottomFlip.find('#pad');
+
                 group.duration = 0.20 * (groupIndex + 1);
                 group.sweeper = {
                     on: 'sweep:ready',
@@ -434,9 +511,9 @@
                         m = flip.groups[1],
                         h = flip.groups[2];
 
-                    theme.add('flipSecond', 'fill', util.merge([s.topPart.find("#pad"), s.bottomPart.find("#pad"), s.topFlip.find("#pad"), s.bottomFlip.find("#pad")]), 'handSecond');
-                    theme.add('flipMinute', 'fill', util.merge([m.topPart.find("#pad"), m.bottomPart.find("#pad"), m.topFlip.find("#pad"), m.bottomFlip.find("#pad")]), 'handMinute');
-                    theme.add('flipHour', 'fill', util.merge([h.topPart.find("#pad"), h.bottomPart.find("#pad"), h.topFlip.find("#pad"), h.bottomFlip.find("#pad")]), 'handHour');
+                    theme.add('flipSecond', 'fill', util.merge([s.topPart.find("#pad"), s.bottomPart.find("#pad"), s.topFlip.find("#pad"), s.bottomFlipPad]), 'handSecond');
+                    theme.add('flipMinute', 'fill', util.merge([m.topPart.find("#pad"), m.bottomPart.find("#pad"), m.topFlip.find("#pad"), m.bottomFlipPad]), 'handMinute');
+                    theme.add('flipHour', 'fill', util.merge([h.topPart.find("#pad"), h.bottomPart.find("#pad"), h.topFlip.find("#pad"), h.bottomFlipPad]), 'handHour');
                     theme.add('fnumbers', ['fill', 'stroke'], util.merge([
                         s.topPartNumber, s.bottomPartNumber, s.topFlipNumber, s.bottomFlipNumber,
                         m.topPartNumber, m.bottomPartNumber, m.topFlipNumber, m.bottomFlipNumber,
@@ -468,6 +545,15 @@
                         flip.setNumber(times[1], 1);
                         flip.setNumber(times[2], 0);
                     }
+                });
+
+                $(Appanel.clock).on('resize', function () {
+                    Appanel.flip.setTimeout(function () {
+                        var groups = Appanel.flip.groups;
+                        groups[0].reposition();
+                        groups[1].reposition();
+                        groups[2].reposition();
+                    }, 100);
                 });
             }
         },
@@ -536,7 +622,6 @@
                 "58": 348,
                 "59": 354
             }, 60);
-            // TODO: this.flip.initPerspectiveOrigin();
         }
     });
 </script>

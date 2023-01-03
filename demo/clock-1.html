@@ -93,8 +93,8 @@
 <!-- animation selector -->
 <div class="on-top-left css-trans opacity--x0 opacity--x100--at margin--x20 layer-4" style="display: inline-block">
     <div class="rounded--x50 center-text">
-        <span class="analogue-move button left-child border--x4 background--c3 background--c0--at opacity--x70 border--x3 border--c3 padding--x10 symbol text--c0 text--c3--at" title="count up to max">Analogue Move</span>
-        <span class="smooth-move button right-child border--x4 background--c3 background--c0--at opacity--x70 border--x3 border--c3 padding--x10 symbol text--c0 text--c3--at" title="count up to last-max and increase last-max every loop">Smooth Move</span>
+        <span class="analogue-move button left-child border--x4 background--c3 background--c0--at opacity--x70 border--x3 border--c3 padding--x10 symbol text--c0 text--c3--at">Analogue Move</span>
+        <span class="smooth-move button right-child border--x4 background--c3 background--c0--at opacity--x70 border--x3 border--c3 padding--x10 symbol text--c0 text--c3--at">Smooth Move</span>
     </div>
 </div>
 
@@ -873,7 +873,8 @@
                     rotator: $cover.find('.wrapper'),
                     clock: $cover.find('.clock'),
                     resize: function () {
-                        var a = Appanel.clock.backgroundAttributes;
+                        var clock = Appanel.clock,
+                            a = clock.backgroundAttributes;
 
                         a.screenW = window.innerWidth;
                         a.screenH = window.innerHeight;
@@ -950,6 +951,8 @@
                         a.clock
                             .css('width', a.coverSize + 'px')
                             .css('height', a.coverSize + 'px');
+
+                        $(clock).trigger('resize');
                     },
                     member: function (memberName, value) {
                         if (value === undefined) {
