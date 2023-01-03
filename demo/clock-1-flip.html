@@ -23,14 +23,6 @@
 <body class="css-trans fixed background--c0 fit-width fit-height" style="font-family: Arial,sans-serif;">
 
 <style>
-    /*TODO: Notice: parameters for flip clock: perspective:800px, origin:180px 0, flip on X-Axis:0deg - 180deg*/
-    .flipper {
-        font-size: 74px;
-        transform: perspective(888px);
-        transform-origin: 180px 180px;
-        transform-style: preserve-3d;
-    }
-
     .ani-reset-top-flip {
         transform: rotateX(0deg);
     }
@@ -65,6 +57,13 @@
     .ani-bottom-flip {
         -webkit-animation-name: ani-bottom-flip;
         animation-name: ani-bottom-flip;
+    }
+
+    .flipper {
+        font-size: 74px;
+        transform: perspective(888px);
+        transform-origin: 180px 180px;
+        transform-style: preserve-3d;
     }
 
     #second-parts svg,
@@ -315,7 +314,6 @@
 
             play: function (groupIndex) {
                 var group = this.groups[groupIndex];
-                console.debug(`play(${groupIndex}): group=${group}`);
                 group.bottomFlipNumber.text(group.number);
                 group.$.sweep(group.sweeper);
             },
@@ -330,7 +328,7 @@
                 new FlipGroup()
             ],
 
-            setDirectNumber: function(number, groupIndex) {
+            setDirectNumber: function (number, groupIndex) {
                 var group = this.groups[groupIndex];
                 group.prevNumber = group.number;
                 group.number = number;
@@ -374,6 +372,7 @@
                 group.duration = 0.20 * (groupIndex + 1);
                 group.sweeper = {
                     on: 'sweep:ready',
+                    duration: 0.001,
                     remove: 'hidden',
                     sweep: [{
                         selector: group.topFlip,
@@ -381,21 +380,22 @@
                         play: 'ani-top-flip',
                         duration: group.duration,
                         timing: 'linear',
+                        groupIndex: groupIndex,
+                        run: function () {
+                            Appanel.flip.flipStart.call(Appanel.flip, this.groupIndex);
+                        },
                         sweep: [
                             {
                                 selector: group.bottomFlip,
                                 play: 'ani-bottom-flip',
                                 duration: group.duration,
                                 timing: 'linear',
-                                groupIndex: groupIndex,
-                                run: function () {
-                                    Appanel.flip.flipStart.call(Appanel.flip, this.groupIndex);
-                                },
                                 sweep: [
                                     {
                                         selector: group.bottomFlip,
                                         remove: 'ani-bottom-flip',
                                         add: 'hidden ani-reset-bottom-flip',
+                                        duration: 0.001,
                                         groupIndex: groupIndex,
                                         run: function () {
                                             Appanel.flip.flipEnd.call(Appanel.flip, this.groupIndex);
@@ -406,7 +406,8 @@
                             {
                                 selector: group.topFlip,
                                 remove: 'ani-top-flip',
-                                add: 'hidden ani-reset-top-flip'
+                                add: 'hidden ani-reset-top-flip',
+                                duration: 0.001
                             }
                         ]
                     }]
@@ -418,29 +419,40 @@
                 this.initGroup('#minute-parts', 1);
                 this.initGroup('#hour-parts', 2);
 
-                this.initProfile = Appanel.clock.initProfile,
-                    postInitProfile = function () {
-                        var flip = Appanel.flip;
-                        Appanel.flip.initProfile.call(Appanel.clock);
+                var postInitProfile = function () {
+                    var flip = Appanel.flip,
+                        clock = Appanel.clock;
 
-                        var theme = Appanel.profile.theme,
-                            util = Appanel.util,
-                            s = flip.groups[0],
-                            m = flip.groups[1],
-                            h = flip.groups[2];
+                    if (Appanel.profile === undefined) {
+                        clock.flipInitProfile.call(clock);
+                    }
 
-                        theme.add('flipSecond', 'fill', util.merge([s.topPart.find("#pad"), s.bottomPart.find("#pad"), s.topFlip.find("#pad"), s.bottomFlip.find("#pad")]), 'handSecond');
-                        theme.add('flipMinute', 'fill', util.merge([m.topPart.find("#pad"), m.bottomPart.find("#pad"), m.topFlip.find("#pad"), m.bottomFlip.find("#pad")]), 'handMinute');
-                        theme.add('flipHour', 'fill', util.merge([h.topPart.find("#pad"), h.bottomPart.find("#pad"), h.topFlip.find("#pad"), h.bottomFlip.find("#pad")]), 'handHour');
-                        theme.add('fnumbers', ['fill', 'stroke'], util.merge([
-                            s.topPartNumber, s.bottomPartNumber, s.topFlipNumber, s.bottomFlipNumber,
-                            m.topPartNumber, m.bottomPartNumber, m.topFlipNumber, m.bottomFlipNumber,
-                            h.topPartNumber, h.bottomPartNumber, h.topFlipNumber, h.bottomFlipNumber
-                        ]), 'numbers');
-                        theme.add('fline', 'fill', util.merge([s.$.find('#center-line'), m.$.find('#center-line'), h.$.find('#center-line')]), 'background');
-                        theme.refresh();
-                    };
-                Appanel.clock.initProfile = postInitProfile;
+                    var theme = Appanel.profile.theme,
+                        util = Appanel.util,
+                        s = flip.groups[0],
+                        m = flip.groups[1],
+                        h = flip.groups[2];
+
+                    theme.add('flipSecond', 'fill', util.merge([s.topPart.find("#pad"), s.bottomPart.find("#pad"), s.topFlip.find("#pad"), s.bottomFlip.find("#pad")]), 'handSecond');
+                    theme.add('flipMinute', 'fill', util.merge([m.topPart.find("#pad"), m.bottomPart.find("#pad"), m.topFlip.find("#pad"), m.bottomFlip.find("#pad")]), 'handMinute');
+                    theme.add('flipHour', 'fill', util.merge([h.topPart.find("#pad"), h.bottomPart.find("#pad"), h.topFlip.find("#pad"), h.bottomFlip.find("#pad")]), 'handHour');
+                    theme.add('fnumbers', ['fill', 'stroke'], util.merge([
+                        s.topPartNumber, s.bottomPartNumber, s.topFlipNumber, s.bottomFlipNumber,
+                        m.topPartNumber, m.bottomPartNumber, m.topFlipNumber, m.bottomFlipNumber,
+                        h.topPartNumber, h.bottomPartNumber, h.topFlipNumber, h.bottomFlipNumber
+                    ]), 'numbers');
+                    theme.add('fline', 'fill', util.merge([s.$.find('#center-line'), m.$.find('#center-line'), h.$.find('#center-line')]), 'background');
+                    theme.refresh();
+                };
+
+                console.debug('Appanel.clock.flipInitProfile=', Appanel.clock.flipInitProfile);
+                if (Appanel.clock.flipInitProfile === undefined) {
+                    Appanel.clock.flipInitProfile = Appanel.clock.initProfile;
+                    Appanel.clock.initProfile = postInitProfile;
+                } else {
+                    postInitProfile();
+                }
+
             },
 
             start: function () {
@@ -523,6 +535,7 @@
                 "58": 348,
                 "59": 354
             }, 60);
+            // TODO: this.flip.initPerspectiveOrigin();
         }
     });
 </script>
