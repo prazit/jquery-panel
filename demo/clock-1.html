@@ -62,8 +62,16 @@
             display: none;
         }
 
+        .clock-ui:hover .board {
+            width: 70vw;
+        }
+
         .css-trans {
             transition-duration: 0.2s;
+        }
+
+        .css-trans--x2 {
+            transition-duration: 0.4s;
         }
     </style>
 </head>
@@ -74,8 +82,13 @@
 <div class="background-image fit-height fit-width layer-1">
 </div>
 
+<!-- filter -->
+<div class="out-side on-top-left fit-width fit-height layer-2">
+    <h1 class="on-top footprint padding--x10 opacity--x0 opacity--x100--at">Analogue Clock v1</h1>
+</div>
+
 <!-- clock -->
-<div class="cover layer-2">
+<div class="cover layer-3">
     <div class="clock wrapper rounded--x20">
         <div class="clock background">
             <!-- store the copied of clock background to make it always hide the background-image under the clock -->
@@ -86,74 +99,78 @@
     </div>
 </div>
 
-<!-- filter -->
-<div class="out-side on-top-left fit-width fit-height layer-3">
-    <h1 class="on-top footprint padding--x10 opacity--x0 opacity--x100--at">Analogue Clock v1</h1>
-</div>
+<!-- UI Area -->
+<div class="clock-ui on-left css-trans--x2 width--x100 opacity--x0 opacity--x100--at layer-4" style="height:70vh;">
+    <div class="board css-trans fit-height width--x1 right-rounded--x20 bottom-rounded--x20 top-border--x10 right-border--x10 bottom-border--x10 on-left" style="border-color:rgba(255,255,255,0.5);">
+        <div class="fit-width fit-height scrollable" style="background-color:rgba(0,0,0,0.8)">
 
-<!-- animation selector -->
-<div class="on-top-left css-trans opacity--x0 opacity--x100--at margin--x20 layer-4" style="display: inline-block">
-    <div class="rounded--x50 center-text">
-        <span class="analogue-move button left-child border--x4 background--c3 background--c0--at opacity--x70 border--x3 border--c3 padding--x10 symbol text--c0 text--c3--at">Analogue Move</span>
-        <span class="smooth-move button right-child border--x4 background--c3 background--c0--at opacity--x70 border--x3 border--c3 padding--x10 symbol text--c0 text--c3--at">Smooth Move</span>
-    </div>
-</div>
+            <!-- animation selector -->
+            <div class="inline-column css-trans margin--x20" style="display: inline-block">
+                <div class="rounded--x50 center-text">
+                    <span class="analogue-move button left-child border--x4 background--c3 background--c0--at opacity--x70 border--x3 border--c3 padding--x10 symbol text--c0 text--c3--at">Analogue Move</span>
+                    <span class="smooth-move button right-child border--x4 background--c3 background--c0--at opacity--x70 border--x3 border--c3 padding--x10 symbol text--c0 text--c3--at">Smooth Move</span>
+                </div>
+            </div>
+            <br/>
 
-<!-- clocks & backgrounds -->
-<div class="css-trans on-bottom-left opacity--x0 opacity--x100--at layer-4">
-    <!-- backgrounds -->
-    <div class="pull-left backgrounds margin--x10 rounded--x20 border--x4 border--c3">
-        <span class="background-list top-child background--c3 opacity--x70 padding--x10 center-text">Backgrounds</span>
-        <div class="ui scrollable background-container">
-            <span class="background-item button child background--c1 background--c0--at padding--x10 left-text">background-name</span>
+            <!-- clocks & backgrounds -->
+            <div class="inline-column css-trans">
+                <!-- backgrounds -->
+                <div class="pull-left backgrounds margin--x10 rounded--x20 border--x4 border--c3">
+                    <span class="background-list top-child background--c3 opacity--x70 padding--x10 center-text">Backgrounds</span>
+                    <div class="ui scrollable background-container">
+                        <span class="background-item button child background--c1 background--c0--at padding--x10 left-text">background-name</span>
+                    </div>
+                    <span class="auto-change-background bottom-child button background--c3 background--c0--at opacity--x70 padding--x10 center-text">Auto Change</span>
+                </div>
+
+                <!-- clocks -->
+                <div class="pull-right clocks margin--x10 rounded--x20 border--x4 border--c3">
+                    <span class="clock-list top-child background--c3 opacity--x70 padding--x10 center-text">Clocks</span>
+                    <div class="ui scrollable clock-container">
+                        <span class="clock-item button child background--c1 background--c0--at padding--x10 left-text">clock-name</span>
+                    </div>
+                    <span class="bottom-child background--c3 opacity--x70 padding--x10"></span>
+                </div>
+            </div>
+
+            <!-- colors -->
+            <div class="inline-column css-trans theme margin--x10">
+                <div class="pull-left colors rounded--x20 border--x4 border--c3 margin--x10">
+                    <span class="profile-name button top-child background--c3 background--c0--at opacity--x70 padding--x10 center-text">Profile</span>
+                    <div class="ui scrollable">
+                        <span class="color-handSecond button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Second Hand</span>
+                        <span class="color-handMinute button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Minute Hand</span>
+                        <span class="color-handHour button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Hour Hand</span>
+                        <span class="color-numbers button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Numbers</span>
+                        <span class="color-timer button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Timer</span>
+                        <span class="color-minutes button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Minutes</span>
+                        <span class="color-fiveMinutes button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Five Minutes</span>
+                        <span class="color-frame button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Frame</span>
+                        <span class="color-background button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Background</span>
+                        <span class="color-outSide button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Outside</span>
+                    </div>
+                    <span class="bottom-child background--c3 opacity--x70 padding--x10"></span>
+                </div>
+                <div class="pull-right rounded--x20 border--x4 border--c3 margin--x10">
+                    <span class="profile-list top-child background--c3 opacity--x70 padding--x10 center-text">Themes</span>
+                    <div class="ui scrollable profile-container">
+                        <span class="profile button child background--c1 background--c0--at padding--x10 left-text">profile-name</span>
+                    </div>
+                    <span class="add-profile button bottom-child background--c3 background--c0--at opacity--x70 padding--x10 center-text">+</span>
+                </div>
+            </div>
+
+            <!-- combination -->
+            <div class="inline-column combinations css-trans margin--x10 rounded--x20 border--x4 border--c3">
+                <span class="combination-list top-child background--c3 opacity--x70 padding--x10 center-text">Presets</span>
+                <div class="ui scrollable combination-container">
+                    <span class="combination-item button child background--c1 background--c0--at padding--x10 left-text">combination-name</span>
+                </div>
+                <span class="add-combination bottom-child button background--c3 background--c0--at opacity--x70 padding--x10 center-text">+</span>
+            </div>
         </div>
-        <span class="auto-change-background bottom-child button background--c3 background--c0--at opacity--x70 padding--x10 center-text">Auto Change</span>
     </div>
-
-    <!-- clocks -->
-    <div class="pull-right clocks margin--x10 rounded--x20 border--x4 border--c3">
-        <span class="clock-list top-child background--c3 opacity--x70 padding--x10 center-text">Clocks</span>
-        <div class="ui scrollable clock-container">
-            <span class="clock-item button child background--c1 background--c0--at padding--x10 left-text">clock-name</span>
-        </div>
-        <span class="bottom-child background--c3 opacity--x70 padding--x10"></span>
-    </div>
-</div>
-
-<!-- colors -->
-<div class="css-trans on-top-right theme margin--x10 opacity--x0 opacity--x100--at layer-4">
-    <div class="pull-left colors rounded--x20 border--x4 border--c3 margin--x10">
-        <span class="profile-name button top-child background--c3 background--c0--at opacity--x70 padding--x10 center-text">Profile</span>
-        <div class="ui scrollable">
-            <span class="color-handSecond button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Second Hand</span>
-            <span class="color-handMinute button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Minute Hand</span>
-            <span class="color-handHour button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Hour Hand</span>
-            <span class="color-numbers button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Numbers</span>
-            <span class="color-timer button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Timer</span>
-            <span class="color-minutes button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Minutes</span>
-            <span class="color-fiveMinutes button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Five Minutes</span>
-            <span class="color-frame button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Frame</span>
-            <span class="color-background button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Background</span>
-            <span class="color-outSide button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Outside</span>
-        </div>
-        <span class="bottom-child background--c3 opacity--x70 padding--x10"></span>
-    </div>
-    <div class="pull-right rounded--x20 border--x4 border--c3 margin--x10">
-        <span class="profile-list top-child background--c3 opacity--x70 padding--x10 center-text">Themes</span>
-        <div class="ui scrollable profile-container">
-            <span class="profile button child background--c1 background--c0--at padding--x10 left-text">profile-name</span>
-        </div>
-        <span class="add-profile button bottom-child background--c3 background--c0--at opacity--x70 padding--x10 center-text">+</span>
-    </div>
-</div>
-
-<!-- combination -->
-<div class="combinations css-trans on-bottom-right margin--x10 opacity--x0 opacity--x100--at rounded--x20 border--x4 border--c3 layer-4">
-    <span class="combination-list top-child background--c3 opacity--x70 padding--x10 center-text">Presets</span>
-    <div class="ui scrollable combination-container">
-        <span class="combination-item button child background--c1 background--c0--at padding--x10 left-text">combination-name</span>
-    </div>
-    <span class="add-combination bottom-child button background--c3 background--c0--at opacity--x70 padding--x10 center-text">+</span>
 </div>
 
 <!-- JS -->
@@ -164,8 +181,10 @@
 <script>
     Appanel({
         clock: {
-            useSweep: false,
-            speed: 1,
+            options: {
+                useSweep: false,
+                speed: 1
+            },
 
             name: 'analogue-clock',
             state: 'initialized',
@@ -181,23 +200,42 @@
                 }
             },
 
+            loadOptions: function () {
+                var options = Appanel.get(this.name + ':options');
+                if (options != null) {
+                    this.options = options;
+                }
+            },
+
+            saveOptions: function () {
+                Appanel.set(this.name + ':options', this.options);
+            },
+
             setUseSweep: function (useSweep) {
                 if (useSweep == null) useSweep = false;
-                var changed = this.useSweep !== useSweep;
-                this.useSweep = useSweep;
+                var changed = this.options.useSweep !== useSweep;
+                this.options.useSweep = useSweep;
+
+                var active,inactive;
+                if (useSweep) {
+                    inactive = '.analogue-move';
+                    active = '.smooth-move';
+                }else{
+                    active = '.analogue-move';
+                    inactive = '.smooth-move';
+                }
+                $(active).css('background-color','yellow');
+                $(inactive).css('background-color','silver');
 
                 if (changed && this.state === 'started') {
-                    Appanel.set(this.name + ':analogue', useSweep);
-                    /*if (!useSweep)
-                        Appanel.util.refresh();
-                    else*/
-                    this.start(new Date(), this.speed);
+                    this.saveOptions();
+                    this.start(new Date(), this.options.speed);
                 }
             },
 
             setSecond: function (second) {
                 this.percentSecond = second / 60;
-                if (!this.useSweep) {
+                if (!this.options.useSweep) {
                     if (this.state === 'starting' && second >= 59) {
                         /*console.debug('setSecond: in case starting at 59');*/
                         this.$second.css('transform', 'rotate(-6deg)');
@@ -220,7 +258,7 @@
             },
 
             setMinute: function (minute) {
-                if (this.useSweep) {
+                if (this.options.useSweep) {
                     this.percentMinute = (minute + this.percentSecond) / 60;
                 } else {
                     this.percentMinute = minute / 60;
@@ -250,7 +288,7 @@
             },
 
             setHour: function (hour) {
-                if (!this.useSweep) {
+                if (!this.options.useSweep) {
                     this.hourDegree = ((hour + this.percentMinute) / 12) * 360;
                     if (hour === 11) {
                         if (this.hour !== hour) {
@@ -364,7 +402,7 @@
                             background: 'navy',
                             outSide: 'bluesky'
                         },
-                        more: {useSweep: this.useSweep, clock: 'original'}
+                        more: {useSweep: this.options.useSweep, clock: 'original'}
                     });
                 }
 
@@ -455,7 +493,7 @@
                             });
                         }, {name: this.clocks[i].name, index: i}]
                     ]);
-                    if (this.clocks[i].name === profile.more.clock) button.click();
+                    if (this.clocks[i].name === this.clock) button.click();
                 }
 
                 // handle profile buttons
@@ -594,7 +632,7 @@
                 }
 
                 this.state = 'stopping';
-                console.info("clock stop at ", this.hour, ":", this.minute, ":", this.second, ' ', this.speed, 'X speed');
+                console.info("clock stop at ", this.hour, ":", this.minute, ":", this.second, ' ', this.options.speed, 'X speed');
 
                 this.clearInterval();
                 this.clearTimeout();
@@ -643,13 +681,13 @@
                     minute = now.getMinutes(),
                     second = now.getSeconds(),
                     clock = Appanel.clock,
-                    useSweep = clock.useSweep,
+                    useSweep = clock.options.useSweep,
                     restart = clock.state === 'started';
 
                 clock.state = 'starting';
 
                 if (speed === undefined) speed = 1;
-                clock.speed = speed;
+                clock.options.speed = speed;
                 console.info("clock start at ", hour, ":", minute, ":", second, ' ', speed, 'X speed');
 
                 clock.ticker = $('.ticker');
@@ -661,7 +699,7 @@
                 clock.minuteHand = clock.$minute.find('svg');
                 clock.secondHand = clock.$second.find('svg');
 
-                if (clock.useSweep) {
+                if (useSweep) {
                     var options = {
                         duration: 0.00001,
                         on: "sweep:ready",
@@ -681,11 +719,11 @@
                 }
 
                 // force move clock hands
-                Appanel.clock.useSweep = false;
+                Appanel.clock.options.useSweep = false;
                 clock.setSecond(second);
                 clock.setMinute(minute);
                 clock.setHour(hour);
-                Appanel.clock.useSweep = useSweep;
+                Appanel.clock.options.useSweep = useSweep;
 
                 // delay start
                 let delayStart = function () {
@@ -693,11 +731,11 @@
                     clock.secondTick();
                     clock.refreshTime();
 
-                    if (clock.useSweep) {
+                    if (clock.options.useSweep) {
                         clock.sweeper
                             .removeClass('css-trans')
                             .sweep(clock.sweep)
-                            .sweep('speedx', clock.speed);
+                            .sweep('speedx', clock.options.speed);
                     } else {
                         clock.sweeper.addClass('css-trans');
                     }
@@ -705,7 +743,7 @@
                     clock.setInterval(function () {
                         Appanel.clock.secondTick();
                         Appanel.clock.refreshTime();
-                    }, 1000 * (1 / clock.speed));
+                    }, 1000 * (1 / clock.options.speed));
 
                 };
                 Appanel.clock.setTimeout(delayStart, 1000 - now.getMilliseconds());
@@ -981,7 +1019,9 @@
                         '    <source src="' + attributes.video + '" type="video/mp4">' +
                         '</video>');
                 } else {
-                    $background.css('background-image', 'url(' + attributes.image + ')');
+                    $background
+                        .text('')
+                        .css('background-image', 'url(' + attributes.image + ')');
                 }
 
                 $('.out-side').css('opacity', (100 * this.backgroundAttributes.imageFilter) + '%');
@@ -1016,7 +1056,10 @@
                     Appanel.profile.load(combination.theme);
                     $('.profile-name').text(combination.theme);
 
-                    this.setUseSweep(!combination.analogue);
+                    if (combination.options !== undefined) {
+                        this.options = combination.options;
+                        this.setUseSweep(combination.options.useSweep);
+                    }
 
                     Appanel.util.disableRefresh = false;
                 });
@@ -1033,7 +1076,7 @@
                     clock: this.clock,
                     theme: Appanel.profile.current,
                     background: this.background,
-                    analogue: !this.useSweep
+                    options: this.options
                 };
                 Appanel.set(this.name + ':combinations', this.combinations);
             },
@@ -1085,7 +1128,9 @@
                 var control = Appanel.get(this.name + ':control');
                 if (control !== null) this.defaults.control = control;
 
-                this.setUseSweep(Appanel.get(this.name + ':analogue'));
+                this.loadOptions();
+                this.setUseSweep(this.options.useSweep);
+
                 this.loadJSON('control', function (status) {
                     console.info('Control loaded from ' + status);
                     this.loadJSON('clocks', function (status) {
@@ -1141,7 +1186,7 @@
                 });
 
                 /*Appanel.clock.stop(function () {
-                    Appanel.clock.start(new Date(), Appanel.clock.speed);
+                    Appanel.clock.start(new Date(), Appanel.clock.options.speed);
                 });*/
             },
 
@@ -1180,7 +1225,7 @@
             resize: function () {
                 var ui = Appanel.ui;
                 ui.setTimeout(function () {
-                    var maxHeight = window.innerHeight * 0.7;
+                    var maxHeight = window.innerHeight * 0.5;
                     $('.ui.scrollable').css('max-height', maxHeight);
                 }, 1000);
             },

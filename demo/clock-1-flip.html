@@ -75,6 +75,36 @@
         width: 100%;
         height: 100%;
     }
+
+    .flip-ui svg {
+        opacity: 0%;
+    }
+
+    .flip-ui:hover svg {
+        opacity: 100%;
+    }
+
+    .flip-ui:hover .flip-origin-1 {
+        cx: 45;
+        cy: 45;
+    }
+
+    .flip-ui:hover .flip-origin-2 {
+        cx: 100;
+        cy: 22;
+    }
+
+    .flip-ui:hover .flip-origin-3 {
+        cx: 155.5;
+        cy: 45;
+    }
+
+    .flip-ui .button:hover {
+        r: 20;
+        stroke-width: 3;
+        stroke: white;
+        cursor: pointer;
+    }
 </style>
 
 <div class="clock background">
@@ -273,6 +303,18 @@
 
 <div class="hidden ticker center-text middle-text"></div>
 
+<div class="clock flip-ui layer-4-9" style="height:50% !important;overflow:hidden;">
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve" viewBox="0 0 200 200" class="fit-width css-trans">
+        <text fill="white" x="40.5" y="50" class="css-trans">1</text>
+        <text fill="white" x="95.5" y="27" class="css-trans">2</text>
+        <text fill="white" x="151" y="50" class="css-trans">3</text>
+        <text fill="white" x="50" y="70" class="css-trans opacity--x50">3D Origin Types</text>
+        <circle cx="100" cy="100" r="15" fill="silver" class="button flip-origin-1 css-trans opacity--x60"></circle>
+        <circle cx="100" cy="100" r="15" fill="silver" class="button flip-origin-2 css-trans opacity--x60"></circle>
+        <circle cx="100" cy="100" r="15" fill="silver" class="button flip-origin-3 css-trans opacity--x60"></circle>
+    </svg>
+</div>
+
 <script>
     window['FlipGroup'] = function () {
         Object.assign(this, {
@@ -336,9 +378,21 @@
                 this.originY = center + diffY;
             },
             reposition: function () {
-                this.toCenterOfFlipper();
-                //this.toCenterOfClock();
-                //this.toCenterOfScreen();
+                var buttons = $('.flip-ui .button').css('fill', 'silver');
+
+                switch (Appanel.clock.options.originType) {
+                    case 2:
+                        this.toCenterOfClock();
+                        buttons.filter('.flip-origin-2').css('fill', 'yellow');
+                        break;
+                    case 3:
+                        this.toCenterOfScreen();
+                        buttons.filter('.flip-origin-3').css('fill', 'yellow');
+                        break;
+                    default:
+                        this.toCenterOfFlipper();
+                        buttons.filter('.flip-origin-1').css('fill', 'yellow');
+                }
                 this.attributeChanged();
             },
             attributeChanged: function () {
@@ -362,6 +416,67 @@
          * frame of hour number < hour
          */
         flip: {
+            ui: {
+                handle: function () {
+                    /*handle flip origin switches*/
+                    Appanel.map([
+                        [$('.flip-origin-1'), 'click', function () {
+                            Appanel.clock.options.originType = 1;
+                            Appanel.flip.reposition();
+                            Appanel.clock.saveOptions();
+                        }],
+                        [$('.flip-origin-2'), 'click', function () {
+                            Appanel.clock.options.originType = 2;
+                            Appanel.flip.reposition();
+                            Appanel.clock.saveOptions();
+                        }],
+                        [$('.flip-origin-3'), 'click', function () {
+                            Appanel.clock.options.originType = 3;
+                            Appanel.flip.reposition();
+                            Appanel.clock.saveOptions();
+                        }]
+                    ]);
+                },
+                initProfile: function () {
+                    /*Notice: Remember: this function will called from Appanel.clock*/
+                    var flip = Appanel.flip,
+                        clock = this;
+
+                    if (Appanel.profile === undefined) {
+                        clock.flip.call(clock);
+                    }
+
+                    var theme = Appanel.profile.theme,
+                        util = Appanel.util,
+                        s = flip.groups[0],
+                        m = flip.groups[1],
+                        h = flip.groups[2];
+
+                    theme.add('flipSecond', 'fill', util.merge([s.topPart.find("#pad"), s.bottomPart.find("#pad"), s.topFlip.find("#pad"), s.bottomFlipPad]), 'handSecond');
+                    theme.add('flipMinute', 'fill', util.merge([m.topPart.find("#pad"), m.bottomPart.find("#pad"), m.topFlip.find("#pad"), m.bottomFlipPad]), 'handMinute');
+                    theme.add('flipHour', 'fill', util.merge([h.topPart.find("#pad"), h.bottomPart.find("#pad"), h.topFlip.find("#pad"), h.bottomFlipPad]), 'handHour');
+                    theme.add('fnumbers', ['fill', 'stroke'], util.merge([
+                        s.topPartNumber, s.bottomPartNumber, s.topFlipNumber, s.bottomFlipNumber,
+                        m.topPartNumber, m.bottomPartNumber, m.topFlipNumber, m.bottomFlipNumber,
+                        h.topPartNumber, h.bottomPartNumber, h.topFlipNumber, h.bottomFlipNumber
+                    ]), 'numbers');
+                    theme.add('fline', 'fill', util.merge([s.$.find('#center-line'), m.$.find('#center-line'), h.$.find('#center-line')]), 'background');
+
+                    /*TODO: add UI components*/
+
+                    theme.refresh();
+                },
+                init: function () {
+                    this.handle();
+                    if (Appanel.clock.flip === undefined) {
+                        Appanel.clock.flip = Appanel.clock.initProfile;
+                        Appanel.clock.initProfile = this.initProfile;
+                    } else {
+                        this.initProfile();
+                    }
+                }
+            },
+
             setTimeout: function (func, millisec) {
                 this.clearTimeout();
                 this.timeout = setTimeout(func, millisec);
@@ -398,6 +513,12 @@
                 new FlipGroup(),
                 new FlipGroup()
             ],
+
+            reposition: function () {
+                this.groups[0].reposition();
+                this.groups[1].reposition();
+                this.groups[2].reposition();
+            },
 
             setDirectNumber: function (number, groupIndex) {
                 var group = this.groups[groupIndex];
@@ -496,41 +617,7 @@
                 this.initGroup('#second-parts', 0);
                 this.initGroup('#minute-parts', 1);
                 this.initGroup('#hour-parts', 2);
-
-                var postInitProfile = function () {
-                    var flip = Appanel.flip,
-                        clock = Appanel.clock;
-
-                    if (Appanel.profile === undefined) {
-                        clock.flipInitProfile.call(clock);
-                    }
-
-                    var theme = Appanel.profile.theme,
-                        util = Appanel.util,
-                        s = flip.groups[0],
-                        m = flip.groups[1],
-                        h = flip.groups[2];
-
-                    theme.add('flipSecond', 'fill', util.merge([s.topPart.find("#pad"), s.bottomPart.find("#pad"), s.topFlip.find("#pad"), s.bottomFlipPad]), 'handSecond');
-                    theme.add('flipMinute', 'fill', util.merge([m.topPart.find("#pad"), m.bottomPart.find("#pad"), m.topFlip.find("#pad"), m.bottomFlipPad]), 'handMinute');
-                    theme.add('flipHour', 'fill', util.merge([h.topPart.find("#pad"), h.bottomPart.find("#pad"), h.topFlip.find("#pad"), h.bottomFlipPad]), 'handHour');
-                    theme.add('fnumbers', ['fill', 'stroke'], util.merge([
-                        s.topPartNumber, s.bottomPartNumber, s.topFlipNumber, s.bottomFlipNumber,
-                        m.topPartNumber, m.bottomPartNumber, m.topFlipNumber, m.bottomFlipNumber,
-                        h.topPartNumber, h.bottomPartNumber, h.topFlipNumber, h.bottomFlipNumber
-                    ]), 'numbers');
-                    theme.add('fline', 'fill', util.merge([s.$.find('#center-line'), m.$.find('#center-line'), h.$.find('#center-line')]), 'background');
-                    theme.refresh();
-                };
-
-                console.debug('Appanel.clock.flipInitProfile=', Appanel.clock.flipInitProfile);
-                if (Appanel.clock.flipInitProfile === undefined) {
-                    Appanel.clock.flipInitProfile = Appanel.clock.initProfile;
-                    Appanel.clock.initProfile = postInitProfile;
-                } else {
-                    postInitProfile();
-                }
-
+                this.ui.init();
             },
 
             start: function () {
@@ -549,10 +636,7 @@
 
                 $(Appanel.clock).on('resize', function () {
                     Appanel.flip.setTimeout(function () {
-                        var groups = Appanel.flip.groups;
-                        groups[0].reposition();
-                        groups[1].reposition();
-                        groups[2].reposition();
+                        Appanel.flip.reposition();
                     }, 100);
                 });
             }
