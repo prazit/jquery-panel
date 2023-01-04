@@ -165,7 +165,10 @@
             <div class="inline-column combinations css-trans margin--x10 rounded--x20 border--x4 border--c3">
                 <span class="combination-list top-child background--c3 opacity--x70 padding--x10 center-text">Presets</span>
                 <div class="ui scrollable combination-container">
-                    <span class="combination-item button child background--c1 background--c0--at padding--x10 left-text">combination-name</span>
+                    <div class="columns">
+                        <div class="column-9-10 combination-item button top-padding--x7 background--c1 background--c0--at left-text">&nbsp;combination-name</div>
+                        <div class="column-1-10 save button symbol sym-save symbol--x2 symbol--c3 background--c1 background--c0--at"></div>
+                    </div>
                 </div>
                 <span class="add-combination bottom-child button background--c3 background--c0--at opacity--x70 padding--x10 center-text">+</span>
             </div>
@@ -215,16 +218,16 @@
                 var changed = this.options.useSweep !== useSweep;
                 this.options.useSweep = useSweep;
 
-                var active,inactive;
+                var active, inactive;
                 if (useSweep) {
                     inactive = '.analogue-move';
                     active = '.smooth-move';
-                }else{
+                } else {
                     active = '.analogue-move';
                     inactive = '.smooth-move';
                 }
-                $(active).css('background-color','yellow');
-                $(inactive).css('background-color','silver');
+                $(active).css('background-color', 'yellow');
+                $(inactive).css('background-color', 'silver');
 
                 if (changed && this.state === 'started') {
                     this.saveOptions();
@@ -416,7 +419,7 @@
                     comTemplate = comContainer[0].innerHTML,
                     count = profile.ids.length,
                     theme = profile.theme,
-                    themeProperty;
+                    themeProperty, button, saveButton;
 
                 // handle movement buttons
                 Appanel.map([
@@ -433,9 +436,14 @@
                 for (var i = 0; i < this.combinations.length; i++) {
                     comContainer.append(comTemplate.replace('combination-name', this.combinations[i].name));
                     button = comContainer.find('.combination-item').removeClass('combination-item');
+                    saveButton = comContainer.find('.save').removeClass('save');
                     Appanel.map([
                         [button, 'click', function (ev) {
                             Appanel.clock.loadCombination(ev.data.index);
+                        }, {name: this.combinations[i].name, index: i}],
+                        [saveButton, 'click', function (ev) {
+                            Appanel.clock.saveCombination(ev.data.name);
+                            Appanel.util.warn('SAVED', 'Preset : ' + ev.data.name + ':index(' + ev.data.index + ')')
                         }, {name: this.combinations[i].name, index: i}]
                     ]);
                 }
@@ -545,7 +553,7 @@
 
                 // handle color buttons
                 var colorPanel = $('.theme .colors'),
-                    title, button;
+                    title;
                 for (var i in theme) {
                     themeProperty = theme[i];
                     if (i.startsWith('jQuery') || $.isArray(themeProperty) || themeProperty.constructor === Function || themeProperty.sourceProperty != null) continue;
@@ -852,7 +860,11 @@
 
                     clockXDegree: attributes.clockXDegree,
                     clockYDegree: attributes.clockYDegree,
-                    clockZDegree: attributes.clockZDegree
+                    clockZDegree: attributes.clockZDegree,
+
+                    clockPerspective: attibutes.clockPerspective,
+                    clockPerspectiveXOrigin: attibutes.clockPerspectiveXOrigin,
+                    clockPerspectiveYOrigin: attibutes.clockPerspectiveYOrigin
                 }, (attributes.image === undefined) ? {video: attributes.video} : {image: attributes.image});
                 Appanel.set(this.name + ':backgrounds', this.backgrounds);
             },
@@ -1057,7 +1069,7 @@
 
                     if (combination.options === undefined) {
                         this.options = this.defaults.options;
-                    }else{
+                    } else {
                         this.options = combination.options;
                     }
                     this.setUseSweep(this.options.useSweep);
