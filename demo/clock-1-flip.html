@@ -438,11 +438,12 @@
                     ]);
                 },
                 initProfile: function () {
-                    /*Notice: Remember: this function will called from Appanel.clock*/
+                    /*Notice: Remember: this function will called from the Appanel.clock*/
                     var flip = Appanel.flip,
                         clock = this;
 
                     if (Appanel.profile === undefined) {
+                        /*Notice: Remember: original Appanel.clock.initProfile() has renamed to flip*/
                         clock.flip.call(clock);
                     }
 
@@ -450,17 +451,19 @@
                         util = Appanel.util,
                         s = flip.groups[0],
                         m = flip.groups[1],
-                        h = flip.groups[2];
+                        h = flip.groups[2],
+                        $seconds = util.merge([s.topPart.find("#pad"), s.bottomPart.find("#pad"), s.topFlip.find("#pad"), s.bottomFlipPad]);
+                    console.debug('$flipSecond =', $seconds);
 
-                    theme.add('flipSecond', 'fill', util.merge([s.topPart.find("#pad"), s.bottomPart.find("#pad"), s.topFlip.find("#pad"), s.bottomFlipPad]), 'handSecond');
-                    theme.add('flipMinute', 'fill', util.merge([m.topPart.find("#pad"), m.bottomPart.find("#pad"), m.topFlip.find("#pad"), m.bottomFlipPad]), 'handMinute');
-                    theme.add('flipHour', 'fill', util.merge([h.topPart.find("#pad"), h.bottomPart.find("#pad"), h.topFlip.find("#pad"), h.bottomFlipPad]), 'handHour');
+                    theme.add('flipSecond', 'fill', $seconds, 'handSecond', false);
+                    theme.add('flipMinute', 'fill', util.merge([m.topPart.find("#pad"), m.bottomPart.find("#pad"), m.topFlip.find("#pad"), m.bottomFlipPad]), 'handMinute', false);
+                    theme.add('flipHour', 'fill', util.merge([h.topPart.find("#pad"), h.bottomPart.find("#pad"), h.topFlip.find("#pad"), h.bottomFlipPad]), 'handHour', false);
                     theme.add('fnumbers', ['fill', 'stroke'], util.merge([
                         s.topPartNumber, s.bottomPartNumber, s.topFlipNumber, s.bottomFlipNumber,
                         m.topPartNumber, m.bottomPartNumber, m.topFlipNumber, m.bottomFlipNumber,
                         h.topPartNumber, h.bottomPartNumber, h.topFlipNumber, h.bottomFlipNumber
-                    ]), 'numbers');
-                    theme.add('fline', 'fill', util.merge([s.$.find('#center-line'), m.$.find('#center-line'), h.$.find('#center-line')]), 'background');
+                    ]), 'numbers', false);
+                    theme.add('fline', 'fill', util.merge([s.$.find('#center-line'), m.$.find('#center-line'), h.$.find('#center-line')]), 'background', false);
 
                     /*TODO: add UI components*/
 

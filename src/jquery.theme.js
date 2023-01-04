@@ -29,7 +29,13 @@
     window['Theme'] = function () {
         Object.assign(this, {
             theme: [],
-
+            themeIndex: function (name) {
+                let theme = this.theme;
+                for (let i = 0; i < theme.length; i++) {
+                    if (theme[i] === name) return i;
+                }
+                return -1;
+            },
             /**
              * Add/Replace Property.
              * @param name - define unique name for the property
@@ -37,14 +43,16 @@
              * @param target - jQuery Object from script like this: $('.your-target');
              * @param sourcePropertyName - existing property name to follow
              */
-            add: function (name, prop, target, sourcePropertyName) {
-                this.theme.push(name);
-                this[name] = {
+            add: function (name, prop, target, sourcePropertyName, allowUpdateElement) {
+                if (this.themeIndex(name) < 0) this.theme.push(name);
+                if (allowUpdateElement === undefined) allowUpdateElement = true;
+                var item = this[name] = {
                     name: name,
                     prop: prop,
                     element: target,
                     sourceProperty: sourcePropertyName,
                     child: [],
+                    allowUpdateElement: allowUpdateElement,
                     setProperty: function (property, value, defaultValue) {
                         if (CSS.supports(property, value)) {
                             this.element.css(property, value);
@@ -82,13 +90,26 @@
                         return this.color;
                     },
                     updateElement: function () {
-                        this.element = $(this.element.selector);
+                        if (this.allowUpdateElement) this.element = $(this.element.selector);
                     }
                 };
                 if (sourcePropertyName !== undefined) {
-                    this[sourcePropertyName].child.push(this[name]);
+                    var child = this[sourcePropertyName].child,
+                        childCount = child.length,
+                        childIndex = -1;
+                    for (let i = 0; i < childCount; i++) {
+                        if (child[i].name === name) {
+                            childIndex = i;
+                            break;
+                        }
+                    }
+                    if (childIndex < 0) {
+                        child.push(item);
+                    } else {
+                        child[childIndex] = item;
+                    }
                 }
-                return this[name];
+                return item;
             },
 
             /**
