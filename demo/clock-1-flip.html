@@ -342,14 +342,32 @@
                     this.reposition();
                 }
             },
-            toCenterOfClock: function () {
+            toCenterOfClock: function (clockYDegree) {
                 /*Notice: move origin to center of clock*/
                 var width = parseFloat(this.$.css('width')),
                     center = width * 0.5;
+                if (clockYDegree !== undefined && clockYDegree !== 0) {
+                    /* Remember:
+                     * clockYDegree > 0 = move center to left side
+                     * clockYDegree < 0 = move center to right side
+                     * percent = -1 === clockYDegee = -maxDegree
+                     * percent = 0 === clockYDegee = 0
+                     * percent = 1 === clockYDegree = maxDegree
+                     * relative-range = 0 to width/2
+                     *
+                     **/
+                    var maxDegree = 10,
+                        percent = (clockYDegree % 360) / maxDegree * -1;
+                    console.warn('to Degree Of Y-Rotation:' + `center = ${center}, relative = ${center * percent}, percent = ${percent}, degree = ${clockYDegree}`);
+                    center += center * percent;
+                    this.perspective = 450 + (Math.abs(percent) * 450);
+                } else {
+                    this.perspective = 450;
+                }
                 this.originX = center;
                 this.originY = center;
             },
-            toCenterOfFlipper: function () {
+            toCenterOfFlipper: function (clockYDegree) {
                 /*Notice: move origin to center of flipper*/
                 var width = parseFloat(this.$.css('width')),
                     center = width * 0.5,
@@ -357,7 +375,24 @@
                     flipperX = parseFloat(this.bottomFlipPad.css('x')) * ratio,
                     flipperW = parseFloat(this.bottomFlipPad.css('width')) * ratio,
                     centerX = (flipperW * 0.5) + flipperX;
-                console.debug('width:', width, ', centerX:', centerX, ', flipperX:', flipperX, ', flipperW:', flipperW);
+                if (clockYDegree !== undefined && clockYDegree !== 0) {
+                    /* Remember:
+                     * clockYDegree > 0 = move center to left side
+                     * clockYDegree < 0 = move center to right side
+                     * percent = -1 === clockYDegee = -maxDegree
+                     * percent = 0 === clockYDegee = 0
+                     * percent = 1 === clockYDegree = maxDegree
+                     * relative-range = 0 to width/2
+                     *
+                     **/
+                    var maxDegree = 10,
+                        percent = (clockYDegree % 360) / maxDegree * -1;
+                    console.warn('to Degree Of Y-Rotation:' + `center = ${center}, relative = ${center * percent}, percent = ${percent}, degree = ${clockYDegree}`);
+                    centerX += center * percent;
+                    this.perspective = 450 + (Math.abs(percent) * 450);
+                } else {
+                    this.perspective = 450;
+                }
                 this.originX = centerX;
                 this.originY = center;
             },
@@ -374,23 +409,29 @@
                     center = width * 0.5,
                     diffX = screenCenterX - (center + left),
                     diffY = screenCenterY - (center + top);
+                this.perspective = 450 + (900 * Math.abs(center / diffX));
                 this.originX = center + diffX;
                 this.originY = center + diffY;
             },
             reposition: function () {
-                var buttons = $('.flip-ui .button').css('fill', 'silver');
+                var buttons = $('.flip-ui .button').css('fill', 'silver'),
+                    clock = Appanel.clock;
 
-                switch (Appanel.clock.options.originType) {
+                switch (clock.options.originType) {
                     case 2:
-                        this.toCenterOfClock();
+                        this.toCenterOfClock(clock.backgroundAttributes.clockYDegree);
                         buttons.filter('.flip-origin-2').css('fill', 'yellow');
                         break;
                     case 3:
-                        this.toCenterOfScreen();
+                        if (clock.backgroundAttributes.clockYDegree !== 0) {
+                            this.toCenterOfClock(clock.backgroundAttributes.clockYDegree);
+                        } else {
+                            this.toCenterOfScreen();
+                        }
                         buttons.filter('.flip-origin-3').css('fill', 'yellow');
                         break;
                     default:
-                        this.toCenterOfFlipper();
+                        this.toCenterOfFlipper(clock.backgroundAttributes.clockYDegree);
                         buttons.filter('.flip-origin-1').css('fill', 'yellow');
                 }
                 this.attributeChanged();

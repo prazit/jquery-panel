@@ -181,15 +181,14 @@
 <script>
     Appanel({
         clock: {
-            options: {
-                useSweep: false,
-                speed: 1
-            },
-
             name: 'analogue-clock',
             state: 'initialized',
 
             defaults: {
+                options: {
+                    useSweep: false,
+                    speed: 1
+                },
                 clocks: [],
                 backgrounds: [],
                 combinations: [],
@@ -1056,10 +1055,12 @@
                     Appanel.profile.load(combination.theme);
                     $('.profile-name').text(combination.theme);
 
-                    if (combination.options !== undefined) {
+                    if (combination.options === undefined) {
+                        this.options = this.defaults.options;
+                    }else{
                         this.options = combination.options;
-                        this.setUseSweep(combination.options.useSweep);
                     }
+                    this.setUseSweep(this.options.useSweep);
 
                     Appanel.util.disableRefresh = false;
                 });
