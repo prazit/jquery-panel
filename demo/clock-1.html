@@ -80,11 +80,10 @@
 
 <!-- background -->
 <div class="background-image fit-height fit-width layer-1">
-</div>
-
-<!-- filter -->
-<div class="out-side on-top-left fit-width fit-height layer-2">
-    <h1 class="on-top footprint padding--x10 opacity--x0 opacity--x100--at">Analogue Clock v1</h1>
+    <!-- filter -->
+    <div class="out-side on-top-left fit-width fit-height">
+        <h1 class="on-top footprint padding--x10 opacity--x0 opacity--x100--at">Analogue Clock v1</h1>
+    </div>
 </div>
 
 <!-- clock -->
@@ -298,6 +297,7 @@
                     $('.zoom-ui .volume').off('mousedown')
                         .on('mousedown', function (ev) {
                             Appanel.clock.ui.zoom = {
+                                calculated: true,
                                 startX: ev.clientX,
                                 startY: ev.clientY,
                                 startXY: ev.clientX + ev.clientY,
@@ -317,16 +317,20 @@
                                         return;
                                     }
 
+                                    var zoom = Appanel.clock.ui.zoom;
+                                    if (!zoom.calculated) return;
+                                    zoom.calculated = false;
+
                                     /*zoom by relative position*/
-                                    var zoom = Appanel.clock.ui.zoom,
-                                        diffX = (ev.clientX + ev.clientY) - zoom.startXY,
-                                        newZoom = zoom.startZoom + (diffX * 0.001);
+                                    var diffX = (ev.clientX + ev.clientY) - zoom.startXY,
+                                        newZoom = zoom.startZoom + (diffX * 0.001),
+                                        $body = $(ev.currentTarget);
                                     newZoom = Math.max(newZoom, zoom.minZoom);
                                     newZoom = Math.min(newZoom, zoom.maxZoom);
                                     zoom.currentX = ev.clientX;
                                     zoom.currentY = ev.clientY;
                                     zoom.currentZoom = newZoom;
-                                    $(ev.currentTarget).css('zoom', newZoom);
+                                    $body.css('zoom', newZoom);
 
                                     /*present volume degree*/
                                     var length = zoom.maxZoom - zoom.minZoom,
@@ -336,6 +340,28 @@
                                     zoom.currentPercent = percent;
                                     zoom.currentDegree = degree;
                                     zoom.volume.css('transform', 'rotate(' + degree + 'deg)');
+
+                                    /* center the clock */
+                                    window.getComputedStyle(document.body).display;//forcing reflow
+                                    var rect = zoom.volume[0].getBoundingClientRect(),
+                                        pos = {
+                                            marginX: parseFloat($body.css('margin-left')),
+                                            marginY: parseFloat($body.css('margin-top')),
+                                            centerX: (rect.left + rect.right) * 0.5 * zoom.currentZoom,
+                                            centerY: (rect.top + rect.bottom) * 0.5 * zoom.currentZoom,
+                                            screenCX: window.innerWidth * 0.5,
+                                            screenCY: window.innerHeight * 0.5
+                                        };
+                                    pos.moveToX = pos.marginX + (pos.screenCX - pos.centerX);
+                                    pos.moveToY = pos.marginY + (pos.screenCY - pos.centerY);
+
+                                    $body
+                                        .css('margin-left', pos.moveToX)
+                                        .css('margin-top', pos.moveToY);
+                                    console.debug('rect:', rect);
+                                    console.debug('pos:', pos);
+
+                                    zoom.calculated = true;
                                 });
                         })
                         .on('mouseup', function (ev) {
@@ -1203,14 +1229,14 @@
                 }
 
                 if (attributes.image === undefined) {
-                    $background.css('background-image', '');
-                    $background.html('<video autoplay muted loop class="fit-width on-top-left">' +
+                    $background.css('background-image', '').find('video').remove();
+                    $background.prepend('<video autoplay muted loop class="fit-width on-top-left">' +
                         '    <source src="' + attributes.video + '" type="video/mp4">' +
                         '</video>');
                 } else {
                     $background
-                        .text('')
-                        .css('background-image', 'url(' + attributes.image + ')');
+                        .css('background-image', 'url(' + attributes.image + ')')
+                        .find('video').remove();
                 }
 
                 $('.out-side').css('opacity', (100 * this.backgroundAttributes.imageFilter) + '%');
