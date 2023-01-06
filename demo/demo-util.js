@@ -9,7 +9,27 @@ Appanel({
                 card: '<div class="message-card hidden css-trans rounded--x10 margin--x10 padding--x10 background--c3 message-classes">' +
                     '    <h1 class="symbol message-icon">&nbsp;message-title</h1>' +
                     '    <p class="text-classes">message-text</p>' +
-                    '</div>'
+                    '</div>',
+                types: {
+                    warn: {
+                        mainClasses: 'text--cred background--cyellow',
+                        icon: 'sym-warning',
+                        textClasses: 'text--c0',
+                        chainsClasses: 'ani-fadeInLeft'
+                    },
+                    error: {
+                        mainClasses: 'text--cyellow background--cred',
+                        icon: 'sym-times-circle',
+                        textClasses: '',
+                        chainsClasses: 'ani-rotateInUpLeft'
+                    },
+                    info: {
+                        mainClasses: 'text--c0 background--cwhite',
+                        icon: 'sym-info-circle',
+                        textClasses: '',
+                        chainsClasses: 'ani-lightSpeedIn'
+                    }
+                }
             },
             removeAfter: [
                 /*0*/'<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"' +
@@ -57,7 +77,7 @@ Appanel({
                 '            stroke-dasharray="31.415926535897932384626433832795"/>' +
                 '</svg>'
             ],
-            seeNMove: /*'<div class="seenmove-panel opacity--x0" style="overflow:hidden;max-width:0px;">' +*/
+            seeNMove:
                 '    <div class="property fit-width">' +
                 '        <div>' +
                 '            <b class="label fweight--x700">property-label:</b>' +
@@ -67,56 +87,37 @@ Appanel({
                 '            <input class="input column-1-2" type="number" value="property-value" step="property-step" class="text--c0"/>' +
                 '            <label class="display column-1-2 right-text">property-display</label>' +
                 '        </div>' +
-                '    </div>' /*+
-                '</div>'*/
+                '    </div>'
         },
 
         error: function (title, text, seconds) {
-            this.message(title,text,seconds,'error');
+            this.message(title, text, seconds, this.defaults.message.types.error);
         },
 
         warn: function (title, text, seconds) {
-            this.message(title,text,seconds,'warn');
+            this.message(title, text, seconds, this.defaults.message.types.warn);
         },
 
         info: function (title, text, seconds) {
-            this.message(title,text,seconds,'info');
+            this.message(title, text, seconds, this.defaults.message.types.info);
         },
 
         message: function (title, text, seconds, type) {
             var $container = $('.message-container'),
                 $message = $('.message-card'),
-                html = $message.length === 0 ? this.defaults.message.card : $message[0].outerHTML,
-            mainClasses, icon, textClasses;
+                html = $message.length === 0 ? this.defaults.message.card : $message[0].outerHTML;
 
             if ($container.length === 0) {
                 $('body').append(this.defaults.message.container);
                 $container = $($container.selector);
             }
 
-            if (type === undefined) type = 'info';
-            switch (type) {
-                case'warn':
-                    mainClasses = 'text--cred background--cyellow';
-                    icon = 'sym-warning';
-                    textClasses = 'text--c0';
-                    break;
-                case 'error':
-                    mainClasses = 'text--cyellow background--cred';
-                    icon = 'sym-times-circle';
-                    textClasses = '';
-                    break;
-                default: //case 'info':
-                    mainClasses = 'text--c0 background--cwhite';
-                    icon = 'sym-info-circle';
-                    textClasses = '';
-            }
-
+            if (type === undefined) type = this.defaults.message.types.info;
             $container.append(
                 html
-                    .replace('message-classes', mainClasses)
-                    .replace('message-icon', icon)
-                    .replace('text-classes', textClasses)
+                    .replace('message-classes', type.mainClasses)
+                    .replace('message-icon', type.icon)
+                    .replace('text-classes', type.textClasses)
                     .replace('message-title', title)
                     .replace('message-text', text)
             );
@@ -124,6 +125,8 @@ Appanel({
             $message = $container.find('.message-card')
                 .removeClass('message-card')
                 .removeClass('hidden');
+
+            Appanel.chains($message, type.chainsClasses);
 
             this.removeAfter(seconds === undefined ? 6 : seconds, $message);
         },
@@ -299,7 +302,10 @@ Appanel({
             $e.append(html.replace('hidden', ''));
             var timeout = setTimeout(function () {
                 clearTimeout(timeout);
-                $e.remove();
+                Appanel.chains($e, 'ani-fadeOutUp:0.8,hidden');
+                timeout = setTimeout(function () {
+                    $e.remove();
+                }, 1000);
             }, seconds * 1000);
             Appanel.chains($e.find('.circle-progress > .progress'), 'ani-hide-circle-progress:' + seconds);
         },

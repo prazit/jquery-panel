@@ -73,6 +73,25 @@
         .css-trans--x2 {
             transition-duration: 0.4s;
         }
+
+        .zoom-ui svg {
+            opacity: 0;
+        }
+
+        .zoom-ui:hover svg {
+            opacity: 1;
+        }
+
+        .volume circle,
+        .volume line {
+            cursor: grab;
+        }
+
+        .grabbing,
+        .grabbing .volume circle,
+        .grabbing .volume line {
+            cursor: grabbing;
+        }
     </style>
 </head>
 
@@ -187,26 +206,6 @@
 </div>
 
 <!-- UI:Zoom Panel -->
-<style>
-    .zoom-ui svg {
-        opacity: 0;
-    }
-
-    .zoom-ui:hover svg {
-        opacity: 1;
-    }
-
-    .volume circle,
-    .volume line {
-        cursor: grab;
-    }
-
-    .grabbing,
-    .grabbing .volume circle,
-    .grabbing .volume line {
-        cursor: grabbing;
-    }
-</style>
 <div class="cover zoom-ui">
     <div class="zoom-ui clock">
         <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve" viewBox="0 0 200 200" class="fit-width volume css-trans--x2">
@@ -259,7 +258,69 @@
                     ui.setTimeout(function () {
                         var maxHeight = window.innerHeight * 0.5;
                         $('.ui.scrollable').css('max-height', maxHeight);
+                        ui.setZoom(ui.zoom.currentZoom);
                     }, 1000);
+                },
+
+                zoom: {
+                    currentZoom: 1,
+                    minZoom: 1,
+                    maxZoom: 2,
+                    maxDegree: 350,
+                    volume: $('.zoom-ui .volume').parent(),
+                    body: $('body'),
+                },
+
+                setZoom: function (newZoom) {
+                    var zoom = this.zoom,
+                        $body = zoom.body.css('zoom', newZoom);
+                    if (newZoom === zoom.minZoom) {
+                        $body
+                            .css('margin-left', 0)
+                            .css('margin-top', 0);
+                        zoom.currentZoom = newZoom;
+                        return;
+                    }
+
+                    /*present volume degree*/
+                    var length = zoom.maxZoom - zoom.minZoom,
+                        current = newZoom - zoom.minZoom,
+                        percent = current / length,
+                        degree = percent * zoom.maxDegree;
+                    zoom.currentPercent = percent;
+                    zoom.currentDegree = degree;
+                    zoom.volume.css('transform', 'rotate(' + degree + 'deg)');
+
+                    /* center the clock */
+                    window.getComputedStyle(document.body).display;//forcing reflow
+                    var rect = zoom.volume[0].getBoundingClientRect(),
+                        pos = {
+                            marginX: parseFloat($body.css('margin-left')),
+                            marginY: parseFloat($body.css('margin-top')),
+                            centerX: (rect.left + rect.right) * 0.5 * newZoom,
+                            centerY: (rect.top + rect.bottom) * 0.5 * newZoom,
+                            screenCX: window.innerWidth * 0.5,
+                            screenCY: window.innerHeight * 0.5
+                        },
+                        a = Appanel.clock.backgroundAttributes;
+                    pos.moveToX = pos.marginX + (pos.screenCX - pos.centerX);
+                    pos.moveToY = pos.marginY + (pos.screenCY - pos.centerY);
+
+                    /*TODO: do not show space on the right and bottom*/
+                    /*if (a.imageSize === a.screenH) {
+                        Appanel.util.info('need to correct width','')
+                    }*/
+
+                    /*do not show space on the left and top*/
+                    pos.moveToX = Math.min(pos.moveToX, 0);
+                    pos.moveToY = Math.min(pos.moveToY, 0);
+
+                    $body
+                        .css('margin-left', pos.moveToX)
+                        .css('margin-top', pos.moveToY);
+
+                    /*Notice: no need to save zoom value with the combination */
+                    zoom.currentZoom = newZoom;
                 },
 
                 captureSwitch: function (switchPosition) {
@@ -296,28 +357,26 @@
                     /*handle zoom volume on ui-panel*/
                     $('.zoom-ui .volume').off('mousedown')
                         .on('mousedown', function (ev) {
-                            Appanel.clock.ui.zoom = {
+                            var zoom = Appanel.clock.ui.zoom;
+                            Appanel.clock.ui.zoom = Object.assign(zoom, {
                                 calculated: true,
                                 startX: ev.clientX,
                                 startY: ev.clientY,
                                 startXY: ev.clientX + ev.clientY,
-                                startZoom: parseFloat($('body').css('zoom')),
-                                minZoom: 1,
-                                maxZoom: 2,
-                                maxDegree: 350,
-                                volume: $(ev.currentTarget).parent()
-                            };
-                            $('body').addClass('grabbing')
+                                startZoom: parseFloat(zoom.body.css('zoom'))
+                            });
+                            zoom.body.addClass('grabbing')
                                 .on('mousemove', function (ev) {
+                                    var ui = Appanel.clock.ui,
+                                        zoom = ui.zoom;
                                     if (ev.buttons === 0) {
                                         /*stop grabbing*/
-                                        $(ev.currentTarget)
+                                        zoom.body
                                             .off('mousemove')
                                             .removeClass('grabbing');
                                         return;
                                     }
 
-                                    var zoom = Appanel.clock.ui.zoom;
                                     if (!zoom.calculated) return;
                                     zoom.calculated = false;
 
@@ -329,45 +388,10 @@
                                     newZoom = Math.min(newZoom, zoom.maxZoom);
                                     zoom.currentX = ev.clientX;
                                     zoom.currentY = ev.clientY;
-                                    zoom.currentZoom = newZoom;
-                                    $body.css('zoom', newZoom);
 
-                                    /*present volume degree*/
-                                    var length = zoom.maxZoom - zoom.minZoom,
-                                        current = zoom.currentZoom - zoom.minZoom,
-                                        percent = current / length,
-                                        degree = percent * zoom.maxDegree;
-                                    zoom.currentPercent = percent;
-                                    zoom.currentDegree = degree;
-                                    zoom.volume.css('transform', 'rotate(' + degree + 'deg)');
-
-                                    /* center the clock */
-                                    window.getComputedStyle(document.body).display;//forcing reflow
-                                    var rect = zoom.volume[0].getBoundingClientRect(),
-                                        pos = {
-                                            marginX: parseFloat($body.css('margin-left')),
-                                            marginY: parseFloat($body.css('margin-top')),
-                                            centerX: (rect.left + rect.right) * 0.5 * zoom.currentZoom,
-                                            centerY: (rect.top + rect.bottom) * 0.5 * zoom.currentZoom,
-                                            screenCX: window.innerWidth * 0.5,
-                                            screenCY: window.innerHeight * 0.5
-                                        };
-                                    pos.moveToX = pos.marginX + (pos.screenCX - pos.centerX);
-                                    pos.moveToY = pos.marginY + (pos.screenCY - pos.centerY);
-
-                                    $body
-                                        .css('margin-left', pos.moveToX)
-                                        .css('margin-top', pos.moveToY);
-                                    console.debug('rect:', rect);
-                                    console.debug('pos:', pos);
-
+                                    ui.setZoom(newZoom);
                                     zoom.calculated = true;
                                 });
-                        })
-                        .on('mouseup', function (ev) {
-                            $('body')
-                                .off('mousemove')
-                                .removeClass('grabbing');
                         });
 
                     $(window).on('resize', this.resize);
@@ -399,8 +423,10 @@
 
             loadOptions: function () {
                 var options = Appanel.get(this.name + ':options');
+
+                this.options = this.defaults.options;
                 if (options != null) {
-                    this.options = options;
+                    this.options = Object.assign(this.options, options);
                 }
             },
 
@@ -638,7 +664,7 @@
                         }, {name: this.combinations[i].name, index: i}],
                         [saveButton, 'click', function (ev) {
                             Appanel.clock.saveCombination(ev.data.name);
-                            Appanel.util.warn('SAVED', 'Preset : ' + ev.data.name + ':index(' + ev.data.index + ')')
+                            Appanel.util.info('SAVED', 'Preset : ' + ev.data.name + ':index(' + ev.data.index + ')')
                         }, {name: this.combinations[i].name, index: i}]
                     ]);
                 }
@@ -1017,8 +1043,8 @@
                     if (this.backgroundAttributes === undefined) {
                         backgroundIndex = 0;
                     } else {
-                        Appanel.util.warn('WARNING', 'backgroundIndex ' + backgroundIndex + ' is out of bound, possible index are 0 - ' + (this.backgrounds.length + 1));
-                        return;
+                        Appanel.util.error('ERROR', 'backgroundIndex ' + backgroundIndex + ' is out of bound, possible index are 0 - ' + (this.backgrounds.length + 1));
+                        backgroundIndex = 0;
                     }
                 }
 
@@ -1271,10 +1297,9 @@
                     Appanel.profile.load(combination.theme);
                     $('.profile-name').text(combination.theme);
 
-                    if (combination.options === undefined) {
-                        this.options = this.defaults.options;
-                    } else {
-                        this.options = combination.options;
+                    this.options = this.defaults.options;
+                    if (combination.options !== undefined) {
+                        this.options = Object.assign(this.options, combination.options);
                     }
                     this.setUseSweep(this.options.useSweep);
 
@@ -1327,7 +1352,7 @@
                     });
                 this.lastLoadJSON.fail(function (ev) {
                     //console.error('load ', name, 'failed at ', new Date().toLocaleTimeString(), ':', ev.status, ev.statusText);
-                    Appanel.util.warn('WARNING', 'load ' + name + ' json failed with ' + ev.status + ':' + ev.statusText, 30);
+                    Appanel.util.error('ERROR', 'load ' + name + ' json failed with ' + ev.status + ':' + ev.statusText, 30);
                     Appanel.clock[name] = Appanel.clock.defaults[name];
 
                     var loadStatus = ev.status;
@@ -1353,7 +1378,7 @@
                     this.loadJSON('clocks', function (status) {
                         if (status === 'parsererror') {
                             this.clocks = [];
-                            Appanel.util.warn('IMPORTANT', 'load clock list failed the "' + Appanel.util.myURL() + '-clocks.json" may be corrupted', 20);
+                            Appanel.util.error('IMPORTANT', 'load clock list failed the "' + Appanel.util.myURL() + '-clocks.json" may be corrupted', 20);
                             return;
                         }
                         console.info('Clocks loaded from ' + status);
@@ -1362,7 +1387,7 @@
                     this.loadJSON('backgrounds', function (status) {
                         if (status === 'parsererror') {
                             this.backgrounds = [];
-                            Appanel.util.warn('IMPORTANT', 'load background list failed the "' + Appanel.util.myURL() + '-backgrounds.json" may be corrupted', 20);
+                            Appanel.util.error('IMPORTANT', 'load background list failed the "' + Appanel.util.myURL() + '-backgrounds.json" may be corrupted', 20);
                             return;
                         }
                         console.info('Backgrounds loaded from ' + status);
@@ -1370,7 +1395,7 @@
                     this.loadJSON('combinations', function (status) {
                         if (status === 'parsererror') {
                             this.backgrounds = [];
-                            Appanel.util.warn('IMPORTANT', 'load combination list failed the "' + Appanel.util.myURL() + '-combinations.json" may be corrupted', 20);
+                            Appanel.util.error('IMPORTANT', 'load combination list failed the "' + Appanel.util.myURL() + '-combinations.json" may be corrupted', 20);
                         }
                         console.info('Combinations loaded from ' + status);
                     });
