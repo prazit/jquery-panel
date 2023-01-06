@@ -77,11 +77,11 @@
     }
 
     .flip-ui svg {
-        opacity: 0%;
+        opacity: 0;
     }
 
     .flip-ui:hover svg {
-        opacity: 100%;
+        opacity: 1;
     }
 
     .flip-ui:hover .flip-origin-1 {
@@ -107,19 +107,6 @@
     }
 </style>
 
-<div class="clock background">
-    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
-         viewBox="0 0 200 200"
-         stroke="transparent"
-         fill="#000033"
-         style="width:100%">
-        <circle cx="100" cy="100" r="98"
-                stroke-opacity="1" stroke-width="2"
-                stroke-linecap="butt"
-                stroke-dashoffset="0" stroke-dasharray="0"/>
-    </svg>
-</div>
-
 <div class="clock numbers">
     <svg></svg>
 </div>
@@ -132,71 +119,20 @@
 
 <div class="clock one minutes">
     <div class="clock number-id">
-        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
-             viewBox="0 0 200 200"
-             class="opacity--x50"
-             style="width:100%">
-            <line x1="100" x2="100" y1="5" y2="5" stroke-linecap="round" stroke-width="2"></line>
-        </svg>
+        <svg></svg>
     </div>
 </div>
 
 <div class="clock second">
-    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
-         viewBox="0 0 200 200"
-         stroke="gold"
-         fill="gold"
-         style="width:100%">
-        <circle class='opacity--x50' cx="100" cy="100" r="78"
-                fill="transparent"
-                stroke-opacity="1" stroke-width="2"
-                stroke-linecap="butt"
-                stroke-dashoffset="0" stroke-dasharray="2"/>
-        <line x1="100" x2="100" y1="21" y2="23" stroke-width="2" stroke-linecap="round"></line>
-    </svg>
+    <svg></svg>
 </div>
 
 <div class="clock minute">
-    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
-         viewBox="0 0 200 200"
-         stroke="silver"
-         fill="silver"
-         style="width:100%">
-        <circle class='opacity--x50' cx="100" cy="100" r="60"
-                fill="transparent"
-                stroke-opacity="1" stroke-width="5"
-                stroke-linecap="butt"
-                stroke-dashoffset="0" stroke-dasharray="2"/>
-        <line x1="100" x2="100" y1="38" y2="42" stroke-width="2.7" stroke-linecap="round"></line>
-    </svg>
+    <svg></svg>
 </div>
 
 <div class="clock hour">
-    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
-         viewBox="0 0 200 200"
-         stroke="red"
-         fill="red"
-         style="width:100%">
-        <circle class='opacity--x50' cx="100" cy="100" r="40"
-                fill="transparent"
-                stroke-opacity="1" stroke-width="7"
-                stroke-linecap="butt"
-                stroke-dashoffset="0" stroke-dasharray="2"/>
-        <line x1="100" x2="100" y1="57" y2="63" stroke-width="3.5" stroke-linecap="round"></line>
-    </svg>
-</div>
-
-<div class="clock frame">
-    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
-         viewBox="0 0 200 200"
-         stroke="gold"
-         fill="transparent"
-         style="width:100%">
-        <circle cx="100" cy="100" r="98"
-                stroke-opacity="1" stroke-width="2"
-                stroke-linecap="butt"
-                stroke-dashoffset="0" stroke-dasharray="0"/>
-    </svg>
+    <svg></svg>
 </div>
 
 <div id="second-parts" class="clock sysfont flipper">
@@ -207,7 +143,7 @@
             <rect x="0" y="0" width="300" height="150"></rect>
         </clipPath>
         <rect id="pad" x="205" y="110" width="80" height="80" rx="10" clip-path="url(#top-mask)"></rect>
-        <text id="number" x="205" y="178" stroke-width="0" clip-path="url(#top-mask)">00</text>
+        <text id="number" x="205" y="178" stroke-width="0" clip-path="url(#top-mask)"></text>
     </svg>
     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
          viewBox="0 0 300 300"
@@ -216,19 +152,19 @@
             <rect x="0" y="150" width="300" height="150"></rect>
         </clipPath>
         <rect id="pad" x="205" y="110" width="80" height="80" rx="10" clip-path="url(#bottom-mask)"></rect>
-        <text id="number" x="205" y="178" stroke-width="0" clip-path="url(#bottom-mask)">00</text>
+        <text id="number" x="205" y="178" stroke-width="0" clip-path="url(#bottom-mask)"></text>
     </svg>
     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
          viewBox="0 0 300 300"
          id="top-flip" class="hidden ani-reset-top-flip">
         <rect id="pad" x="205" y="110" width="80" height="80" rx="10" clip-path="url(#top-mask)"></rect>
-        <text id="number" x="205" y="178" stroke-width="0" clip-path="url(#top-mask)">00</text>
+        <text id="number" x="205" y="178" stroke-width="0" clip-path="url(#top-mask)"></text>
     </svg>
     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
          viewBox="0 0 300 300"
          id="bottom-flip" class="hidden ani-reset-bottom-flip">
         <rect id="pad" x="205" y="110" width="80" height="80" rx="10" clip-path="url(#bottom-mask)"></rect>
-        <text id="number" x="205" y="178" stroke-width="0" clip-path="url(#bottom-mask)">00</text>
+        <text id="number" x="205" y="178" stroke-width="0" clip-path="url(#bottom-mask)"></text>
     </svg>
     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
          viewBox="0 0 300 300"
@@ -242,25 +178,25 @@
          viewBox="0 0 300 300"
          id="top-part">
         <rect id="pad" x="110" y="110" width="80" height="80" rx="10" clip-path="url(#top-mask)"></rect>
-        <text id="number" x="109.5" y="178" stroke-width="0" clip-path="url(#top-mask)">00</text>
+        <text id="number" x="109.5" y="178" stroke-width="0" clip-path="url(#top-mask)"></text>
     </svg>
     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
          viewBox="0 0 300 300"
          id="bottom-part">
         <rect id="pad" x="110" y="110" width="80" height="80" rx="10" clip-path="url(#bottom-mask)"></rect>
-        <text id="number" x="109.5" y="178" stroke-width="0" clip-path="url(#bottom-mask)">00</text>
+        <text id="number" x="109.5" y="178" stroke-width="0" clip-path="url(#bottom-mask)"></text>
     </svg>
     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
          viewBox="0 0 300 300"
          id="top-flip" class="hidden ani-reset-top-flip">
         <rect id="pad" x="110" y="110" width="80" height="80" rx="10" clip-path="url(#top-mask)"></rect>
-        <text id="number" x="109.5" y="178" stroke-width="0" clip-path="url(#top-mask)">00</text>
+        <text id="number" x="109.5" y="178" stroke-width="0" clip-path="url(#top-mask)"></text>
     </svg>
     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
          viewBox="0 0 300 300"
          id="bottom-flip" class="hidden ani-reset-bottom-flip">
         <rect id="pad" x="110" y="110" width="80" height="80" rx="10" clip-path="url(#bottom-mask)"></rect>
-        <text id="number" x="109.5" y="178" stroke-width="0" clip-path="url(#bottom-mask)">00</text>
+        <text id="number" x="109.5" y="178" stroke-width="0" clip-path="url(#bottom-mask)"></text>
     </svg>
     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
          viewBox="0 0 300 300"
@@ -274,25 +210,25 @@
          viewBox="0 0 300 300"
          id="top-part">
         <rect id="pad" x="15" y="110" width="80" height="80" rx="10" clip-path="url(#top-mask)"></rect>
-        <text id="number" x="14.5" y="178" stroke-width="0" clip-path="url(#top-mask)">00</text>
+        <text id="number" x="14.5" y="178" stroke-width="0" clip-path="url(#top-mask)"></text>
     </svg>
     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
          viewBox="0 0 300 300"
          id="bottom-part">
         <rect id="pad" x="15" y="110" width="80" height="80" rx="10" clip-path="url(#bottom-mask)"></rect>
-        <text id="number" x="14.5" y="178" stroke-width="0" clip-path="url(#bottom-mask)">00</text>
+        <text id="number" x="14.5" y="178" stroke-width="0" clip-path="url(#bottom-mask)"></text>
     </svg>
     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
          viewBox="0 0 300 300"
          id="top-flip" class="hidden ani-reset-top-flip">
         <rect id="pad" x="15" y="110" width="80" height="80" rx="10" clip-path="url(#top-mask)"></rect>
-        <text id="number" x="14.5" y="178" stroke-width="0" clip-path="url(#top-mask)">00</text>
+        <text id="number" x="14.5" y="178" stroke-width="0" clip-path="url(#top-mask)"></text>
     </svg>
     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
          viewBox="0 0 300 300"
          id="bottom-flip" class="hidden ani-reset-bottom-flip">
         <rect id="pad" x="15" y="110" width="80" height="80" rx="10" clip-path="url(#bottom-mask)"></rect>
-        <text id="number" x="14.5" y="178" stroke-width="0" clip-path="url(#bottom-mask)">00</text>
+        <text id="number" x="14.5" y="178" stroke-width="0" clip-path="url(#bottom-mask)"></text>
     </svg>
     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
          viewBox="0 0 300 300"
@@ -303,148 +239,149 @@
 
 <div class="hidden ticker center-text middle-text"></div>
 
-<div class="clock flip-ui layer-4-9" style="height:50% !important;overflow:hidden;">
-    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve" viewBox="0 0 200 200" class="fit-width css-trans">
-        <text fill="white" x="40.5" y="50" class="css-trans">1</text>
-        <text fill="white" x="95.5" y="27" class="css-trans">2</text>
-        <text fill="white" x="151" y="50" class="css-trans">3</text>
-        <text fill="white" x="50" y="70" class="css-trans opacity--x50">3D Origin Types</text>
-        <circle cx="100" cy="100" r="15" fill="silver" class="button flip-origin-1 css-trans opacity--x60"></circle>
-        <circle cx="100" cy="100" r="15" fill="silver" class="button flip-origin-2 css-trans opacity--x60"></circle>
-        <circle cx="100" cy="100" r="15" fill="silver" class="button flip-origin-3 css-trans opacity--x60"></circle>
+<div class="flip-ui fit-width" style="height:50% !important;overflow:hidden;">
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve" viewBox="0 0 200 100" class="css-trans">
+        <text fill="white" x="40.5" y="50" class="css-trans--x2">1</text>
+        <text fill="white" x="95.5" y="27" class="css-trans--x2">2</text>
+        <text fill="white" x="151" y="50" class="css-trans--x2">3</text>
+        <text fill="silver" x="50" y="70" class="css-trans">3D Origin Styles</text>
+        <circle fill="silver" cx="100" cy="100" r="15" class="button flip-origin-1 opacity--x60 css-trans"></circle>
+        <circle fill="silver" cx="100" cy="100" r="15" class="button flip-origin-2 opacity--x60 css-trans"></circle>
+        <circle fill="silver" cx="100" cy="100" r="15" class="button flip-origin-3 opacity--x60 css-trans"></circle>
     </svg>
 </div>
 
 <script>
-    window['FlipGroup'] = function () {
-        Object.assign(this, {
-            number: '00',
-            setTimeout: function (func, millisec) {
-                this.clearTimeout();
-                this.timeout = setTimeout(func, millisec);
-            },
-            clearTimeout: function () {
-                if (this.timeout !== undefined) {
-                    clearTimeout(this.timeout);
-                    delete this.timeout;
-                }
-            },
-            originX: 0,
-            originY: 0,
-            perspective: 450,
-            screenCenterX: 0,
-            screenCenterY: 0,
-            attr: function (name, value) {
-                if (value === undefined)
-                    return this[name];
-                else {
-                    this[name] = value;
-                    this.reposition();
-                }
-            },
-            toCenterOfClock: function (clockXDegree, clockYDegree) {
-                /*Notice: move origin to center of clock*/
-                var width = parseFloat(this.$.css('width')),
-                    centerX = width * 0.5,
-                    centerY = width * 0.5,
-                    perspectiveX = 450,
-                    perspectiveY = 450,
-                    maxDegree = 10,
-                    percent;
-                if (clockXDegree !== undefined && clockXDegree !== 0) {
-                    percent = (clockXDegree % 360) / maxDegree * -1;
-                    console.warn('to Degree Of X-Rotation:' + `center = ${centerY}, relative = ${centerY * percent}, percent = ${percent}, degree = ${clockYDegree}`);
-                    centerY += centerY * percent;
-                    perspectiveY = 450 + (Math.abs(percent) * 450);
-                }
-                if (clockYDegree !== undefined && clockYDegree !== 0) {
-                    percent = (clockYDegree % 360) / maxDegree * -1;
-                    console.warn('to Degree Of Y-Rotation:' + `center = ${centerX}, relative = ${centerX * percent}, percent = ${percent}, degree = ${clockYDegree}`);
-                    centerX += centerX * percent;
-                    perspectiveX = 450 + (Math.abs(percent) * 450);
-                }
-                this.originX = centerX;
-                this.originY = centerY;
-                this.perspective = Math.max(perspectiveX, perspectiveY);
-            },
-            toCenterOfFlipper: function (clockXDegree, clockYDegree) {
-                /*Notice: move origin to center of flipper*/
-                var width = parseFloat(this.$.css('width')),
-                    center = width * 0.5,
-                    ratio = width / 300,
-                    flipperX = parseFloat(this.bottomFlipPad.css('x')) * ratio,
-                    flipperW = parseFloat(this.bottomFlipPad.css('width')) * ratio,
-                    centerX = (flipperW * 0.5) + flipperX,
-                    flipperY = parseFloat(this.bottomFlipPad.css('y')) * ratio,
-                    flipperH = parseFloat(this.bottomFlipPad.css('height')) * ratio,
-                    centerY = (flipperH * 0.5) + flipperY,
-                    perspectiveX = 450,
-                    perspectiveY = 450,
-                    maxDegree = 10,
-                    percent;
-                if (clockXDegree !== undefined && clockXDegree !== 0) {
-                    percent = (clockXDegree % 360) / maxDegree * -1;
-                    console.warn('to Degree Of Y-Rotation:' + `center = ${center}, relative = ${center * percent}, percent = ${percent}, degree = ${clockYDegree}`);
-                    centerY += center * percent;
-                    perspectiveY = 450 + (Math.abs(percent) * 100);
-                }
-                if (clockYDegree !== undefined && clockYDegree !== 0) {
-                    percent = (clockYDegree % 360) / maxDegree * -1;
-                    console.warn('to Degree Of Y-Rotation:' + `center = ${center}, relative = ${center * percent}, percent = ${percent}, degree = ${clockYDegree}`);
-                    centerX += center * percent;
-                    perspectiveX = 450 + (Math.abs(percent) * 100);
-                }
-                this.originX = centerX;
-                this.originY = centerY;
-                this.perspective = Math.max(perspectiveX, perspectiveY);
-            },
-            toCenterOfScreen: function () {
-                /*Notice: move origin to center of screen*/
-                var screenW = parseFloat(window.innerWidth),
-                    screenH = parseFloat(window.innerHeight),
-                    screenCenterX = screenW * 0.5,
-                    screenCenterY = screenH * 0.5,
-                    width = parseFloat(this.$.css('width')),
-                    rect = this.$[0].getBoundingClientRect(),
-                    left = rect.left,
-                    top = rect.top,
-                    center = width * 0.5,
-                    diffX = screenCenterX - (center + left),
-                    diffY = screenCenterY - (center + top);
-                this.perspective = 450 + (900 * Math.abs(center / diffX));
-                this.originX = center + diffX;
-                this.originY = center + diffY;
-            },
-            reposition: function () {
-                var buttons = $('.flip-ui .button').css('fill', 'silver'),
-                    clock = Appanel.clock,
-                    attributes = clock.backgroundAttributes;
-
-                switch (clock.options.originType) {
-                    case 2:
-                        this.toCenterOfClock(attributes.clockXDegree, attributes.clockYDegree);
-                        buttons.filter('.flip-origin-2').css('fill', 'yellow');
-                        break;
-                    case 3:
-                        if (attributes.clockYDegree !== 0) {
-                            this.toCenterOfClock(attributes.clockXDegree, attributes.clockYDegree);
-                        } else {
-                            this.toCenterOfScreen();
-                        }
-                        buttons.filter('.flip-origin-3').css('fill', 'yellow');
-                        break;
-                    default:
-                        this.toCenterOfFlipper(attributes.clockXDegree, attributes.clockYDegree);
-                        buttons.filter('.flip-origin-1').css('fill', 'yellow');
-                }
-                this.attributeChanged();
-            },
-            attributeChanged: function () {
-                this.$
-                    .css('transform', `perspective(${this.perspective}px)`)
-                    .css('transform-origin', `${this.originX}px ${this.originY}px`);
+    let flipGroup = window['FlipGroup'] = function (index) {
+        this.index = index;
+    };
+    flipGroup.prototype = {
+        number: '',
+        setTimeout: function (func, millisec) {
+            this.clearTimeout();
+            this.timeout = setTimeout(func, millisec);
+        },
+        clearTimeout: function () {
+            if (this.timeout !== undefined) {
+                clearTimeout(this.timeout);
+                delete this.timeout;
             }
-        });
+        },
+        originX: 0,
+        originY: 0,
+        perspective: 450,
+        screenCenterX: 0,
+        screenCenterY: 0,
+        attr: function (name, value) {
+            if (value === undefined)
+                return this[name];
+            else {
+                this[name] = value;
+                this.reposition();
+            }
+        },
+        toCenterOfClock: function (clockXDegree, clockYDegree) {
+            /*Notice: move origin to center of clock*/
+            var width = parseFloat(this.$.css('width')),
+                centerX = width * 0.5,
+                centerY = width * 0.5,
+                perspectiveX = 450,
+                perspectiveY = 450,
+                maxDegree = 10,
+                percent;
+            if (clockXDegree !== undefined && clockXDegree !== 0) {
+                percent = (clockXDegree % 360) / maxDegree * -1;
+                console.warn('to Degree Of X-Rotation:' + `center = ${centerY}, relative = ${centerY * percent}, percent = ${percent}, degree = ${clockYDegree}`);
+                centerY += centerY * percent;
+                perspectiveY = 450 + (Math.abs(percent) * 450);
+            }
+            if (clockYDegree !== undefined && clockYDegree !== 0) {
+                percent = (clockYDegree % 360) / maxDegree * -1;
+                console.warn('to Degree Of Y-Rotation:' + `center = ${centerX}, relative = ${centerX * percent}, percent = ${percent}, degree = ${clockYDegree}`);
+                centerX += centerX * percent;
+                perspectiveX = 450 + (Math.abs(percent) * 450);
+            }
+            this.originX = centerX;
+            this.originY = centerY;
+            this.perspective = Math.max(perspectiveX, perspectiveY);
+        },
+        toCenterOfFlipper: function (clockXDegree, clockYDegree) {
+            /*Notice: move origin to center of flipper*/
+            var width = parseFloat(this.$.css('width')),
+                center = width * 0.5,
+                ratio = width / 300,
+                flipperX = parseFloat(this.bottomFlipPad.css('x')) * ratio,
+                flipperW = parseFloat(this.bottomFlipPad.css('width')) * ratio,
+                centerX = (flipperW * 0.5) + flipperX,
+                flipperY = parseFloat(this.bottomFlipPad.css('y')) * ratio,
+                flipperH = parseFloat(this.bottomFlipPad.css('height')) * ratio,
+                centerY = (flipperH * 0.5) + flipperY,
+                perspectiveX = 450,
+                perspectiveY = 450,
+                maxDegree = 10,
+                percent;
+            if (clockXDegree !== undefined && clockXDegree !== 0) {
+                percent = (clockXDegree % 360) / maxDegree * -1;
+                console.warn('to Degree Of Y-Rotation:' + `center = ${center}, relative = ${center * percent}, percent = ${percent}, degree = ${clockYDegree}`);
+                centerY += center * percent;
+                perspectiveY = 450 + (Math.abs(percent) * 100);
+            }
+            if (clockYDegree !== undefined && clockYDegree !== 0) {
+                percent = (clockYDegree % 360) / maxDegree * -1;
+                console.warn('to Degree Of Y-Rotation:' + `center = ${center}, relative = ${center * percent}, percent = ${percent}, degree = ${clockYDegree}`);
+                centerX += center * percent;
+                perspectiveX = 450 + (Math.abs(percent) * 100);
+            }
+            this.originX = centerX;
+            this.originY = centerY;
+            this.perspective = Math.max(perspectiveX, perspectiveY);
+        },
+        toCenterOfScreen: function () {
+            /*Notice: move origin to center of screen*/
+            var screenW = parseFloat(window.innerWidth),
+                screenH = parseFloat(window.innerHeight),
+                screenCenterX = screenW * 0.5,
+                screenCenterY = screenH * 0.5,
+                width = parseFloat(this.$.css('width')),
+                rect = this.$[0].getBoundingClientRect(),
+                left = rect.left,
+                top = rect.top,
+                center = width * 0.5,
+                diffX = screenCenterX - (center + left),
+                diffY = screenCenterY - (center + top);
+            this.perspective = 450 + (900 * Math.abs(center / diffX));
+            this.originX = center + diffX;
+            this.originY = center + diffY;
+        },
+        reposition: function () {
+            var buttons = $('.flip-ui .button').css('fill', 'silver'),
+                clock = Appanel.clock,
+                attributes = clock.backgroundAttributes;
+
+            switch (clock.options.originType) {
+                case 2:
+                    this.toCenterOfClock(attributes.clockXDegree, attributes.clockYDegree);
+                    buttons.filter('.flip-origin-2').css('fill', 'yellow');
+                    break;
+                case 3:
+                    if (attributes.clockYDegree !== 0) {
+                        this.toCenterOfClock(attributes.clockXDegree, attributes.clockYDegree);
+                    } else {
+                        this.toCenterOfScreen();
+                    }
+                    buttons.filter('.flip-origin-3').css('fill', 'yellow');
+                    break;
+                default:
+                    this.toCenterOfFlipper(attributes.clockXDegree, attributes.clockYDegree);
+                    buttons.filter('.flip-origin-1').css('fill', 'yellow');
+            }
+            this.attributeChanged();
+        },
+        attributeChanged: function () {
+            this.$
+                .css('transform', `perspective(${this.perspective}px)`)
+                .css('transform-origin', `${this.originX}px ${this.originY}px`);
+        }
     };
 
     Appanel({
@@ -462,7 +399,17 @@
         flip: {
             ui: {
                 handle: function () {
-                    /*handle flip origin switches*/
+                    $(Appanel.clock).off('clock:resize')
+                        .on('clock:resize', function () {
+                            Appanel.flip.setTimeout(function () {
+                                Appanel.flip.reposition();
+                            }, 100);
+                        });
+
+                    /*handle ui-panel*/
+                    Appanel.clock.ui.handleSwitch('top', '.flip-ui');
+
+                    /*handle flip origin switches on ui-panel*/
                     Appanel.map([
                         [$('.flip-origin-1'), 'click', function () {
                             Appanel.clock.options.originType = 1;
@@ -556,9 +503,9 @@
              * Group Name: Second, Minute, Hour
              */
             groups: [
-                new FlipGroup(),
-                new FlipGroup(),
-                new FlipGroup()
+                new FlipGroup(0),
+                new FlipGroup(1),
+                new FlipGroup(2)
             ],
 
             reposition: function () {
@@ -680,79 +627,11 @@
                         flip.setNumber(times[2], 0);
                     }
                 });
-
-                $(Appanel.clock).on('resize', function () {
-                    Appanel.flip.setTimeout(function () {
-                        Appanel.flip.reposition();
-                    }, 100);
-                });
             }
         },
 
         ready: function () {
             this.flip.start();
-            Appanel.clock.createMinutes($('.one.minutes'), {
-                "0": 360,
-                "1": 6,
-                "2": 12,
-                "3": 18,
-                "4": 24,
-                "5": 30,
-                "6": 36,
-                "7": 42,
-                "8": 48,
-                "9": 54,
-                "10": 60,
-                "11": 66,
-                "12": 72,
-                "13": 78,
-                "14": 84,
-                "15": 90,
-                "16": 96,
-                "17": 102,
-                "18": 108,
-                "19": 114,
-                "20": 120,
-                "21": 125.99999999999999,
-                "22": 132,
-                "23": 138,
-                "24": 144,
-                "25": 150,
-                "26": 156,
-                "27": 162,
-                "28": 168,
-                "29": 174,
-                "30": 180,
-                "31": 186.00000000000003,
-                "32": 192,
-                "33": 198.00000000000003,
-                "34": 204,
-                "35": 210,
-                "36": 216,
-                "37": 222,
-                "38": 228,
-                "39": 234,
-                "40": 240,
-                "41": 246,
-                "42": 251.99999999999997,
-                "43": 258,
-                "44": 264,
-                "45": 270,
-                "46": 276,
-                "47": 282,
-                "48": 288,
-                "49": 294,
-                "50": 300,
-                "51": 306,
-                "52": 312,
-                "53": 318,
-                "54": 324,
-                "55": 330,
-                "56": 336,
-                "57": 342,
-                "58": 348,
-                "59": 354
-            }, 60);
         }
     });
 </script>

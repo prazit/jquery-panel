@@ -5,6 +5,9 @@
     "imageWidth": 2560,
     "imageHeight": 1707,
     "imageFilter": 0.25,
+    "clockShape": {
+      "id": "circle"
+    },
     "clockYInPercent": 0.313,
     "clockXInPercent": 0.5715,
     "clockWInPercent": 0.2475,
@@ -16,57 +19,13 @@
     "imageWidth": 1920,
     "imageHeight": 1080,
     "imageFilter": 0.25,
+    "clockShape": {
+      "id": "circle"
+    },
     "clockXInPercent": 0.585,
     "clockYInPercent": 0.3138,
     "clockWInPercent": 0.2475,
     "clockHInPercent": 0.44
-  },
-  {
-    "name": "Many Shard",
-    "image": "img/wallpaperaccess.com.5072490.jpg",
-    "imageWidth": 1200,
-    "imageHeight": 675,
-    "imageFilter": 0.05,
-    "clockXInPercent": 0.362,
-    "clockYInPercent": 0.282,
-    "clockWInPercent": 0.262,
-    "clockHInPercent": 0.464
-  },
-  {
-    "name": "Miami Beach",
-    "image": "img/shutterstock-490898872.webp",
-    "imageWidth": 1430,
-    "imageHeight": 912,
-    "imageFilter": 0.0,
-    "clockXInPercent": 0.797,
-    "clockYInPercent": 0.088,
-    "clockWInPercent": 0.17,
-    "clockHInPercent": 0.25
-  },
-  {
-    "name": "Colorful Miami",
-    "image": "img/shutterstock-712625887.webp",
-    "imageWidth": 1056,
-    "imageHeight": 704,
-    "imageFilter": 0.075,
-    "clockXInPercent": 0.797,
-    "clockYInPercent": 0.088,
-    "clockWInPercent": 0.17,
-    "clockHInPercent": 0.25
-  },
-  {
-    "name": "Hand Watch on the dark",
-    "image": "img/wallpaperaccess.com.861191.jpg",
-    "imageWidth": 1280,
-    "imageHeight": 720,
-    "imageFilter": 0.25,
-    "clockXInPercent": 0.1203,
-    "clockYInPercent": 0.232,
-    "clockWInPercent": 0.3,
-    "clockHInPercent": 0.533,
-    "clockXDegree": 0,
-    "clockYDegree": 0,
-    "clockZDegree": -7.7
   },
   {
     "name": "Alarm On The Yard",
@@ -74,6 +33,9 @@
     "imageWidth": 2560,
     "imageHeight": 1440,
     "imageFilter": 0.25,
+    "clockShape": {
+      "id": "circle"
+    },
     "clockXInPercent": 0.6173,
     "clockYInPercent": 0.301,
     "clockWInPercent": 0.304,
@@ -85,6 +47,9 @@
     "imageWidth": 1332,
     "imageHeight": 850,
     "imageFilter": 0.25,
+    "clockShape": {
+      "id": "circle"
+    },
     "clockXInPercent": 0.16,
     "clockYInPercent": 0.343,
     "clockWInPercent": 0.292,
@@ -97,15 +62,46 @@
     "clockPerspectiveYOrigin": 90
   },
   {
+    "name": "Alarm On The Bed",
+    "video": "video/pexels.com-koolshooters-7346137.mp4",
+    "imageWidth": 960,
+    "imageHeight": 720,
+    "imageFilter": 0.25,
+    "clockShape": {
+      "id": "circle"
+    },
+    "clockXInPercent": 0.3143,
+    "clockYInPercent": 0.37,
+    "clockWInPercent": 0.3625,
+    "clockHInPercent": 0.4818
+  },
+  {
     "name": "Wall Clock",
     "image": "img/wallpaperaccess.com.6906966.jpg",
     "imageWidth": 5384,
     "imageHeight": 3536,
     "imageFilter": 0.25,
+    "clockShape": {
+      "id": "circle"
+    },
     "clockXInPercent": 0.2555,
     "clockYInPercent": 0.117,
     "clockWInPercent": 0.484,
     "clockHInPercent": 0.737
+  },
+  {
+    "name": "Prayer Wall Clock",
+    "image": "img/wallpaperaccess.com.6906966.jpg",
+    "imageWidth": 5384,
+    "imageHeight": 3536,
+    "imageFilter": 0.25,
+    "clockShape": {
+      "id": "circle"
+    },
+    "clockXInPercent": 0.2435,
+    "clockYInPercent": 0.096,
+    "clockWInPercent": 0.51,
+    "clockHInPercent": 0.777
   },
   {
     "name": "Clock Tower in The Dark Night",
@@ -113,6 +109,9 @@
     "imageWidth": 1024,
     "imageHeight": 768,
     "imageFilter": 0.25,
+    "clockShape": {
+      "id": "circle"
+    },
     "clockXInPercent": 0.5703,
     "clockYInPercent": 0.45,
     "clockWInPercent": 0.152,
@@ -121,18 +120,89 @@
     "clockYDegree": -0.5,
     "clockZDegree": -0.5,
     "clockPerspective": 2000,
-	"clockPerspectiveXOrigin": 225,
+    "clockPerspectiveXOrigin": 225,
     "clockPerspectiveYOrigin": 180
- },
+  },
   {
-    "name": "Lady Walk Behind The Clock",
-    "video": "video/pexels.com-koolshooters-7346137.mp4",
-    "imageWidth": 960,
+    "name": "Many Shard",
+    "image": "img/wallpaperaccess.com.5072490.jpg",
+    "imageWidth": 1200,
+    "imageHeight": 675,
+    "imageFilter": 0.05,
+    "clockShape": {
+      "id": "circle"
+    },
+    "clockXInPercent": 0.362,
+    "clockYInPercent": 0.282,
+    "clockWInPercent": 0.262,
+    "clockHInPercent": 0.464
+  },
+  {
+    "name": "Hand Watch on the dark",
+    "image": "img/wallpaperaccess.com.861191.jpg",
+    "imageWidth": 1280,
     "imageHeight": 720,
     "imageFilter": 0.25,
-    "clockXInPercent": 0.3143,
-    "clockYInPercent": 0.37,
-    "clockWInPercent": 0.3625,
-    "clockHInPercent": 0.4818
- }
+    "clockShape": {
+      "id": "circle"
+    },
+    "clockXInPercent": 0.1203,
+    "clockYInPercent": 0.232,
+    "clockWInPercent": 0.3,
+    "clockHInPercent": 0.533,
+    "clockXDegree": 0,
+    "clockYDegree": 0,
+    "clockZDegree": -7.7
+  },
+  {
+    "name": "Flip Clock on The Cyber Punk Wallpaper",
+    "image": "img/wallpaperaccess.com.2099805.jpg",
+    "imageWidth": 1920,
+    "imageHeight": 1080,
+    "imageFilter": 0.25,
+    "clockShape": {
+      "id": "rectangle",
+      "y": 62,
+      "height": 76,
+      "rx": 10
+    },
+    "clockXInPercent": 0.096,
+    "clockYInPercent": -0.07,
+    "clockWInPercent": 0.8,
+    "clockHInPercent": 1.52
+  },
+  {
+    "name": "Miami Beach",
+    "image": "img/shutterstock-490898872.webp",
+    "imageWidth": 1430,
+    "imageHeight": 912,
+    "imageFilter": 0.0,
+    "clockShape": {
+      "id": "rectangle",
+      "y": 62,
+      "height": 76,
+      "rx": 10
+    },
+    "clockXInPercent": 0.096,
+    "clockYInPercent": -0.07,
+    "clockWInPercent": 0.8,
+    "clockHInPercent": 1.52
+  },
+  {
+    "name": "Colorful Miami",
+    "image": "img/shutterstock-712625887.webp",
+    "imageWidth": 1056,
+    "imageHeight": 704,
+    "imageFilter": 0.075,
+    "clockShape": {
+      "id": "rectangle",
+      "y": 62,
+      "height": 76,
+      "rx": 10
+    },
+    "clockXInPercent": 0.096,
+    "clockYInPercent": -0.07,
+    "clockWInPercent": 0.8,
+    "clockHInPercent": 1.52
+  }
 ]

@@ -76,7 +76,7 @@
     </style>
 </head>
 
-<body class="css-trans fixed background--c0 fit-width fit-height" style="font-family: Arial,sans-serif;">
+<body class="css-trans fixed background--c0 fit-width fit-height no-select" style="font-family: Arial,sans-serif;">
 
 <!-- background -->
 <div class="background-image fit-height fit-width layer-1">
@@ -91,15 +91,26 @@
 <div class="cover layer-3">
     <div class="clock wrapper rounded--x20">
         <div class="clock background">
-            <!-- store the copied of clock background to make it always hide the background-image under the clock -->
+            <!-- store all shapes for clock background and frame -->
+            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve" viewBox="0 0 200 200" stroke="red" fill="black" class="fit-width">
+                <polygon id="none" points="0,0 1,0 1,1 0,1" stroke-opacity="1" stroke-width="2" stroke-linecap="butt" class="shape hidden"></polygon>
+                <circle id="circle" cx="100" cy="100" r="98" stroke-opacity="1" stroke-width="2" stroke-linecap="butt" class="shape hidden"></circle>
+                <rect id="rectangle" x="1" y="0" width="198" height="200" rx="10" stroke-opacity="1" stroke-width="2" stroke-linecap="butt" class="shape hidden"></rect>
+            </svg>
         </div>
         <div class="clock foreground">
             <!-- this content will be replaced by clock -->
         </div>
+        <div class="clock glass layer-4">
+            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve" viewBox="0 0 200 200" fill="transparent" stroke="transparent" class="fit-width">
+                <circle id="top-switch" class="layer-9" cx="100" cy="50" r="40"></circle>
+                <circle id="center-switch" class="layer-9" cx="100" cy="100" r="40"></circle>
+            </svg>
+        </div>
     </div>
 </div>
 
-<!-- UI Area -->
+<!-- UI:Side Panel -->
 <div class="clock-ui on-left css-trans--x2 width--x100 opacity--x0 opacity--x100--at layer-4" style="height:70vh;">
     <div class="board css-trans fit-height width--x1 right-rounded--x20 bottom-rounded--x20 top-border--x10 right-border--x10 bottom-border--x10 on-left" style="border-color:rgba(255,255,255,0.5);">
         <div class="fit-width fit-height scrollable" style="background-color:rgba(0,0,0,0.8)">
@@ -176,6 +187,52 @@
     </div>
 </div>
 
+<!-- UI:Zoom Panel -->
+<style>
+    .zoom-ui svg {
+        opacity: 0;
+    }
+
+    .zoom-ui:hover svg {
+        opacity: 1;
+    }
+
+    .volume circle,
+    .volume line {
+        cursor: grab;
+    }
+
+    .grabbing,
+    .grabbing .volume circle,
+    .grabbing .volume line {
+        cursor: grabbing;
+    }
+</style>
+<div class="cover zoom-ui">
+    <div class="zoom-ui clock">
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve" viewBox="0 0 200 200" class="fit-width volume css-trans--x2">
+            <circle cx="100" cy="100" r="26"
+                    fill="black" stroke="black"
+                    stroke-opacity="1"
+                    stroke-width="1"
+                    stroke-linecap="butt"
+                    stroke-linejoin="round"
+                    stroke-dashoffset="0"
+                    stroke-dasharray="1"/>
+            <circle cx="100" cy="100" r="18"
+                    fill="red" stroke="red"
+                    stroke-opacity="1"
+                    stroke-width="7"
+                    stroke-linecap="butt"
+                    stroke-linejoin="round"
+                    stroke-dashoffset="0"
+                    stroke-dasharray="5"/>
+            <circle cx="100" cy="100" r="13" fill="black" stroke="transparent" stroke-width="1" class="opacity--x50"/>
+            <line x1="100" x2="100" y1="95" y2="88" stroke="white" stroke-width="3.5" stroke-linecap="round"></line>
+        </svg>
+    </div>
+</div>
+
 <!-- JS -->
 <script type="text/javascript" src="http://localhost/jquery/1.11/jquery.js"></script>
 <script type="text/javascript" src="../dist/jquery.panel.suite.min.js"></script>
@@ -184,6 +241,118 @@
 <script>
     Appanel({
         clock: {
+
+            ui: {
+                setTimeout: function (func, millisec) {
+                    this.clearTimeout();
+                    this.timeout = window.setTimeout(func, millisec);
+                },
+
+                clearTimeout: function () {
+                    if (this.timeout !== undefined) {
+                        clearTimeout(this.timeout);
+                        delete this.timeout;
+                    }
+                },
+
+                resize: function () {
+                    var ui = Appanel.clock.ui;
+                    ui.setTimeout(function () {
+                        var maxHeight = window.innerHeight * 0.5;
+                        $('.ui.scrollable').css('max-height', maxHeight);
+                    }, 1000);
+                },
+
+                captureSwitch: function (switchPosition) {
+                    $('.wrapper > .glass #' + switchPosition + '-switch')
+                        .off('mouseenter')
+                        .on('mouseenter', function () {
+                            console.debug('clock:' + switchPosition + '-switch');
+                            $(Appanel.clock).trigger('clock:' + switchPosition + '-switch');
+                        })
+                },
+
+                handleSwitch: function (switchPosition, uiSelector) {
+                    $(Appanel.clock).off('clock:' + switchPosition + '-switch')
+                        .on('clock:' + switchPosition + '-switch', function () {
+                            $(uiSelector).addClass('layer-5');
+                        })
+                    ;
+                    $(uiSelector).off('mouseover mouseout')
+                        .on('mouseout', function () {
+                            $(uiSelector).removeClass('layer-5');
+                        })
+                        .on('mouseover', function () {
+                            $(uiSelector).addClass('layer-5');
+                        })
+                    ;
+                },
+
+                handle: function () {
+                    /*handle switches*/
+                    this.captureSwitch('top');
+                    this.captureSwitch('center');
+                    this.handleSwitch('center', '.zoom-ui');
+
+                    /*handle zoom volume on ui-panel*/
+                    $('.zoom-ui .volume').off('mousedown')
+                        .on('mousedown', function (ev) {
+                            Appanel.clock.ui.zoom = {
+                                startX: ev.clientX,
+                                startY: ev.clientY,
+                                startXY: ev.clientX + ev.clientY,
+                                startZoom: parseFloat($('body').css('zoom')),
+                                minZoom: 1,
+                                maxZoom: 2,
+                                maxDegree: 350,
+                                volume: $(ev.currentTarget).parent()
+                            };
+                            $('body').addClass('grabbing')
+                                .on('mousemove', function (ev) {
+                                    if (ev.buttons === 0) {
+                                        /*stop grabbing*/
+                                        $(ev.currentTarget)
+                                            .off('mousemove')
+                                            .removeClass('grabbing');
+                                        return;
+                                    }
+
+                                    /*zoom by relative position*/
+                                    var zoom = Appanel.clock.ui.zoom,
+                                        diffX = (ev.clientX + ev.clientY) - zoom.startXY,
+                                        newZoom = zoom.startZoom + (diffX * 0.001);
+                                    newZoom = Math.max(newZoom, zoom.minZoom);
+                                    newZoom = Math.min(newZoom, zoom.maxZoom);
+                                    zoom.currentX = ev.clientX;
+                                    zoom.currentY = ev.clientY;
+                                    zoom.currentZoom = newZoom;
+                                    $(ev.currentTarget).css('zoom', newZoom);
+
+                                    /*present volume degree*/
+                                    var length = zoom.maxZoom - zoom.minZoom,
+                                        current = zoom.currentZoom - zoom.minZoom,
+                                        percent = current / length,
+                                        degree = percent * zoom.maxDegree;
+                                    zoom.currentPercent = percent;
+                                    zoom.currentDegree = degree;
+                                    zoom.volume.css('transform', 'rotate(' + degree + 'deg)');
+                                });
+                        })
+                        .on('mouseup', function (ev) {
+                            $('body')
+                                .off('mousemove')
+                                .removeClass('grabbing');
+                        });
+
+                    $(window).on('resize', this.resize);
+                },
+
+                init: function () {
+                    this.resize();
+                    this.handle();
+                }
+            },
+
             name: 'analogue-clock',
             state: 'initialized',
 
@@ -370,8 +539,8 @@
                 this.addProperty(theme, 'timer', ['stroke', 'fill'], $('.ticker'));
                 this.addProperty(theme, 'minutes', ['stroke', 'fill'], $('.one.minutes svg'));
                 this.addProperty(theme, 'fiveMinutes', ['stroke', 'fill'], $('.five.minutes svg'));
-                this.addProperty(theme, 'frame', 'stroke', $('.frame svg'));
-                this.addProperty(theme, 'background', 'fill', $('.background svg'));
+                this.addProperty(theme, 'frame', 'stroke', $('.wrapper > .background svg'));
+                this.addProperty(theme, 'background', 'fill', $('.wrapper > .background svg'));
                 this.addProperty(theme, 'outSide', 'background-color', $('.out-side'));
 
                 theme.add('chandSecond', 'background-color', $('.color-handSecond'), 'handSecond');
@@ -797,9 +966,6 @@
 
                     console.info('load clock completed at ', new Date().toLocaleTimeString());
                     clockHtml = clockHtml.substring(0, headStart) + clockHtml.substring(headEnd + 1);
-                    $cover.find('.wrapper > .background')
-                        .text('')
-                        .append($cover.find('.wrapper > .foreground > .background').html());
                     $cover.find('.wrapper > .foreground').html(clockHtml);
 
                     if (callback !== undefined) {
@@ -831,7 +997,6 @@
                 }
 
                 var bgName = this.backgrounds[backgroundIndex].name;
-
                 this.background = bgName;
                 Appanel.set(this.name + ':background', bgName);
 
@@ -914,6 +1079,7 @@
                     $background = $('.background-image')
                         .removeClass('css-trans')
                         .css('background-repeat', 'no-repeat');
+
                 this.backgroundAttributes = Object.assign(attributes, {
                     relativeX: 0,
                     relativeY: 0,
@@ -1001,7 +1167,7 @@
                             .css('width', a.coverSize + 'px')
                             .css('height', a.coverSize + 'px');
 
-                        $(clock).trigger('resize');
+                        $(clock).trigger('clock:resize');
                     },
                     member: function (memberName, value) {
                         if (value === undefined) {
@@ -1023,6 +1189,18 @@
                     clockPerspectiveXOrigin: 0,
                     clockPerspectiveYOrigin: 0
                 }, this.backgroundAttributes);
+
+                /*clock shape/background and frame*/
+                var $shapes = $cover.find('.shape').css('display', 'none'),
+                    $shape = $shapes.filter('#' + attributes.clockShape.id).css('display', 'inline'),
+                    shape = Object.assign({}, attributes.clockShape),
+                    theme = Appanel.profile === undefined ? undefined : Appanel.profile.theme;
+                for (var i in shape) $shape.attr(i, shape[i]);
+                if (theme !== undefined) {
+                    theme.frame.updateElement();
+                    theme.background.updateElement();
+                    theme.refresh();
+                }
 
                 if (attributes.image === undefined) {
                     $background.css('background-image', '');
@@ -1137,7 +1315,7 @@
                 });
             },
 
-            load: function () {
+            init: function () {
                 var control = Appanel.get(this.name + ':control');
                 if (control !== null) this.defaults.control = control;
 
@@ -1171,6 +1349,8 @@
                         console.info('Combinations loaded from ' + status);
                     });
                 });
+
+                this.ui.init();
             },
 
             createMinutes: function (container, degrees, count) {
@@ -1222,36 +1402,8 @@
 
         },
 
-        ui: {
-            setTimeout: function (func, millisec) {
-                this.clearTimeout();
-                this.timeout = window.setTimeout(func, millisec);
-            },
-
-            clearTimeout: function () {
-                if (this.timeout !== undefined) {
-                    clearTimeout(this.timeout);
-                    delete this.timeout;
-                }
-            },
-
-            resize: function () {
-                var ui = Appanel.ui;
-                ui.setTimeout(function () {
-                    var maxHeight = window.innerHeight * 0.5;
-                    $('.ui.scrollable').css('max-height', maxHeight);
-                }, 1000);
-            },
-
-            init: function () {
-                this.resize();
-                $(window).on('resize', this.resize);
-            }
-        },
-
         ready: function () {
-            Appanel.clock.load();
-            Appanel.ui.init();
+            Appanel.clock.init();
             Appanel.util.refreshAfter(3600);
         }
     });

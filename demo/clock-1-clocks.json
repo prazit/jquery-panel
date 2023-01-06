@@ -12,6 +12,10 @@
     "display": "Twelve Numbers"
   },
   {
+    "name": "prayer",
+    "display": "Original Prayer"
+  },
+  {
     "name": "flip",
     "display": "Flip Clock"
   }

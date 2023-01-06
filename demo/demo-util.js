@@ -4,11 +4,11 @@ Appanel({
         defaults: {
             input: '<b><label class="text--c0">Please enter value:</label></b><br/>' +
                 '<input type="text" class="padding--x5 text--c0 width--x300"/>',
-            warn: {
+            message: {
                 container: '<div class="message-container on-top-left css-trans layer-9"></div>',
-                message: '<div class="warning-message hidden css-trans rounded--x10 margin--x10 padding--x10 background--c3 text--cred background--cyellow">' +
-                    '    <h1 class="symbol sym-warning"> message-title</h1>' +
-                    '    <p class="text--c0">message-text</p>' +
+                card: '<div class="message-card hidden css-trans rounded--x10 margin--x10 padding--x10 background--c3 message-classes">' +
+                    '    <h1 class="symbol message-icon">&nbsp;message-title</h1>' +
+                    '    <p class="text-classes">message-text</p>' +
                     '</div>'
             },
             removeAfter: [
@@ -69,6 +69,63 @@ Appanel({
                 '        </div>' +
                 '    </div>' /*+
                 '</div>'*/
+        },
+
+        error: function (title, text, seconds) {
+            this.message(title,text,seconds,'error');
+        },
+
+        warn: function (title, text, seconds) {
+            this.message(title,text,seconds,'warn');
+        },
+
+        info: function (title, text, seconds) {
+            this.message(title,text,seconds,'info');
+        },
+
+        message: function (title, text, seconds, type) {
+            var $container = $('.message-container'),
+                $message = $('.message-card'),
+                html = $message.length === 0 ? this.defaults.message.card : $message[0].outerHTML,
+            mainClasses, icon, textClasses;
+
+            if ($container.length === 0) {
+                $('body').append(this.defaults.message.container);
+                $container = $($container.selector);
+            }
+
+            if (type === undefined) type = 'info';
+            switch (type) {
+                case'warn':
+                    mainClasses = 'text--cred background--cyellow';
+                    icon = 'sym-warning';
+                    textClasses = 'text--c0';
+                    break;
+                case 'error':
+                    mainClasses = 'text--cyellow background--cred';
+                    icon = 'sym-times-circle';
+                    textClasses = '';
+                    break;
+                default: //case 'info':
+                    mainClasses = 'text--c0 background--cwhite';
+                    icon = 'sym-info-circle';
+                    textClasses = '';
+            }
+
+            $container.append(
+                html
+                    .replace('message-classes', mainClasses)
+                    .replace('message-icon', icon)
+                    .replace('text-classes', textClasses)
+                    .replace('message-title', title)
+                    .replace('message-text', text)
+            );
+
+            $message = $container.find('.message-card')
+                .removeClass('message-card')
+                .removeClass('hidden');
+
+            this.removeAfter(seconds === undefined ? 6 : seconds, $message);
         },
 
         merge: function (jQueries) {
@@ -245,29 +302,6 @@ Appanel({
                 $e.remove();
             }, seconds * 1000);
             Appanel.chains($e.find('.circle-progress > .progress'), 'ani-hide-circle-progress:' + seconds);
-        },
-
-        warn: function (title, text, seconds) {
-            var $container = $('.message-container'),
-                $message = $('.warning-message'),
-                html = $message.length === 0 ? this.defaults.warn.message : $message[0].outerHTML;
-
-            if ($container.length === 0) {
-                $('body').append(this.defaults.warn.container);
-                $container = $($container.selector);
-            }
-
-            $container.append(
-                html
-                    .replace('message-title', title)
-                    .replace('message-text', text)
-            );
-
-            $message = $container.find('.warning-message')
-                .removeClass('warning-message')
-                .removeClass('hidden');
-
-            this.removeAfter(seconds === undefined ? 6 : seconds, $message);
         },
 
         myURL: function () {
