@@ -429,12 +429,12 @@
                     ]);
                 },
                 initProfile: function () {
-                    /*Notice: Remember: this function will called from the Appanel.clock*/
+                    /*Remember: this function will called from the Appanel.clock*/
                     var flip = Appanel.flip,
                         clock = this;
 
                     if (Appanel.profile === undefined) {
-                        /*Notice: Remember: original Appanel.clock.initProfile() has renamed to flip*/
+                        /*Remember: original Appanel.clock.initProfile() has renamed to flip*/
                         clock.flip.call(clock);
                     }
 
@@ -465,6 +465,7 @@
                     if (Appanel.clock.flip === undefined) {
                         Appanel.clock.flip = Appanel.clock.initProfile;
                         Appanel.clock.initProfile = this.initProfile;
+                        if (Appanel.profile !== undefined) this.initProfile.call(Appanel.clock);
                     } else {
                         this.initProfile();
                     }

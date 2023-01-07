@@ -1124,6 +1124,11 @@
                     clockName = clock.name,
                     url = Appanel.util.myURL() + '-' + clockName + '.html?v=' + requestDate;
 
+                if(clockName === this.clock) {
+                    console.warn('Ignored, load current clock again is not allowed.');
+                    return;
+                }
+
                 this.clock = clockName;
                 Appanel.set(this.name + ':clock', clockName);
                 this.ui.refreshCurrentInfo();
