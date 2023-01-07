@@ -5,7 +5,7 @@ Appanel({
             input: '<b><label class="text--c0">Please enter value:</label></b><br/>' +
                 '<input type="text" class="padding--x5 text--c0 width--x300"/>',
             message: {
-                container: '<div class="message-container on-top-left css-trans layer-9"></div>',
+                container: '<div class="message-container fixed css-trans layer-9"></div>',
                 card: '<div class="message-card hidden css-trans rounded--x10 margin--x10 padding--x10 background--c3 message-classes">' +
                     '    <h1 class="symbol message-icon">&nbsp;message-title</h1>' +
                     '    <p class="text-classes">message-text</p>' +

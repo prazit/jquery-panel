@@ -48,6 +48,15 @@
             animation-timing-function: linear;
         }
 
+        .item-container {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .item-fit-available {
+            flex: /*available*/ 1;
+        }
+
         .cover {
             position: absolute;
             width: 100vh;
@@ -62,8 +71,16 @@
             display: none;
         }
 
+        .clock-ui {
+            height: 70vh;
+        }
+
+        .clock-ui .board {
+            border-color:rgba(255,255,255,0.5);
+        }
+
         .clock-ui:hover .board {
-            width: 70vw;
+            width: 350px;
         }
 
         .css-trans {
@@ -129,84 +146,121 @@
 </div>
 
 <!-- UI:Side Panel -->
-<div class="clock-ui on-left css-trans--x2 width--x100 opacity--x0 opacity--x100--at layer-4" style="height:70vh;">
-    <div class="board css-trans fit-height width--x1 right-rounded--x20 bottom-rounded--x20 top-border--x10 right-border--x10 bottom-border--x10 on-left" style="border-color:rgba(255,255,255,0.5);">
-        <div class="fit-width fit-height scrollable" style="background-color:rgba(0,0,0,0.8)">
+<div class="clock-ui on-left fixed invert-zoom css-trans--x2 width--x100 opacity--x0 opacity--x100--at layer-5">
+    <div class="board css-trans fit-height width--x1 right-rounded--x20 bottom-rounded--x20 top-border--x10 right-border--x10 bottom-border--x10 on-left">
+        <div class="drilldown fit-width item-container">
 
-            <!-- animation selector -->
-            <div class="inline-column css-trans margin--x20" style="display: inline-block">
-                <div class="rounded--x50 center-text">
-                    <span class="analogue-move button left-child border--x4 background--c3 background--c0--at opacity--x70 border--x3 border--c3 padding--x10 symbol text--c0 text--c3--at">Analogue Move</span>
-                    <span class="smooth-move button right-child border--x4 background--c3 background--c0--at opacity--x70 border--x3 border--c3 padding--x10 symbol text--c0 text--c3--at">Smooth Move</span>
+            <!-- combination -->
+            <div class="combinations css-trans">
+                <div class=" next button child padding--x10 opacity--x70 background--c3 background--c0--at text--c0 text--c3--at right-symbol sym-chevron-right">Presets</div>
+                <div class="sub">
+                    <div class="inner item-container center-text fit-height">
+                        <div class="back button child opacity--x70 padding--x10 padding--x10 background--c3 background--c0--at text--c0 text--c3--at center-text"><span class="pull-left symbol sym-chevron-left"></span>Presets</div>
+
+                        <div class="ui item-fit-available scrollable combination-container">
+                            <div class="columns">
+                                <div class="column-9-10 combination-item button top-padding--x7 background--c1 background--c0--at opacity--x70 left-text">&nbsp;combination-name</div>
+                                <div class="column-1-10 save button symbol sym-save symbol--x2 symbol--c3 background--c1 background--c0--at opacity--x70"></div>
+                            </div>
+                        </div>
+
+                        <span class="add-combination button background--c3 background--c0--at opacity--x70 padding--x10 center-text">+</span>
+                    </div>
                 </div>
             </div>
-            <br/>
 
-            <!-- clocks & backgrounds -->
-            <div class="inline-column css-trans">
-                <!-- backgrounds -->
-                <div class="pull-left backgrounds margin--x10 rounded--x20 border--x4 border--c3">
-                    <span class="background-list top-child background--c3 opacity--x70 padding--x10 center-text">Backgrounds</span>
-                    <div class="ui scrollable background-container">
-                        <span class="background-item button child background--c1 background--c0--at padding--x10 left-text">background-name</span>
-                    </div>
-                    <span class="auto-change-background bottom-child button background--c3 background--c0--at opacity--x70 padding--x10 center-text">Auto Change</span>
-                </div>
+            <!-- clocks -->
+            <div class="clocks css-trans">
+                <div class=" next button child padding--x10 opacity--x70 background--c3 background--c0--at text--c0 text--c3--at right-symbol sym-chevron-right">Clock Faces</div>
+                <div class="sub">
+                    <div class="inner item-container center-text fit-height">
+                        <div class="back button child opacity--x70 padding--x10 padding--x10 background--c3 background--c0--at text--c0 text--c3--at center-text"><span class="pull-left symbol sym-chevron-left"></span>Clock Faces</div>
 
-                <!-- clocks -->
-                <div class="pull-right clocks margin--x10 rounded--x20 border--x4 border--c3">
-                    <span class="clock-list top-child background--c3 opacity--x70 padding--x10 center-text">Clocks</span>
-                    <div class="ui scrollable clock-container">
-                        <span class="clock-item button child background--c1 background--c0--at padding--x10 left-text">clock-name</span>
+                        <div class="ui item-fit-available scrollable clock-container">
+                            <span class="clock-item button child background--c1 background--c0--at opacity--x70 padding--x10 left-text">clock-name</span>
+                        </div>
+                        <span class="bottom-child background--c3 opacity--x70 padding--x10"></span>
                     </div>
-                    <span class="bottom-child background--c3 opacity--x70 padding--x10"></span>
                 </div>
             </div>
 
             <!-- colors -->
-            <div class="inline-column css-trans theme margin--x10">
-                <div class="pull-left colors rounded--x20 border--x4 border--c3 margin--x10">
-                    <span class="profile-name button top-child background--c3 background--c0--at opacity--x70 padding--x10 center-text">Profile</span>
-                    <div class="ui scrollable">
-                        <span class="color-handSecond button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Second Hand</span>
-                        <span class="color-handMinute button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Minute Hand</span>
-                        <span class="color-handHour button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Hour Hand</span>
-                        <span class="color-numbers button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Numbers</span>
-                        <span class="color-timer button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Timer</span>
-                        <span class="color-minutes button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Minutes</span>
-                        <span class="color-fiveMinutes button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Five Minutes</span>
-                        <span class="color-frame button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Frame</span>
-                        <span class="color-background button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Background</span>
-                        <span class="color-outSide button child background--c1 background--c0--at padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Outside</span>
+            <div class="themes css-trans">
+                <div class=" next button child padding--x10 opacity--x70 background--c3 background--c0--at text--c0 text--c3--at right-symbol sym-chevron-right">Color Themes</div>
+                <div class="sub theme">
+                    <div class="inner item-container center-text fit-height">
+                        <div class="back button child opacity--x70 padding--x10 padding--x10 background--c3 background--c0--at text--c0 text--c3--at center-text"><span class="pull-left symbol sym-chevron-left"></span>Color Themes</div>
+
+                        <div class="ui item-fit-available scrollable profile-container">
+                            <div class="profile next button child background--c1 background--c0--at opacity--x70 padding--x10 left-text right-symbol sym-chevron-right">profile-name</div>
+                            <div class="sub">
+                                <div class="inner item-container center-text fit-height">
+                                    <div class="back button child opacity--x70 padding--x10 padding--x10 background--c3 background--c0--at text--c0 text--c3--at center-text"><span class="pull-left symbol sym-chevron-left"></span><span class="profile-name ">Theme Name</span></div>
+
+                                    <div class="colors item-fit-available">
+                                        <div class="ui scrollable fit-height">
+                                            <span class="color-handSecond button child background--c1 background--c0--at opacity--x70 padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Second Hand</span>
+                                            <span class="color-handMinute button child background--c1 background--c0--at opacity--x70 padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Minute Hand</span>
+                                            <span class="color-handHour button child background--c1 background--c0--at opacity--x70 padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Hour Hand</span>
+                                            <span class="color-numbers button child background--c1 background--c0--at opacity--x70 padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Numbers</span>
+                                            <span class="color-timer button child background--c1 background--c0--at opacity--x70 padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Timer</span>
+                                            <span class="color-minutes button child background--c1 background--c0--at opacity--x70 padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Minutes</span>
+                                            <span class="color-fiveMinutes button child background--c1 background--c0--at opacity--x70 padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Five Minutes</span>
+                                            <span class="color-frame button child background--c1 background--c0--at opacity--x70 padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Frame</span>
+                                            <span class="color-background button child background--c1 background--c0--at opacity--x70 padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Background</span>
+                                            <span class="color-outSide button child background--c1 background--c0--at opacity--x70 padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Outside</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <span class="add-profile button bottom-child background--c3 background--c0--at opacity--x70 padding--x10 center-text">+</span>
                     </div>
-                    <span class="bottom-child background--c3 opacity--x70 padding--x10"></span>
-                </div>
-                <div class="pull-right rounded--x20 border--x4 border--c3 margin--x10">
-                    <span class="profile-list top-child background--c3 opacity--x70 padding--x10 center-text">Themes</span>
-                    <div class="ui scrollable profile-container">
-                        <span class="profile button child background--c1 background--c0--at padding--x10 left-text">profile-name</span>
-                    </div>
-                    <span class="add-profile button bottom-child background--c3 background--c0--at opacity--x70 padding--x10 center-text">+</span>
                 </div>
             </div>
 
-            <!-- combination -->
-            <div class="inline-column combinations css-trans margin--x10 rounded--x20 border--x4 border--c3">
-                <span class="combination-list top-child background--c3 opacity--x70 padding--x10 center-text">Presets</span>
-                <div class="ui scrollable combination-container">
-                    <div class="columns">
-                        <div class="column-9-10 combination-item button top-padding--x7 background--c1 background--c0--at left-text">&nbsp;combination-name</div>
-                        <div class="column-1-10 save button symbol sym-save symbol--x2 symbol--c3 background--c1 background--c0--at"></div>
+            <!-- animation selector -->
+            <div class="behaviors css-trans">
+                <div class=" next button child padding--x10 opacity--x70 padding--x10 background--c3 background--c0--at text--c0 text--c3--at right-symbol sym-chevron-right">Clock Behaviors</div>
+                <div class="sub">
+                    <div class="inner center-text fit-height">
+                        <div class="back button child opacity--x70 padding--x10 padding--x10 background--c3 background--c0--at text--c0 text--c3--at center-text"><span class="pull-left symbol sym-chevron-left"></span>Clock Behaviors</div>
+
+                        <span class="analogue-move button top-child border--x4 background--c3 background--c0--at opacity--x70 border--x3 border--c3 padding--x10 symbol text--c0 text--c3--at">Analogue Move</span>
+                        <span class="smooth-move button bottom-child border--x4 background--c3 background--c0--at opacity--x70 border--x3 border--c3 padding--x10 symbol text--c0 text--c3--at">Smooth Move</span>
+
                     </div>
                 </div>
-                <span class="add-combination bottom-child button background--c3 background--c0--at opacity--x70 padding--x10 center-text">+</span>
             </div>
+
+            <!-- backgrounds -->
+            <div class="backgrounds css-trans">
+                <div class=" next button child padding--x10 opacity--x70 background--c3 background--c0--at text--c0 text--c3--at right-symbol sym-chevron-right">Background & Shapes</div>
+                <div class="sub">
+                    <div class="inner item-container center-text fit-height">
+                        <div class="back button child opacity--x70 padding--x10 padding--x10 background--c3 background--c0--at text--c0 text--c3--at center-text"><span class="pull-left symbol sym-chevron-left"></span>Background & Shapes</div>
+
+                        <div class="ui item-fit-available scrollable background-container">
+                            <span class="background-item button child background--c1 background--c0--at opacity--x70 padding--x10 left-text">background-name</span>
+                        </div>
+
+                        <span class="auto-change-background bottom-child button background--c3 background--c0--at opacity--x70 padding--x10 center-text">Auto Change</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- playground -->
+            <div class="item-fit-available background--c0 opacity--x60">
+                <div class="on-center">PLAYGROUND</div>
+            </div>
+
         </div>
     </div>
 </div>
 
 <!-- UI:Zoom Panel -->
-<div class="cover zoom-ui">
+<div class="cover">
     <div class="zoom-ui clock">
         <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve" viewBox="0 0 200 200" class="fit-width volume css-trans--x2">
             <circle cx="100" cy="100" r="26"
@@ -256,9 +310,14 @@
                 resize: function () {
                     var ui = Appanel.clock.ui;
                     ui.setTimeout(function () {
-                        var maxHeight = window.innerHeight * 0.5;
-                        $('.ui.scrollable').css('max-height', maxHeight);
+
+                        /* menu-items scroll-board need maxHeight */
+                        /*var maxHeight = window.innerHeight * 0.5;
+                        $('.ui.scrollable').css('max-height', maxHeight);*/
+
+                        /* need to update position for current zoom */
                         ui.setZoom(ui.zoom.currentZoom);
+
                     }, 1000);
                 },
 
@@ -269,11 +328,14 @@
                     maxDegree: 350,
                     volume: $('.zoom-ui .volume').parent(),
                     body: $('body'),
+                    inverters: $('.invert-zoom')
                 },
 
                 setZoom: function (newZoom) {
                     var zoom = this.zoom,
-                        $body = zoom.body.css('zoom', newZoom);
+                        $body = zoom.body.css('zoom', newZoom),
+                        invert = 1 / newZoom,
+                        $inverter = zoom.inverters.css('zoom', invert);
                     if (newZoom === zoom.minZoom) {
                         $body
                             .css('margin-left', 0)
@@ -397,7 +459,16 @@
                     $(window).on('resize', this.resize);
                 },
 
+                initDrilldown: function () {
+                    $('.drilldown').drilldown({
+                        //debug: true,
+                        //live: '.live',
+                        //iframe: '.iframe'
+                    });
+                },
+
                 init: function () {
+                    this.initDrilldown();
                     this.resize();
                     this.handle();
                 }
