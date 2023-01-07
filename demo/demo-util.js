@@ -150,21 +150,21 @@ Appanel({
                 data: {},
                 panelSelector: '.input-panel',
                 labelSelector: 'label',
-                inputSelector: 'input'
+                inputSelector: 'input',
+                zoom: 1
             };
 
             if (typeof (title) !== 'string') {
                 o = Object.assign(o, title);
             } else {
-                // backward compatible
-                o = Object.assign(o, {
-                    title: title,
-                    label: label,
-                    defaultValue: defaultValue,
-                    handler: handler
-                });
-                if (data !== undefined) o.data = data;
+                o.title = title;
             }
+
+            // backward compatible
+            if (label !== undefined) o.label = label;
+            if (defaultValue !== undefined) o.defaultValue = defaultValue;
+            if (handler !== undefined) o.handler = handler;
+            if (data !== undefined) o.data = data;
 
             // show dialog with max-number-input
             var inputPanel = $(o.panelSelector);
@@ -201,6 +201,10 @@ Appanel({
                     }
                 }, o]
             ]);
+
+            new Appanel.Timeout(function () {
+                $('#panel-selection').css('zoom', o.zoom);
+            }, 200);
         },
 
         /**
@@ -210,7 +214,7 @@ Appanel({
          * Appanel.util.seeNMove('.move-me','css',['left','top'],1);
          * Appanel.util.seeNMove(Appanel.clock.backgroundAttributes,'member',['clockXInPercent','clockYInPercent','clockWInPercent','clockHInPercent'],0.001);
          * Appanel.util.seeNMove(Appanel.clock.backgroundAttributes,'member',['clockXDegree','clockYDegree','clockZDegree','clockPerspective','clockPerspectiveXOrigin','clockPerspectiveYOrigin'],0.5);
-         * Appanel.util.timeout = setTimeout(function(){clearTimeout(Appanel.util.timeout);$('#panel-selection').css('left',100).css('top',100);},200);
+         * new Appanel.Timeout(function(){clearTimeout(Appanel.util.timeout);$('#panel-selection').css('left',150).css('top',120);},200);
          */
         seeNMove: function (selector, functionName, properties, step) {
             var inputPanel = $('.seenmove-panel'),
@@ -274,6 +278,12 @@ Appanel({
                     firstInput.focus();
                 }]
             ]);
+
+            if (Appanel.clock !== undefined) {
+                new Appanel.Timeout(function () {
+                    $('#panel-selection').css('zoom', Appanel.clock.ui.zoom.invertZoom);
+                }, 200);
+            }
         },
 
         disableRefresh: false,
@@ -371,5 +381,42 @@ Appanel({
             return this;
         }
 
+    },
+
+    Timeout: function (func, millis) {
+        if (func !== undefined) {
+            this.set(func, millis);
+        }
+    },
+
+    Interval: function (func, millis) {
+        if (func !== undefined) {
+            this.set(func, millis);
+        }
+    },
+
+    ready: function () {
+
+        /* init Timeout,Interval prototypes */
+        let prototype = {
+            timeout: null,
+            defaultMillis: 200,
+            set: function (func, millis) {
+                if (this.timeout != null) this.clear();
+                let caller = this;
+                this.timeout = window['set' + this.name](function () {
+                    caller.clear();
+                    func.call(window);
+                }, millis === undefined ? this.defaultMillis : millis);
+            },
+            clear: function () {
+                window['clear' + this.name](this.timeout);
+                this.timeout = null;
+            }
+        };
+        Appanel.Timeout.prototype = Object.assign({name: 'Timeout'}, prototype);
+        Appanel.Interval.prototype = Object.assign({name: 'Interval'}, prototype);
+
     }
+
 });
