@@ -76,7 +76,7 @@
         }
 
         .clock-ui .board {
-            border-color:rgba(255,255,255,0.5);
+            border-color: rgba(255, 255, 255, 0.5);
         }
 
         .clock-ui:hover .board {
@@ -157,11 +157,9 @@
                     <div class="inner item-container center-text fit-height">
                         <div class="back button child opacity--x70 padding--x10 padding--x10 background--c3 background--c0--at text--c0 text--c3--at center-text"><span class="pull-left symbol sym-chevron-left"></span>Presets</div>
 
-                        <div class="ui item-fit-available scrollable combination-container">
-                            <div class="columns">
-                                <div class="column-9-10 combination-item button top-padding--x7 background--c1 background--c0--at opacity--x70 left-text">&nbsp;combination-name</div>
-                                <div class="column-1-10 save button symbol sym-save symbol--x2 symbol--c3 background--c1 background--c0--at opacity--x70"></div>
-                            </div>
+                        <div class="ui item-fit-available scrollable combination-container columns">
+                            <div class="column-8-10 combination-item button top-padding--x10 bottom-padding--x10 background--c1 background--c0--at opacity--x70 left-text">&nbsp;combination-name</div>
+                            <div class="column-2-10 save button top-padding--x10 bottom-padding--x10 background--c1 background--c0--at opacity--x70"><span class="symbol sym-save symbol--c3 middle-text"></span></div>
                         </div>
 
                         <span class="add-combination button background--c3 background--c0--at opacity--x70 padding--x10 center-text">+</span>
@@ -191,8 +189,9 @@
                     <div class="inner item-container center-text fit-height">
                         <div class="back button child opacity--x70 padding--x10 padding--x10 background--c3 background--c0--at text--c0 text--c3--at center-text"><span class="pull-left symbol sym-chevron-left"></span>Color Themes</div>
 
-                        <div class="ui item-fit-available scrollable profile-container">
-                            <div class="profile next button child background--c1 background--c0--at opacity--x70 padding--x10 left-text right-symbol sym-chevron-right">profile-name</div>
+                        <div class="ui item-fit-available scrollable profile-container columns">
+                            <div class="profile button column-8-10 background--c1 background--c0--at top-padding--x10 bottom-padding--x10 opacity--x70 left-text">profile-name</div>
+                            <div class="profile next button column-2-10 background--c1 background--c0--at top-padding--x10 bottom-padding--x10 opacity--x70"><span class="right-symbol sym-chevron-right symbol--c3 middle-text"></span></div>
                             <div class="sub">
                                 <div class="inner item-container center-text fit-height">
                                     <div class="back button child opacity--x70 padding--x10 padding--x10 background--c3 background--c0--at text--c0 text--c3--at center-text"><span class="pull-left symbol sym-chevron-left"></span><span class="profile-name ">Theme Name</span></div>
@@ -241,8 +240,9 @@
                     <div class="inner item-container center-text fit-height">
                         <div class="back button child opacity--x70 padding--x10 padding--x10 background--c3 background--c0--at text--c0 text--c3--at center-text"><span class="pull-left symbol sym-chevron-left"></span>Background & Shapes</div>
 
-                        <div class="ui item-fit-available scrollable background-container">
-                            <span class="background-item button child background--c1 background--c0--at opacity--x70 padding--x10 left-text">background-name</span>
+                        <div class="ui item-fit-available scrollable background-container columns">
+                            <div class="column-8-10 background-item button top-padding--x10 bottom-padding--x10 background--c1 background--c0--at opacity--x70 left-text">&nbsp;background-name</div>
+                            <div class="column-2-10 save button top-padding--x10 bottom-padding--x10 background--c1 background--c0--at opacity--x70"><span class="symbol sym-save symbol--c3 middle-text"></span></div>
                         </div>
 
                         <span class="auto-change-background bottom-child button background--c3 background--c0--at opacity--x70 padding--x10 center-text">Auto Change</span>
@@ -260,7 +260,7 @@
 </div>
 
 <!-- UI:Zoom Panel -->
-<div class="cover">
+<div class="zoom-panel cover">
     <div class="zoom-ui clock">
         <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve" viewBox="0 0 200 200" class="fit-width volume css-trans--x2">
             <circle cx="100" cy="100" r="26"
@@ -283,6 +283,11 @@
             <line x1="100" x2="100" y1="95" y2="88" stroke="white" stroke-width="3.5" stroke-linecap="round"></line>
         </svg>
     </div>
+</div>
+
+<!-- Messages -->
+<div class="message-container on-top-left fixed invert-zoom css-trans--x2 layer-9">
+    <!-- message will be show here -->
 </div>
 
 <!-- JS -->
@@ -397,7 +402,7 @@
                 handleSwitch: function (switchPosition, uiSelector) {
                     $(Appanel.clock).off('clock:' + switchPosition + '-switch')
                         .on('clock:' + switchPosition + '-switch', function () {
-                            $(uiSelector).addClass('layer-5');
+                            $(uiSelector).removeClass('layer-5').addClass('layer-5');
                         })
                     ;
                     $(uiSelector).off('mouseover mouseout')
@@ -414,7 +419,7 @@
                     /*handle switches*/
                     this.captureSwitch('top');
                     this.captureSwitch('center');
-                    this.handleSwitch('center', '.zoom-ui');
+                    this.handleSwitch('center', '.zoom-ui,.zoom-panel');
 
                     /*handle zoom volume on ui-panel*/
                     $('.zoom-ui .volume').off('mousedown')
@@ -489,6 +494,19 @@
                     clocks: 0,
                     backgrounds: 0,
                     combainations: 0
+                },
+                backgroundAttributes: {
+                    clockShape: {
+                        "id": "circle"
+                    },
+                    relativeX: 0,
+                    relativeY: 0,
+                    clockXDegree: 0,
+                    clockYDegree: 0,
+                    clockZDegree: 0,
+                    clockPerspective: 800,
+                    clockPerspectiveXOrigin: 0,
+                    clockPerspectiveYOrigin: 0
                 }
             },
 
@@ -735,7 +753,7 @@
                         }, {name: this.combinations[i].name, index: i}],
                         [saveButton, 'click', function (ev) {
                             Appanel.clock.saveCombination(ev.data.name);
-                            Appanel.util.info('SAVED', 'Preset : ' + ev.data.name + ':index(' + ev.data.index + ')')
+                            Appanel.util.info('SAVED', 'Preset : ' + ev.data.name)
                         }, {name: this.combinations[i].name, index: i}]
                     ]);
                 }
@@ -758,10 +776,15 @@
                 for (var i = 0; i < this.backgrounds.length; i++) {
                     bgContainer.append(bgTemplate.replace('background-name', this.backgrounds[i].name));
                     button = bgContainer.find('.background-item').removeClass('background-item');
+                    saveButton = bgContainer.find('.save').removeClass('save');
                     Appanel.map([
                         [button, 'click', function (ev) {
                             Appanel.clock.rotateBackground('stop');
                             Appanel.clock.loadBackground(ev.data.index);
+                        }, {name: this.backgrounds[i].name, index: i}],
+                        [saveButton, 'click', function (ev) {
+                            Appanel.clock.saveBackground(ev.data.name);
+                            Appanel.util.info('SAVED', 'Background : ' + ev.data.name)
                         }, {name: this.backgrounds[i].name, index: i}]
                     ]);
                 }
@@ -787,7 +810,6 @@
                         [button, 'click', function (ev) {
                             Appanel.clock.loadClock(ev.data.index, function () {
                                 this.updateElements();
-                                Appanel.profile.theme.updateElements();
                                 this.ready();
                             });
                         }, {name: this.clocks[i].name, index: i}]
@@ -921,6 +943,7 @@
                 this.$minute = $(this.$minute.selector);
                 this.$hour = $(this.$hour.selector);
                 this.sweeper = $(this.sweeper.selector);
+                Appanel.profile.theme.updateElements();
             },
 
             stop: function (callback) {
@@ -1128,7 +1151,7 @@
 
             saveBackground: function (name) {
                 var index = this.backgroundIndex(name),
-                    attributes = this.backgroundAttributes;
+                    attributes = Object.assign(this.defaults.backgroundAttributes, this.backgroundAttributes);
                 if (index < 0) {
                     this.backgrounds.push({});
                     index = this.backgrounds.length - 1;
@@ -1150,10 +1173,11 @@
                     clockYDegree: attributes.clockYDegree,
                     clockZDegree: attributes.clockZDegree,
 
-                    clockPerspective: attibutes.clockPerspective,
-                    clockPerspectiveXOrigin: attibutes.clockPerspectiveXOrigin,
-                    clockPerspectiveYOrigin: attibutes.clockPerspectiveYOrigin
+                    clockPerspective: attributes.clockPerspective,
+                    clockPerspectiveXOrigin: attributes.clockPerspectiveXOrigin,
+                    clockPerspectiveYOrigin: attributes.clockPerspectiveYOrigin
                 }, (attributes.image === undefined) ? {video: attributes.video} : {image: attributes.image});
+                Appanel.util.removeSameValue(this.defaults.backgroundAttributes, this.backgrounds[index]);
                 Appanel.set(this.name + ':backgrounds', this.backgrounds);
             },
 
@@ -1203,9 +1227,9 @@
                         .removeClass('css-trans')
                         .css('background-repeat', 'no-repeat');
 
-                this.backgroundAttributes = Object.assign(attributes, {
-                    relativeX: 0,
-                    relativeY: 0,
+                attributes = Object.assign({}, this.defaults.backgroundAttributes, attributes);
+
+                this.backgroundAttributes = Object.assign({
                     background: $background,
                     cover: $cover,
                     rotator: $cover.find('.wrapper'),
@@ -1302,16 +1326,7 @@
                             this.resize();
                         }
                     }
-                });
-
-                this.backgroundAttributes = Object.assign({
-                    clockXDegree: 0,
-                    clockYDegree: 0,
-                    clockZDegree: 0,
-                    clockPerspective: 0,
-                    clockPerspectiveXOrigin: 0,
-                    clockPerspectiveYOrigin: 0
-                }, this.backgroundAttributes);
+                }, attributes);
 
                 /*clock shape/background and frame*/
                 var $shapes = $cover.find('.shape').css('display', 'none'),
@@ -1485,18 +1500,28 @@
                 }
             },
 
+            timeDiff: function (date) {
+                let diff = (date.getHours() - this.hour) * 3600;
+                diff += (date.getMinutes() - this.minute) * 60;
+                return diff + date.getSeconds() - this.second;
+            },
+
             disableActivated: false,
 
             activated: function () {
-                var clock = Appanel.clock;
+                let clock = Appanel.clock;
                 if (clock.disableActivated) {
                     console.warn('Ignore activated by switch disableActivated is ', clock.disableActivated);
                     return;
                 }
 
+                if (clock.timeDiff(new Date()) < 3) {
+                    console.warn('Ignore activated by timeDiff less than 3s');
+                    return;
+                }
+
                 clock.loadClock(clock.clockIndex(clock.clock), function () {
                     clock.updateElements();
-                    Appanel.profile.theme.updateElements();
                     clock.ready();
                 });
 

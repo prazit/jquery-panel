@@ -5,7 +5,7 @@ Appanel({
             input: '<b><label class="text--c0">Please enter value:</label></b><br/>' +
                 '<input type="text" class="padding--x5 text--c0 width--x300"/>',
             message: {
-                container: '<div class="message-container fixed css-trans layer-9"></div>',
+                container: '<div class="message-container on-top-left fixed css-trans layer-9"></div>',
                 card: '<div class="message-card hidden css-trans rounded--x10 margin--x10 padding--x10 background--c3 message-classes">' +
                     '    <h1 class="symbol message-icon">&nbsp;message-title</h1>' +
                     '    <p class="text-classes">message-text</p>' +
@@ -308,6 +308,14 @@ Appanel({
                 }, 1000);
             }, seconds * 1000);
             Appanel.chains($e.find('.circle-progress > .progress'), 'ani-hide-circle-progress:' + seconds);
+        },
+
+        removeSameValue: function (source, target) {
+            for (let i in source) {
+                if (source[i] === target[i]) {
+                    delete target[i];
+                }
+            }
         },
 
         myURL: function () {
