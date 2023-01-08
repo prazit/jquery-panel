@@ -118,7 +118,7 @@
 <div class="background-image fit-height fit-width layer-1">
     <!-- filter -->
     <div class="out-side on-top-left fit-width fit-height">
-        <h1 class="on-top footprint padding--x10 opacity--x0 opacity--x100--at">Analogue Clock v1</h1>
+        <h1 class="on-top fixed invert-zoom footprint capital padding--x10 opacity--x0 opacity--x100--at">Analogue Clock v1</h1>
     </div>
 </div>
 
@@ -252,7 +252,8 @@
 
             <!-- playground -->
             <div class="item-fit-available background--c0 opacity--x60">
-                <div class="current-info on-center no-wrap left-text max-width--x100pc">PLAYGROUND</div>
+                <div class="current-info on-center no-wrap ellipsis left-text max-width--x100pc">PLAYGROUND</div>
+                <i class="on-bottom-right footprint capital padding--x10 text--c1">Analogue Clock v1</i>
             </div>
 
         </div>
@@ -274,11 +275,11 @@
             <circle cx="100" cy="100" r="18"
                     fill="red" stroke="red"
                     stroke-opacity="1"
-                    stroke-width="7"
+                    stroke-width="3"
                     stroke-linecap="butt"
                     stroke-linejoin="round"
                     stroke-dashoffset="0"
-                    stroke-dasharray="5"/>
+                    stroke-dasharray="3"/>
             <circle cx="100" cy="100" r="13" fill="black" stroke="transparent" stroke-width="1" class="opacity--x50"/>
             <line x1="100" x2="100" y1="95" y2="88" stroke="white" stroke-width="3.5" stroke-linecap="round"></line>
         </svg>
@@ -310,7 +311,8 @@
                         profile = Appanel.profile,
                         preset = clock.combination === undefined ? 'custom' : clock.combination,
                         theme = profile === undefined ? 'none' : profile.current,
-                        useSweep = clock.options.useSweep ? 'Smooth Move' : 'Analogue Move';
+                        useSweep = clock.options.useSweep ? 'Smooth Move' : 'Analogue Move',
+                        version = `${clock.name} v.${clock.control.version}.${clock.control.clocks}.${clock.control.backgrounds}.${clock.control.combinations}`;
                     $('.current-info').html(
                         `
                         Preset: ${preset}<br/>
@@ -319,6 +321,7 @@
                         Background: ${clock.background}
                         `
                     );
+                    $('.footprint').text(version);
                 },
 
                 setTimeout: function (func, millisec) {
@@ -1124,7 +1127,7 @@
                     clockName = clock.name,
                     url = Appanel.util.myURL() + '-' + clockName + '.html?v=' + requestDate;
 
-                if(clockName === this.clock) {
+                if (clockName === this.clock) {
                     console.warn('Ignored, load current clock again is not allowed.');
                     return;
                 }
