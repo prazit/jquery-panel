@@ -228,7 +228,12 @@ Appanel({
             for (let i = 0; i < properties.length; i++) {
                 x = target[functionName](properties[i]);
                 num = parseFloat(x);
-                unitX = (x + '').substr(num.toString().length);
+                if (isNaN(num)) {
+                    num = 0;
+                    unitX = '';
+                } else {
+                    unitX = (x + '').substr(num.toString().length);
+                }
                 x = num;
 
                 html += propertyHtml
@@ -299,11 +304,14 @@ Appanel({
             window.top.location.href = src;
         },
 
-        refreshAfter: function (seconds) {
-            var timeout = setTimeout(function () {
-                clearTimeout(timeout);
-                Appanel.util.refresh();
-            }, seconds * 1000);
+        refreshAfter: function (seconds, refreshFunc, caller) {
+            if (refreshFunc === undefined) refreshFunc = Appanel.util.refresh;
+            new Appanel.Timeout(refreshFunc, seconds * 1000, caller);
+        },
+
+        refreshEvery: function (seconds, refreshFunc, caller) {
+            if (refreshFunc === undefined) refreshFunc = Appanel.util.refresh;
+            new Appanel.Interval(refreshFunc, seconds * 1000, caller);
         },
 
         removeAfter: function (seconds, $e, progressType) {
@@ -321,8 +329,10 @@ Appanel({
         },
 
         removeSameValue: function (source, target) {
+            console.debug('removeSameValue: target:', target);
             for (let i in source) {
                 if (source[i] === target[i]) {
+                    console.debug('removeSameValue: field:', i, ', target-value:', target[i], ', source-value:', source[i]);
                     delete target[i];
                 }
             }
@@ -383,30 +393,30 @@ Appanel({
 
     },
 
-    Timeout: function (func, millis) {
+    Timeout: function (func, millis, caller) {
         if (func !== undefined) {
-            this.set(func, millis);
+            this.set(func, millis, caller);
         }
     },
 
-    Interval: function (func, millis) {
+    Interval: function (func, millis, caller) {
         if (func !== undefined) {
-            this.set(func, millis);
+            this.set(func, millis, caller);
         }
     },
 
     ready: function () {
-
         /* init Timeout,Interval prototypes */
         let prototype = {
             timeout: null,
             defaultMillis: 200,
-            set: function (func, millis) {
+            set: function (func, millis, caller) {
                 if (this.timeout != null) this.clear();
-                let caller = this;
+                if (caller === undefined) caller = this;
+                let This = this;
                 this.timeout = window['set' + this.name](function () {
-                    caller.clear();
-                    func.call(window);
+                    if (This.clearFirst) This.clear();
+                    func.call(caller);
                 }, millis === undefined ? this.defaultMillis : millis);
             },
             clear: function () {
@@ -414,9 +424,8 @@ Appanel({
                 this.timeout = null;
             }
         };
-        Appanel.Timeout.prototype = Object.assign({name: 'Timeout'}, prototype);
-        Appanel.Interval.prototype = Object.assign({name: 'Interval'}, prototype);
-
+        Appanel.Timeout.prototype = Object.assign({name: 'Timeout', clearFirst: true}, prototype);
+        Appanel.Interval.prototype = Object.assign({name: 'Interval', clearFirst: false}, prototype);
     }
 
 });

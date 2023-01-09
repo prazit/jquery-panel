@@ -1,40 +1,5 @@
 [
   {
-    "name": "Swiss Railway",
-    "clock": "station",
-    "theme": "Station",
-    "background": "Swiss Railway",
-    "analogue": true
-  },
-  {
-    "name": "Many Shard",
-    "clock": "twelve",
-    "theme": "Classic 2",
-    "background": "Many Shard",
-    "analogue": true
-  },
-  {
-    "name": "Miami Beach",
-    "clock": "original",
-    "theme": "Colorful",
-    "background": "Miami Beach",
-    "analogue": true
-  },
-  {
-    "name": "Colorful Miami",
-    "clock": "original",
-    "theme": "Colorful",
-    "background": "Colorful Miami",
-    "analogue": true
-  },
-  {
-    "name": "Hand Watch on the dark",
-    "clock": "original",
-    "theme": "Dark",
-    "background": "Hand Watch on the dark",
-    "analogue": true
-  },
-  {
     "name": "Alarm On My Hand",
     "clock": "original",
     "theme": "Classic",
@@ -42,11 +7,28 @@
     "analogue": false
   },
   {
-    "name": "Alarm On The Heaven",
+    "name": "Alarm On The Bed",
     "clock": "twelve",
+    "theme": "Alarm On The Bed",
+    "background": "Alarm On The Bed",
+    "options": {
+      "useSweep": false,
+      "speed": 1,
+      "zoom": 1.145,
+      "originType": 1
+    }
+  },
+  {
+    "name": "Alarm On The Heaven",
+    "clock": "original",
     "theme": "Alarm On The Heaven",
     "background": "Alarm On The Heaven",
-    "analogue": false
+    "options": {
+      "useSweep": false,
+      "speed": 1,
+      "zoom": 1.145,
+      "originType": 2
+    }
   },
   {
     "name": "Alarm On The Yard",
@@ -63,10 +45,164 @@
     "analogue": true
   },
   {
+    "name": "Colorful Flip on The Wall",
+    "clock": "flip",
+    "theme": "Colorful",
+    "background": "Wall Clock",
+    "analogue": true
+  },
+  {
+    "name": "Colorful Miami",
+    "clock": "flip",
+    "theme": "Colorful",
+    "background": "Colorful Miami",
+    "options": {
+      "useSweep": false,
+      "speed": 1,
+      "zoom": 1.145,
+      "originType": 2
+    }
+  },
+  {
+    "name": "Flip Clock on The Cyber Punk Wallpaper",
+    "clock": "flip",
+    "theme": "Flip Clock on The Cyber Punk Wallpaper",
+    "background": "Flip Clock on The Cyber Punk Wallpaper",
+    "options": {
+      "useSweep": false,
+      "speed": 1,
+      "originType": 2
+    }
+  },
+  {
+    "name": "Flip on Hand Watch",
+    "clock": "flip",
+    "theme": "Station",
+    "background": "Hand Watch on the dark",
+    "options": {
+      "useSweep": false,
+      "speed": 1,
+      "originType": 1
+    }
+  },
+  {
+    "name": "Flip On The Heaven",
+    "clock": "flip",
+    "theme": "Alarm On The Heaven",
+    "background": "Alarm On The Heaven",
+    "options": {
+      "useSweep": false,
+      "speed": 1,
+      "zoom": 1.145,
+      "originType": 1
+    }
+  },
+  {
+    "name": "Flip on The Wall",
+    "clock": "flip",
+    "theme": "Wall Clock",
+    "background": "Wall Clock",
+    "analogue": true
+  },
+  {
+    "name": "Hand Watch on the dark",
+    "clock": "twelve",
+    "theme": "Dark",
+    "background": "Hand Watch on the dark",
+    "options": {
+      "useSweep": false,
+      "speed": 1,
+      "zoom": 1.145,
+      "originType": 2
+    }
+  },
+  {
+    "name": "Many Shard",
+    "clock": "twelve",
+    "theme": "Classic 2",
+    "background": "Many Shard",
+    "analogue": true
+  },
+  {
+    "name": "Miami Beach",
+    "clock": "flip",
+    "theme": "Colorful",
+    "background": "Miami Beach",
+    "options": {
+      "useSweep": false,
+      "speed": 1
+    }
+  },
+  {
+    "name": "Original Flip Clock",
+    "clock": "flip",
+    "theme": "default",
+    "background": "Wall Clock",
+    "options": {
+      "useSweep": false,
+      "speed": 1,
+      "originType": 2
+    }
+  },
+  {
+    "name": "Prayer Wall Clock",
+    "clock": "prayer",
+    "theme": "Prayer Wall Clock",
+    "background": "Prayer Wall Clock",
+    "options": {
+      "useSweep": false,
+      "speed": 1,
+      "originType": 3
+    }
+  },
+  {
+    "name": "Steel On My Hand",
+    "clock": "station",
+    "theme": "Steel On My Hand",
+    "background": "Alarm On My Hand",
+    "options": {
+      "useSweep": false,
+      "speed": 1,
+      "zoom": 1.145,
+      "originType": 2
+    }
+  },
+  {
+    "name": "Steel On The Heaven",
+    "clock": "station",
+    "theme": "Alarm On The Heaven",
+    "background": "Alarm On The Heaven",
+    "analogue": false
+  },
+  {
+    "name": "Swiss Railway",
+    "clock": "station",
+    "theme": "Station",
+    "background": "Swiss Railway",
+    "options": {
+      "useSweep": false,
+      "speed": 1,
+      "zoom": 1.145,
+      "originType": 2
+    }
+  },
+  {
     "name": "Wall Clock",
     "clock": "twelve",
     "theme": "Wall Clock",
     "background": "Wall Clock",
     "analogue": true
+  },
+  {
+    "name": "Zoom Wall Clock",
+    "clock": "flip",
+    "theme": "Zoom Wall",
+    "background": "Wall Clock",
+    "options": {
+      "useSweep": false,
+      "speed": 1,
+      "zoom": 1.145,
+      "originType": 2
+    }
   }
 ]

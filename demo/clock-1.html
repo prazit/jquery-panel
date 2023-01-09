@@ -83,6 +83,19 @@
             width: 350px;
         }
 
+        .debug {
+            height: 10vh;
+            overflow: visible;
+        }
+
+        .debug .board {
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .debug:hover .board {
+            width: 350px;
+        }
+
         .css-trans {
             transition-duration: 0.2s;
         }
@@ -118,7 +131,9 @@
 <div class="background-image fit-height fit-width layer-1">
     <!-- filter -->
     <div class="out-side on-top-left fit-width fit-height">
-        <h1 class="on-top fixed invert-zoom footprint capital padding--x10 opacity--x0 opacity--x100--at">Analogue Clock v1</h1>
+        <div class="on-top fixed">
+            <h1 class="footprint capital padding--x10 opacity--x0 opacity--x100--at">Analogue Clock v1</h1><br/>
+        </div>
     </div>
 </div>
 
@@ -146,7 +161,7 @@
 </div>
 
 <!-- UI:Side Panel -->
-<div class="clock-ui on-left fixed invert-zoom css-trans--x2 width--x100 opacity--x0 opacity--x100--at layer-5">
+<div class="clock-ui on-left fixed css-trans--x2 width--x100 opacity--x0 opacity--x100--at layer-5">
     <div class="board css-trans fit-height width--x1 right-rounded--x20 bottom-rounded--x20 top-border--x10 right-border--x10 bottom-border--x10 on-left">
         <div class="drilldown fit-width item-container">
 
@@ -287,8 +302,14 @@
 </div>
 
 <!-- UI:Messages -->
-<div class="message-container on-top-left fixed invert-zoom css-trans--x2 layer-9">
+<div class="message-container on-top-left fixed css-trans--x2 layer-9">
     <!-- message will be show here -->
+</div>
+<div class="debug messages on-bottom-right fixed css-trans--x2 rounded--x50 width--x50 height--x50 layer-9 background-c0">
+    <div class="board on-bottom-right css-trans--x2 rounded--x20 background--c0 width--x1 opacity--x0 opacity--x80--at">
+        <div class="padding--x10 background--c3 center-text fit-width">DEBUG MESSAGES</div>
+        <div class="debug-message padding--x10 left-text fit-width ellipsis no-wrap">DEBUG MESSAGES HERE</div>
+    </div>
 </div>
 
 <!-- JS -->
@@ -301,6 +322,25 @@
         clock: {
 
             ui: {
+                debugMessage: '',
+                debugCount: 0,
+                debugMax: 12,
+                debugId: 0,
+                debug: function (message) {
+                    this.debugMessage += (this.debugId++) + ') ' + message.replaceAll('\n', '<br>&nbsp;&nbsp;') + '<br/>';
+
+                    /*lines limit*/
+                    let i;
+                    this.debugCount++;
+                    while (this.debugCount > this.debugMax) {
+                        i = this.debugMessage.indexOf('<br/>');
+                        this.debugMessage = this.debugMessage.substr(i + 5);
+                        this.debugCount--;
+                    }
+
+                    this.$debug.html(this.debugMessage);
+                },
+
                 refreshCurrentInfo: function () {
                     /*if (Appanel.util.disableRefresh) {
                         console.warn('');
@@ -324,28 +364,16 @@
                     $('.footprint').text(version);
                 },
 
-                setTimeout: function (func, millisec) {
-                    this.clearTimeout();
-                    this.timeout = window.setTimeout(func, millisec);
-                },
-
-                clearTimeout: function () {
-                    if (this.timeout !== undefined) {
-                        clearTimeout(this.timeout);
-                        delete this.timeout;
-                    }
-                },
-
                 resize: function () {
                     var ui = Appanel.clock.ui;
-                    ui.setTimeout(function () {
+                    ui.timeout.set(function () {
 
                         /* menu-items scroll-board need maxHeight */
                         /*var maxHeight = window.innerHeight * 0.5;
                         $('.ui.scrollable').css('max-height', maxHeight);*/
 
                         /* need to update position for current zoom */
-                        ui.setZoom(ui.zoom.currentZoom);
+                        //ui.setZoom(ui.zoom.currentZoom);
 
                     }, 1000);
                 },
@@ -361,21 +389,27 @@
                 },
 
                 setZoom: function (newZoom) {
-                    var zoom = this.zoom,
-                        $body = zoom.body.css('zoom', newZoom),
+                    let zoom = this.zoom,
+                        $body = zoom.body /*TODO: remove this comment if scale is work correctly: zoom.body.css('zoom', newZoom)*/,
                         invert = 1 / newZoom,
                         $inverter = zoom.inverters.css('zoom', invert);
+
+                    /*update zoom value*/
+                    zoom.currentZoom = newZoom;
+
+                    /*TODO: remove invertZoom if scale is work correctly*/
+                    /*zoom.invertZoom = invert;*/
+                    zoom.invertZoom = 1.0;
+
                     if (newZoom === zoom.minZoom) {
-                        $body
+                        /*$body
                             .css('margin-left', 0)
-                            .css('margin-top', 0);
-                        zoom.currentZoom = newZoom;
-                        zoom.invertZoom = invert;
+                            .css('margin-top', 0);*/
                         return;
                     }
 
                     /*present volume degree*/
-                    var length = zoom.maxZoom - zoom.minZoom,
+                    let length = zoom.maxZoom - zoom.minZoom,
                         current = newZoom - zoom.minZoom,
                         percent = current / length,
                         degree = percent * zoom.maxDegree;
@@ -383,37 +417,72 @@
                     zoom.currentDegree = degree;
                     zoom.volume.css('transform', 'rotate(' + degree + 'deg)');
 
+                    /* TODO: remove centerTheClock if scale is work correctly */
+                    /*this.centerTheClock();*/
+                },
+
+                centerTheClock: function () {
+
                     /* center the clock */
-                    window.getComputedStyle(document.body).display;//forcing reflow
-                    var rect = zoom.volume[0].getBoundingClientRect(),
+                    let rect = zoom.volume[0].getBoundingClientRect(),
+                        screenW = window.innerWidth,
+                        screenH = window.innerHeight,
                         pos = {
                             marginX: parseFloat($body.css('margin-left')),
                             marginY: parseFloat($body.css('margin-top')),
                             centerX: (rect.left + rect.right) * 0.5 * newZoom,
                             centerY: (rect.top + rect.bottom) * 0.5 * newZoom,
-                            screenCX: window.innerWidth * 0.5,
-                            screenCY: window.innerHeight * 0.5
+                            screenCX: screenW * 0.5,
+                            screenCY: screenH * 0.5
                         },
                         a = Appanel.clock.backgroundAttributes;
                     pos.moveToX = pos.marginX + (pos.screenCX - pos.centerX);
                     pos.moveToY = pos.marginY + (pos.screenCY - pos.centerY);
 
-                    /*TODO: do not show space on the right and bottom*/
-                    /*if (a.imageSize === a.screenH) {
-                        Appanel.util.info('need to correct width','')
-                    }*/
-
                     /*do not show space on the left and top*/
                     pos.moveToX = Math.min(pos.moveToX, 0);
                     pos.moveToY = Math.min(pos.moveToY, 0);
 
+                    let marginLeftBefore = window.getComputedStyle(document.body).marginLeft;
                     $body
-                        .css('margin-left', pos.moveToX)
-                        .css('margin-top', pos.moveToY);
+                        .css('margin-left', pos.moveToX + 'px')
+                        .css('margin-top', pos.moveToY + 'px');
+                    let marginLeft = window.getComputedStyle(document.body).marginLeft;
+                    console.debug('moveToX:', pos.moveToX, ', body.marginLeftBefore:', marginLeftBefore, ', body.marginLeftAfter:', marginLeft);
 
-                    /*Notice: no need to save zoom value with the combination */
-                    zoom.currentZoom = newZoom;
-                    zoom.invertZoom = invert;
+                    /*remove space on the right and bottom*/
+                    // force reflow
+
+                    let imageRect = $('.background-image')[0].getBoundingClientRect(),
+                        bodyRect = $body[0].getBoundingClientRect(),
+                        reposition = false,
+                        testRect;
+
+                    imageRect.leftRight = imageRect.left + imageRect.right;
+                    zoom.imageRect = imageRect;
+
+                    testRect = imageRect;//(imageRect.width > bodyRect.width) ? imageRect : bodyRect;
+                    /*if (testRect.right < screenW) {
+                        let temp = pos.moveToX;
+                        pos.moveToX += (screenW - testRect.right);
+                        console.debug('reposition: (marginLeft:', marginLeft, ') moveToX.before:', temp, ', moveToX.after:', pos.moveToX);
+                        reposition = true;
+                    }*/
+
+                    /*testRect = imageRect;//(imageRect.height > bodyRect.height) ? imageRect : bodyRect;
+                    if (testRect.bottom < screenH) {
+                        let temp = pos.moveToY;
+                        pos.moveToY += (screenH - testRect.bottom);
+                        console.debug('reposition: before:', temp, ', moveToY:', pos.moveToY);
+                        reposition = true;
+                    }*/
+
+                    if (reposition) {
+                        $body
+                            .css('margin-left', pos.moveToX + 'px')
+                            .css('margin-top', pos.moveToY + 'px');
+                    }
+
                 },
 
                 captureSwitch: function (switchPosition) {
@@ -450,32 +519,38 @@
                     /*handle zoom volume on ui-panel*/
                     $('.zoom-ui .volume').off('mousedown')
                         .on('mousedown', function (ev) {
-                            var zoom = Appanel.clock.ui.zoom;
+                            var clock = Appanel.clock,
+                                zoom = clock.ui.zoom;
                             Appanel.clock.ui.zoom = Object.assign(zoom, {
+                                grabbing: true,
                                 calculated: true,
                                 startX: ev.clientX,
                                 startY: ev.clientY,
                                 startXY: ev.clientX + ev.clientY,
-                                startZoom: parseFloat(zoom.body.css('zoom'))
+                                startZoom: zoom.currentZoom === undefined ? 1 : zoom.currentZoom,
+                                timeout: new Appanel.Timeout()
                             });
                             zoom.body.addClass('grabbing')
                                 .on('mousemove', function (ev) {
                                     var ui = Appanel.clock.ui,
                                         zoom = ui.zoom;
-                                    if (ev.buttons === 0) {
-                                        /*stop grabbing*/
+
+                                    /*stop grabbing by mouse-button-release not start from the volume*/
+                                    if (!zoom.grabbing || ev.buttons === 0) {
                                         zoom.body
                                             .off('mousemove')
                                             .removeClass('grabbing');
                                         return;
                                     }
 
+                                    /*ignore new message when the last message is not finish*/
                                     if (!zoom.calculated) return;
                                     zoom.calculated = false;
 
                                     /*zoom by relative position*/
                                     var diffX = (ev.clientX + ev.clientY) - zoom.startXY,
                                         newZoom = zoom.startZoom + (diffX * 0.001),
+                                        update = newZoom !== zoom.currentZoom,
                                         $body = $(ev.currentTarget);
                                     newZoom = Math.max(newZoom, zoom.minZoom);
                                     newZoom = Math.min(newZoom, zoom.maxZoom);
@@ -484,6 +559,8 @@
 
                                     ui.setZoom(newZoom);
                                     zoom.calculated = true;
+
+                                    if (update) zoom.timeout.set(Appanel.clock.backgroundAttributes.resize, 100);
                                 });
                         });
 
@@ -499,6 +576,8 @@
                 },
 
                 init: function () {
+                    this.$debug = $('.debug-message');
+                    this.timeout = new Appanel.Timeout();
                     this.initDrilldown();
                     this.resize();
                     this.handle();
@@ -522,6 +601,7 @@
                     combainations: 0
                 },
                 backgroundAttributes: {
+                    scale: 1.0,
                     clockShape: {
                         "id": "circle"
                     },
@@ -581,10 +661,10 @@
                     } else if (second === 59) {
                         /*console.debug('setSecond: in case of 59');*/
                         this.$second.css('transform', 'rotate(' + (this.percentSecond * 360) + 'deg)');
-                        this.setTimeout(function () {
+                        this.timeout.set(function () {
                             Appanel.clock.$second.removeClass('css-trans');
                             Appanel.clock.$second.css('transform', 'rotate(-6deg)');
-                            Appanel.clock.setTimeout(function () {
+                            Appanel.clock.timeout.set(function () {
                                 Appanel.clock.$second.addClass('css-trans');
                             }, 100);
                         }, 100);
@@ -608,10 +688,10 @@
                     } else if (minute === 59) {
                         /*console.debug('setMinute: in case of 59');*/
                         this.$minute.css('transform', 'rotate(' + this.minuteDegree + 'deg)');
-                        this.setTimeout(function () {
+                        this.timeout.set(function () {
                             Appanel.clock.$minute.removeClass('css-trans');
                             Appanel.clock.$minute.css('transform', 'rotate(-' + (360 - Appanel.clock.minuteDegree) + 'deg)');
-                            Appanel.clock.setTimeout(function () {
+                            Appanel.clock.timeout.set(function () {
                                 Appanel.clock.$minute.addClass('css-trans');
                             }, 100);
                         }, 100);
@@ -633,10 +713,10 @@
                         if (this.hour !== hour) {
                             /*console.debug('setHour: in case of 11');*/
                             this.$hour.css('transform', 'rotate(' + this.hourDegree + 'deg)');
-                            this.setTimeout(function () {
+                            this.timeout.set(function () {
                                 Appanel.clock.$hour.removeClass('css-trans');
                                 Appanel.clock.$hour.css('transform', 'rotate(-' + (360 - Appanel.clock.hourDegree) + 'deg)');
-                                Appanel.clock.setTimeout(function () {
+                                Appanel.clock.timeout.set(function () {
                                     Appanel.clock.$hour.addClass('css-trans');
                                 }, 100);
                             }, 100);
@@ -725,6 +805,10 @@
                 this.handle(new Profile(this.name, theme, {useSweep: false}));
             },
 
+            sortByName: function (array) {
+                array.sort((a, b) => a.name.toUpperCase().localeCompare(b.name.toUpperCase()));
+            },
+
             handle: function (profile) {
                 Appanel['profile'] = profile;
 
@@ -741,7 +825,7 @@
                             background: 'navy',
                             outSide: 'bluesky'
                         },
-                        more: {useSweep: this.options.useSweep, clock: 'original'}
+                        more: {/* @Deprecated */}
                     });
                 }
 
@@ -845,6 +929,7 @@
                 }
 
                 // handle profile buttons
+                profile.ids.sort((a, b) => a.toUpperCase().localeCompare(b.toUpperCase()));
                 container[0].innerHTML = "";
                 for (var i = 0; i < count; i++) {
                     let profileName = profile.ids[i];
@@ -913,30 +998,6 @@
                 }
             },
 
-            setTimeout: function (func, millisec) {
-                this.clearTimeout();
-                this.timeout = window.setTimeout(func, millisec);
-            },
-
-            clearTimeout: function () {
-                if (this.timeout !== undefined) {
-                    clearTimeout(this.timeout);
-                    delete this.timeout;
-                }
-            },
-
-            setInterval: function (func, millisec) {
-                this.clearInterval();
-                this.interval = window.setInterval(func, millisec);
-            },
-
-            clearInterval: function () {
-                if (this.interval !== undefined) {
-                    clearInterval(this.interval);
-                    delete this.interval;
-                }
-            },
-
             clearSweep: function ($element, callback) {
                 var e, $e, length = $element.length;
                 if (length == 0) {
@@ -959,7 +1020,7 @@
                     Appanel.chains($e, 'ani-clock-reset:0.001');
                 }
 
-                if (callback !== undefined) Appanel.clock.setTimeout(function () {
+                if (callback !== undefined) Appanel.clock.timeout.set(function () {
                     callback.call(Appanel.clock);
                 }, 10);
 
@@ -984,8 +1045,8 @@
                 this.state = 'stopping';
                 console.info("clock stop at ", this.hour, ":", this.minute, ":", this.second, ' ', this.options.speed, 'X speed');
 
-                this.clearInterval();
-                this.clearTimeout();
+                this.interval.clear();
+                this.timeout.clear();
 
                 this.setSecond(this.second);
                 this.setMinute(this.minute);
@@ -1090,13 +1151,13 @@
                         clock.sweeper.addClass('css-trans');
                     }
 
-                    clock.setInterval(function () {
-                        Appanel.clock.secondTick();
-                        Appanel.clock.refreshTime();
-                    }, 1000 * (1 / clock.options.speed));
+                    clock.interval.set(function () {
+                        this.secondTick();
+                        this.refreshTime();
+                    }, 1000 * (1 / clock.options.speed), clock);
 
                 };
-                Appanel.clock.setTimeout(delayStart, 1000 - now.getMilliseconds());
+                Appanel.clock.timeout.set(delayStart, 1000 - now.getMilliseconds());
 
                 clock.state = 'started';
             },
@@ -1128,7 +1189,13 @@
                     url = Appanel.util.myURL() + '-' + clockName + '.html?v=' + requestDate;
 
                 if (clockName === this.clock) {
-                    console.warn('Ignored, load current clock again is not allowed.');
+                    if (callback !== undefined) {
+                        console.warn('Skipped, load current clock again is not allowed then run callback immediately.');
+                        Appanel.clock.timeout.set(function () {
+                            callback.call(Appanel.clock);
+                        }, 100);
+                    } else
+                        console.warn('Skipped, load current clock again is not allowed and no callback to run.');
                     return;
                 }
 
@@ -1149,7 +1216,7 @@
                     $cover.find('.wrapper > .foreground').html(clockHtml);
 
                     if (callback !== undefined) {
-                        Appanel.clock.setTimeout(function () {
+                        Appanel.clock.timeout.set(function () {
                             callback.call(Appanel.clock);
                         }, 100);
                     }
@@ -1186,10 +1253,12 @@
 
             saveBackground: function (name) {
                 var index = this.backgroundIndex(name),
-                    attributes = Object.assign(this.defaults.backgroundAttributes, this.backgroundAttributes);
+                    attributes = Object.assign({}, this.defaults.backgroundAttributes, this.backgroundAttributes),
+                    needSort = false;
                 if (index < 0) {
                     this.backgrounds.push({});
                     index = this.backgrounds.length - 1;
+                    needSort = true;
                 }
                 this.backgrounds[index] = Object.assign({
                     name: name,
@@ -1212,6 +1281,7 @@
                     clockPerspectiveXOrigin: attributes.clockPerspectiveXOrigin,
                     clockPerspectiveYOrigin: attributes.clockPerspectiveYOrigin
                 }, (attributes.image === undefined) ? {video: attributes.video} : {image: attributes.image});
+                if (needSort) this.sortByName(this.backgrounds);
                 Appanel.util.removeSameValue(this.defaults.backgroundAttributes, this.backgrounds[index]);
                 Appanel.set(this.name + ':backgrounds', this.backgrounds);
             },
@@ -1265,6 +1335,8 @@
                 attributes = Object.assign({}, this.defaults.backgroundAttributes, attributes);
 
                 this.backgroundAttributes = Object.assign({
+                    ui: this.ui,
+                    zoomer: $('body'),
                     background: $background,
                     cover: $cover,
                     rotator: $cover.find('.wrapper'),
@@ -1273,31 +1345,78 @@
                         var clock = Appanel.clock,
                             a = clock.backgroundAttributes;
 
+                        /* scale <= 0 when zoom == 1
+                         * scale > 0 when zoom > 1
+                         **/
+                        a.scale = parseFloat(clock.ui.zoom.currentZoom);
+                        a.relativeScale = a.scale - 1.0;
+                        a.imageScaleWidth = a.imageWidth * a.scale;
+                        a.imageScaleHeight = a.imageHeight * a.scale;
+
                         a.screenW = window.innerWidth;
                         a.screenH = window.innerHeight;
 
-                        a.ratioW = a.screenW / a.imageWidth;
-                        a.ratioH = a.screenH / a.imageHeight;
+                        a.ratioW = a.screenW / a.imageScaleWidth;
+                        a.ratioH = a.screenH / a.imageScaleHeight;
 
                         if (a.ratioW >= a.ratioH) {
-                            a.imageX = 0;
-                            a.imageY = (a.screenH - (a.ratioW * a.imageHeight)) / 2;
-                            a.imageSize = a.screenW;
-                            a.coverX = a.clockXInPercent * a.screenW;
-                            a.coverY = a.imageY + (a.ratioW * a.imageHeight * a.clockYInPercent);
-                            /*Notice: a.coverSize = (100 * a.clockWInPercent) + 'vw';*/
-                            a.coverSize = (100 * a.clockWInPercent) * a.screenW * 0.01;
-                        } else {
-                            a.imageX = (a.screenW - (a.ratioH * a.imageWidth)) / 2;
-                            a.imageY = 0;
-                            a.imageSize = a.imageWidth * a.ratioH;
-                            a.coverX = a.imageX + (a.ratioH * a.imageWidth * a.clockXInPercent);
-                            a.coverY = a.clockYInPercent * a.screenH;
-                            /*Notice: a.coverSize = (100 * a.clockHInPercent) + 'vh';*/
-                            a.coverSize = (100 * a.clockHInPercent) * a.screenH * 0.01;
-                        }
+                            if (a.scale <= 1.0) {
+                                a.ui.debug('case W1:');
+                                a.imageX = 0;
+                                a.imageY = (a.screenH - (a.ratioW * a.imageHeight)) / 2;
+                                a.imageWide = a.screenW;
+                                a.imageTall = a.imageWide * a.imageScaleWidth / a.imageScaleHeight;
+                                a.backgroundSize = a.imageWide;
+                                a.coverX = a.clockXInPercent * a.screenW;
+                                a.coverY = a.imageY + (a.ratioW * a.imageHeight * a.clockYInPercent);
+                                /*Notice: a.coverSize = (100 * a.clockWInPercent) + 'vw';*/
+                                a.coverSize = (100 * a.clockWInPercent) * a.screenW * 0.01;
+                            } else {
+                                a.ui.debug('case W2:');
+                                a.scale = a.ratioW /* this ratioW is max of real scale when the user scale === 1 */ + a.relativeScale;
+                                a.imageScaleWidth = a.imageWidth * a.scale;
+                                a.imageScaleHeight = a.imageHeight * a.scale;
 
-                        a.imageTall = a.imageSize * a.imageWidth / a.imageHeight;
+                                a.imageWide = a.imageScaleWidth;
+                                a.imageTall = a.imageScaleHeight;
+                                a.backgroundSize = a.imageWide;
+                                a.imageX = (a.screenW - a.imageScaleWidth) / 2;
+                                a.imageY = (a.screenH - a.imageScaleHeight) / 2;
+                                a.coverX = a.imageX + (a.imageWide * a.clockXInPercent);
+                                a.coverY = a.imageY + (a.imageTall * a.clockYInPercent);
+                                /*Notice: a.coverSize = (100 * a.clockHInPercent) + 'vh';*/
+                                a.coverSize = (100 * a.clockHInPercent) * a.imageTall * 0.01;
+                            }
+
+                        } else {
+                            if (a.scale <= 1.0) {
+                                a.ui.debug('case H1:');
+                                a.imageWide = a.imageWidth * a.ratioH;
+                                a.imageTall = a.imageWide * a.imageScaleWidth / a.imageScaleHeight;
+                                a.backgroundSize = a.imageWide;
+                                a.imageX = (a.screenW - (a.ratioH * a.imageWidth)) / 2;
+                                a.imageY = 0;
+                                a.coverX = a.imageX + (a.ratioH * a.imageWidth * a.clockXInPercent);
+                                a.coverY = a.clockYInPercent * a.screenH;
+                                /*Notice: a.coverSize = (100 * a.clockHInPercent) + 'vh';*/
+                                a.coverSize = (100 * a.clockHInPercent) * a.screenH * 0.01;
+                            } else {
+                                a.ui.debug('case H2:');
+                                a.scale = a.ratioH /* this ratioH is max of real scale when the user scale === 1 */ + a.relativeScale;
+                                a.imageScaleWidth = a.imageWidth * a.scale;
+                                a.imageScaleHeight = a.imageHeight * a.scale;
+
+                                a.imageWide = a.imageScaleWidth;
+                                a.imageTall = a.imageScaleHeight;
+                                a.backgroundSize = a.imageWide;
+                                a.imageX = (a.screenW - a.imageScaleWidth) / 2;
+                                a.imageY = (a.screenH - a.imageScaleHeight) / 2;
+                                a.coverX = a.imageX + (a.imageWide * a.clockXInPercent);
+                                a.coverY = a.imageY + (a.imageTall * a.clockYInPercent);
+                                /*Notice: a.coverSize = (100 * a.clockHInPercent) + 'vh';*/
+                                a.coverSize = (100 * a.clockHInPercent) * a.imageTall * 0.01;
+                            }
+                        }
 
                         /*use relativeX to make equal space between left and right*/
                         let coverSpace = {
@@ -1309,7 +1428,7 @@
                         } else {
                             /*Notice: let backgroundSpace = {
                                 left: a.imageX * -1,
-                                right: a.imageX + a.imageSize - a.screenW
+                                right: a.imageX + a.imageWide - a.screenW
                             };*/
                             coverSpace.target = (coverSpace.left + coverSpace.right) / 2;
                             coverSpace.moveLeft = coverSpace.left > coverSpace.right;
@@ -1317,7 +1436,7 @@
                                 backgroundSpace = a.imageX * -1;
                                 a.relativeX = Math.min(coverSpace.left - coverSpace.target, backgroundSpace, coverSpace.left) * -1;
                             } else {
-                                backgroundSpace = a.imageX + a.imageSize - a.screenW;
+                                backgroundSpace = a.imageX + a.imageWide - a.screenW;
                                 a.relativeX = Math.min(coverSpace.right - coverSpace.target, backgroundSpace, coverSpace.right);
                             }
                         }
@@ -1325,8 +1444,8 @@
                         a.background
                             .css('left', (a.imageX + a.relativeX) + 'px')
                             .css('top', (a.imageY + a.relativeY) + 'px')
-                            .css('background-size', a.imageSize + 'px')
-                            .css('width', a.imageSize + 'px')
+                            .css('background-size', a.backgroundSize + 'px')
+                            .css('width', a.imageWide + 'px')
                             .css('height', a.imageTall + 'px');
 
                         if (a.clockPerspective <= 0) {
@@ -1431,10 +1550,12 @@
             },
 
             saveCombination: function (name) {
-                var index = this.combinationIndex(name);
+                var index = this.combinationIndex(name),
+                    needSort = false;
                 if (index < 0) {
                     this.combinations.push({});
                     index = this.combinations.length - 1;
+                    needSort = true;
                 }
                 this.combinations[index] = {
                     name: name,
@@ -1443,6 +1564,7 @@
                     background: this.background,
                     options: this.options
                 };
+                if (needSort) this.sortByName(this.combinations);
                 Appanel.set(this.name + ':combinations', this.combinations);
             },
 
@@ -1490,6 +1612,9 @@
             },
 
             init: function () {
+                this.timeout = new Appanel.Timeout();
+                this.interval = new Appanel.Interval();
+
                 var control = Appanel.get(this.name + ':control');
                 if (control !== null) this.defaults.control = control;
 
@@ -1505,6 +1630,7 @@
                             return;
                         }
                         console.info('Clocks loaded from ' + status);
+                        this.sortByName(this.clocks);
                         this.loadClock(this.clockIndex(Appanel.get(this.name + ':clock')), Appanel.clock.ready);
                     });
                     this.loadJSON('backgrounds', function (status) {
@@ -1514,6 +1640,7 @@
                             return;
                         }
                         console.info('Backgrounds loaded from ' + status);
+                        this.sortByName(this.backgrounds);
                     });
                     this.loadJSON('combinations', function (status) {
                         if (status === 'parsererror') {
@@ -1521,6 +1648,7 @@
                             Appanel.util.error('IMPORTANT', 'load combination list failed the "' + Appanel.util.myURL() + '-combinations.json" may be corrupted', 20);
                         }
                         console.info('Combinations loaded from ' + status);
+                        this.sortByName(this.combinations);
                     });
                 });
 
@@ -1552,7 +1680,7 @@
                     return;
                 }
 
-                if (clock.timeDiff(new Date()) < 3) {
+                if (Math.abs(clock.timeDiff(new Date())) < 3) {
                     console.warn('Ignore activated by timeDiff less than 3s');
                     return;
                 }
@@ -1588,7 +1716,7 @@
 
         ready: function () {
             Appanel.clock.init();
-            Appanel.util.refreshAfter(3600);
+            Appanel.util.refreshEvery(3600, Appanel.clock.activated, Appanel.clock);
         }
     });
 </script>
