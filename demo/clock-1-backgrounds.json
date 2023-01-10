@@ -160,6 +160,7 @@
     "imageWidth": 1920,
     "imageHeight": 1080,
     "imageFilter": 0.25,
+    "disableRelativeY": true,
     "clockShape": {
       "id": "rectangle",
       "y": 62,
@@ -177,6 +178,7 @@
     "imageWidth": 1430,
     "imageHeight": 912,
     "imageFilter": 0.0,
+    "disableRelativeY": true,
     "clockShape": {
       "id": "rectangle",
       "y": 62,
@@ -194,6 +196,7 @@
     "imageWidth": 1056,
     "imageHeight": 704,
     "imageFilter": 0.075,
+    "disableRelativeY": true,
     "clockShape": {
       "id": "rectangle",
       "y": 62,
@@ -204,5 +207,27 @@
     "clockYInPercent": -0.07,
     "clockWInPercent": 0.8,
     "clockHInPercent": 1.52
+  },
+  {
+    "name": "Timed by Someone",
+    "imageWidth": 2056,
+    "imageHeight": 2790,
+    "imageFilter": 0.25,
+    "clockXInPercent": 0.3995,
+    "clockYInPercent": 0.392,
+    "clockWInPercent": 0.277,
+    "clockHInPercent": 0.676,
+    "image": "img/wallpaperaccess.com.5443774.jpg"
+  },
+  {
+    "name": "Hypnotize",
+    "imageWidth": 1919,
+    "imageHeight": 1200,
+    "imageFilter": 0.25,
+    "clockXInPercent": 0.5695,
+    "clockYInPercent": 0.523,
+    "clockWInPercent": 0.2255,
+    "clockHInPercent": 0.3615,
+    "image": "img/wallpaperaccess.com.3031030.jpg"
   }
 ]

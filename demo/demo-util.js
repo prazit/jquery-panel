@@ -2,8 +2,8 @@ Appanel({
     util: {
 
         defaults: {
-            input: '<b><label class="text--c0">Please enter value:</label></b><br/>' +
-                '<input type="text" class="padding--x5 text--c0 width--x300"/>',
+            input: '<div class="top-margin--x10"><b><label class="text--c0">Please enter value:</label></b><br/>' +
+                '<input type="text" class="rounded--x5 padding--x5 border--c2 text--c0 width--x300 border--x2"/></div>',
             message: {
                 container: '<div class="message-container on-top-left fixed css-trans layer-9"></div>',
                 card: '<div class="message-card hidden css-trans rounded--x10 margin--x10 padding--x10 background--c3 message-classes">' +
@@ -145,9 +145,9 @@ Appanel({
                 label: 'Label:',
                 placeHolder: '',
                 defaultValue: '',
-                handler: function () {
-                },
                 data: {},
+                handler: function (data, enteredValue) {
+                },
                 panelSelector: '.input-panel',
                 labelSelector: 'label',
                 inputSelector: 'input',
@@ -166,11 +166,10 @@ Appanel({
             if (handler !== undefined) o.handler = handler;
             if (data !== undefined) o.data = data;
 
-            // show dialog with max-number-input
-            var inputPanel = $(o.panelSelector);
-            var dialogue = Appanel.selection('information', o.title, inputPanel.length === 0 ? this.defaults.input : inputPanel.html(), {
-                buttons: ['OK', 'Cancel']
-            });
+            // show dialog with all inputs
+            var inputPanel = $(o.panelSelector),
+                html = inputPanel.length === 0 ? this.defaults.input : inputPanel.html(),
+                dialogue = Appanel.selection('information', o.title, html, {buttons: ['OK', 'Cancel']});
 
             Appanel.map([
                 [dialogue, 'selection:open', function (ev) {
@@ -184,6 +183,7 @@ Appanel({
                     });
 
                     $input.on('keyup keydown keypress', function (ev) {
+                        /*TODO: enter = OK, esc = Cancel*/
                         ev.stopPropagation();
                     });
                     if ($input.length > 0) $input[0].select();
@@ -207,6 +207,90 @@ Appanel({
             }, 200);
         },
 
+        inputs: function (options) {
+            var o = Object.assign({
+                title: 'Title',
+                inputs: [
+                    {
+                        label: 'Label:',
+                        placeHolder: 'enter text here',
+                        defaultValue: '',
+                        type: 'text'
+                    },
+                    /*{
+                        label: 'Label 2:',
+                        placeHolder: '',
+                        defaultValue: '',
+                        type: 'text'
+                    }*/
+                ],
+                data: {},
+                handler: function (data, enteredValues) {/*sample only*/
+                },
+                panelSelector: '.input-panel',
+                labelSelector: 'label',
+                inputSelector: 'input',
+                zoom: 1
+            }, options);
+
+            var inputPanel = $(o.panelSelector),
+                inputTemplate = inputPanel.length === 0 ? this.defaults.input : inputPanel.html(),
+                html = '',
+                inputCount = o.inputs.length;
+            for (let i = 0; i < inputCount; i++) {
+                html += inputTemplate;
+            }
+
+            // show dialog with all inputs
+            var dialogue = Appanel.selection('information', o.title, html, {
+                buttons: ['OK', 'Cancel']
+            });
+
+            Appanel.map([
+                [dialogue, 'selection:open', function (ev) {
+                    var $panel = $(ev.target),
+                        $inputs = $panel.find(o.inputSelector);
+
+                    $panel.find(o.labelSelector).each(function (i, e) {
+                        console.debug('each.i:', i, ', each.e:', e);
+                        $(e).text(o.inputs[i].label);
+                    });
+                    $inputs.each(function (i, e) {
+                        e.defaultValue = o.inputs[i].defaultValue;
+                        $(e)
+                            .attr('placeHolder', o.inputs[i].placeHolder)
+                            .attr('type', o.inputs[i].type);
+                    });
+
+                    $inputs.on('keyup keydown keypress', function (ev) {
+                        ev.stopPropagation();
+                    });
+                    if ($inputs.length > 0) $inputs[0].select();
+                    $($inputs[0]).focus();
+                }],
+                [dialogue, 'selection:closed', function (ev, button) {
+                    if (button.button === 'OK') {
+                        var $input = $(ev.target).find(o.inputSelector),
+                            value = [],
+                            v;
+                        $input.each(function (i, e) {
+                            v = e.value;
+                            if ($(e).attr('type').toLowerCase() === 'number') {
+                                v = e.value.indexOf('.') > 0 ? parseFloat(v) : parseInt(v);
+                            }
+                            value[i] = v;
+                        });
+                        o.data.values = value;
+                        o.handler(o.data, value);
+                    }
+                }, o]
+            ]);
+
+            new Appanel.Timeout(function () {
+                $('#panel-selection').css('zoom', o.zoom);
+            }, 200);
+        },
+
         /**
          * Often Use:
          * Appanel.clock.disableActivated = true;
@@ -216,7 +300,7 @@ Appanel({
          * Appanel.util.seeNMove(Appanel.clock.backgroundAttributes,'member',['clockXDegree','clockYDegree','clockZDegree','clockPerspective','clockPerspectiveXOrigin','clockPerspectiveYOrigin'],0.5);
          * new Appanel.Timeout(function(){clearTimeout(Appanel.util.timeout);$('#panel-selection').css('left',150).css('top',120);},200);
          */
-        seeNMove: function (selector, functionName, properties, step) {
+        seeNMove: function (selector, functionName, properties, step, handler) {
             var inputPanel = $('.seenmove-panel'),
                 target = typeof (selector) === 'string' ? $(selector) : selector,
                 propertyHtml = inputPanel.length > 0 ? inputPanel[0].innerHTML : this.defaults.seeNMove,
@@ -245,44 +329,51 @@ Appanel({
                     .replace('property-unit', unitX);
             }
 
-            // show dialog with max-number-input
-            var dialogue = Appanel.selection('information', 'See n Move', html, {buttons: ['Close']});
+            // show dialog
+            var dialogue = Appanel.selection('information', 'See n Move', html, {buttons: ['Close']}),
+                mapper = [
+                    [dialogue, 'selection:open', function (ev) {
+                        var panel = $(ev.target),
+                            mapper = [],
+                            property, inputX, firstInput, displayX,
+                            keyupHandler = function (ev) {
+                                var value = ev.currentTarget.value,
+                                    data = ev.data,
+                                    type = $(ev.currentTarget).attr('type').toLowerCase();
+                                if (type === 'number') value = value.indexOf('.') > 0 ? parseFloat(value) : parseInt(value);
+                                if (data.unit.trim() !== '') value += data.unit;
+                                data.target[data.functionName](data.property, value);
+                                data.display.text(data.target[data.functionName](data.property));
+                            };
 
-            Appanel.map([
-                [dialogue, 'selection:open', function (ev) {
-                    var panel = $(ev.target),
-                        mapper = [],
-                        property, inputX, firstInput, displayX,
-                        keyupHandler = function (ev) {
-                            var value = ev.currentTarget.value,
-                                data = ev.data,
-                                type = $(ev.currentTarget).attr('type').toLowerCase();
-                            if (type === 'number') value = value.indexOf('.') > 0 ? parseFloat(value) : parseInt(value);
-                            if (data.unit.trim() !== '') value += data.unit;
-                            data.target[data.functionName](data.property, value);
-                            data.display.text(data.target[data.functionName](data.property));
-                        };
+                        /*on keyup then set property*/
+                        for (let i = 0; i < properties.length; i++) {
+                            property = panel.find('.property-' + properties[i]);
+                            inputX = property.find('.input');
+                            if (i === 0) firstInput = inputX;
+                            mapper.push([inputX, 'keyup', keyupHandler, {
+                                target: target,
+                                property: properties[i],
+                                display: property.find('.display'),
+                                functionName: functionName,
+                                unit: property.find('.unit')[0].innerText
+                            }]);
+                        }
+                        Appanel.map(mapper);
 
-                    /*on keyup then set property*/
-                    for (let i = 0; i < properties.length; i++) {
-                        property = panel.find('.property-' + properties[i]);
-                        inputX = property.find('.input');
-                        if (i === 0) firstInput = inputX;
-                        mapper.push([inputX, 'keyup', keyupHandler, {
-                            target: target,
-                            property: properties[i],
-                            display: property.find('.display'),
-                            functionName: functionName,
-                            unit: property.find('.unit')[0].innerText
-                        }]);
-                    }
-                    Appanel.map(mapper);
+                        /*focus on first input*/
+                        firstInput[0].select();
+                        firstInput.focus();
+                    }]
+                ];
 
-                    /*focus on first input*/
-                    firstInput[0].select();
-                    firstInput.focus();
-                }]
-            ]);
+            if (handler !== undefined) {
+                mapper.push([dialogue, 'selection:closed', function (ev) {
+                    ev.data.handler(ev);
+                }, {handler: handler}]);
+            }
+
+            Appanel.map(mapper);
 
             if (Appanel.clock !== undefined) {
                 new Appanel.Timeout(function () {
