@@ -306,9 +306,11 @@
     <!-- message will be show here -->
 </div>
 <div class="debug messages on-bottom-right fixed css-trans--x2 rounded--x50 width--x50 height--x50 layer-9 background-c0">
-    <div class="board on-bottom-right css-trans--x2 rounded--x20 background--c0 width--x1 opacity--x0 opacity--x80--at">
-        <div class="padding--x10 background--c3 center-text fit-width">DEBUG MESSAGES</div>
-        <div class="debug-message padding--x10 left-text fit-width ellipsis no-wrap">DEBUG MESSAGES HERE</div>
+    <div class="board on-bottom-right css-trans--x2 top-rounded--x30 background--c0 width--x1 opacity--x0 opacity--x80--at">
+        <div class="top-padding--x10 left-padding--x10 top-rounded--x30 top-border--x10 left-border--x10 border--c3">
+            <div class="top-padding--x10 bottom-padding--x10 top-rounded--x20 left-rounded--x20 background--c3 center-text no-wrap fit-width">DEBUG MESSAGES</div>
+            <div class="debug-message padding--x10 left-text fit-width ellipsis no-wrap">DEBUG MESSAGES HERE</div>
+        </div>
     </div>
 </div>
 
@@ -607,6 +609,8 @@
                     },
                     relativeX: 0,
                     relativeY: 0,
+                    disableRelativeX: false,
+                    disableRelativeY: false,
                     clockXDegree: 0,
                     clockYDegree: 0,
                     clockZDegree: 0,
@@ -1421,15 +1425,17 @@
                         /*use relativeX to make equal space between left and right*/
                         let coverSpace = {
                             left: a.coverX,
-                            right: (a.coverX + a.coverSize - a.screenW) * -1
+                            right: (a.coverX + a.coverSize - a.screenW) * -1,
+                            top: a.coverY,
+                            bottom: (a.coverY + a.coverSize - a.screenH) * -1
                         };
-                        if (coverSpace.left === coverSpace.right) {
+                        if (a.disableRelativeX || coverSpace.left === coverSpace.right) {
                             a.relativeX = 0;
                         } else {
                             /*Notice: let backgroundSpace = {
-                                left: a.imageX * -1,
-                                right: a.imageX + a.imageWide - a.screenW
-                            };*/
+                            left: a.imageX * -1,
+                            right: a.imageX + a.imageWide - a.screenW
+                        };*/
                             coverSpace.target = (coverSpace.left + coverSpace.right) / 2;
                             coverSpace.moveLeft = coverSpace.left > coverSpace.right;
                             if (coverSpace.moveLeft) {
@@ -1438,6 +1444,25 @@
                             } else {
                                 backgroundSpace = a.imageX + a.imageWide - a.screenW;
                                 a.relativeX = Math.min(coverSpace.right - coverSpace.target, backgroundSpace, coverSpace.right);
+                            }
+                        }
+
+                        /*use relativeY to make equal space between top and bottom*/
+                        if (a.disableRelativeY || coverSpace.top === coverSpace.bottom) {
+                            a.relativeY = 0;
+                        } else {
+                            /*Notice: let backgroundSpace = {
+                            top: a.imageY * -1,
+                            bottom: a.imageY + a.imageTall - a.screenH
+                        };*/
+                            coverSpace.target = (coverSpace.top + coverSpace.bottom) / 2;
+                            coverSpace.moveUp = coverSpace.top > coverSpace.bottom;
+                            if (coverSpace.moveUp) {
+                                backgroundSpace = a.imageY * -1;
+                                a.relativeY = Math.min(coverSpace.top - coverSpace.target, backgroundSpace, coverSpace.top) * -1;
+                            } else {
+                                backgroundSpace = a.imageY + a.imageTall - a.screenH;
+                                a.relativeY = Math.min(coverSpace.bottom - coverSpace.target, backgroundSpace, coverSpace.bottom);
                             }
                         }
 
