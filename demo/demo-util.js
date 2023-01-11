@@ -77,17 +77,25 @@ Appanel({
                 '            stroke-dasharray="31.415926535897932384626433832795"/>' +
                 '</svg>'
             ],
-            seeNMove:
-                '    <div class="property fit-width">' +
-                '        <div>' +
-                '            <b class="label fweight--x700">property-label:</b>' +
-                '            ( <span class="unit">property-unit</span> )' +
-                '        </div>' +
-                '        <div class="columns fit-width">' +
-                '            <input class="input column-1-2" type="number" value="property-value" step="property-step" class="text--c0"/>' +
-                '            <label class="display column-1-2 right-text">property-display</label>' +
-                '        </div>' +
-                '    </div>'
+            seeNMove: {
+                propertyHtml: '    <div class="property fit-width">' +
+                    '        <div>' +
+                    '            <b class="label fweight--x700">property-label:</b>' +
+                    '            ( <span class="unit">property-unit</span> )' +
+                    '        </div>' +
+                    '        <div class="columns fit-width">' +
+                    '            <input class="input column-1-2" type="number" value="property-value" step="property-step" class="text--c0"/>' +
+                    '            <label class="display column-1-2 right-text">property-display</label>' +
+                    '        </div>' +
+                    '    </div>',
+                options: {
+                    title: 'See & Move',
+                    data: {},
+                    handler: function (ev, button) {/*sample only*/
+                    },
+                    buttons: ['Close']
+                }
+            }
         },
 
         error: function (title, text, seconds) {
@@ -300,10 +308,10 @@ Appanel({
          * Appanel.util.seeNMove(Appanel.clock.backgroundAttributes,'member',['clockXDegree','clockYDegree','clockZDegree','clockPerspective','clockPerspectiveXOrigin','clockPerspectiveYOrigin'],0.5);
          * new Appanel.Timeout(function(){clearTimeout(Appanel.util.timeout);$('#panel-selection').css('left',150).css('top',120);},200);
          */
-        seeNMove: function (selector, functionName, properties, step, handler) {
+        seeNMove: function (selector, functionName, properties, step, more) {
             var inputPanel = $('.seenmove-panel'),
                 target = typeof (selector) === 'string' ? $(selector) : selector,
-                propertyHtml = inputPanel.length > 0 ? inputPanel[0].innerHTML : this.defaults.seeNMove,
+                propertyHtml = inputPanel.length > 0 ? inputPanel[0].innerHTML : this.defaults.seeNMove.propertyHtml,
                 html = '',
                 x, unitX, num;
 
@@ -330,7 +338,8 @@ Appanel({
             }
 
             // show dialog
-            var dialogue = Appanel.selection('information', 'See n Move', html, {buttons: ['Close']}),
+            let options = (more === undefined) ? Object.assign({}, this.defaults.seeNMove.options) : Object.assign({}, this.defaults.seeNMove.options, more),
+                dialogue = Appanel.selection('information', options.title, html, {buttons: options.buttons}),
                 mapper = [
                     [dialogue, 'selection:open', function (ev) {
                         var panel = $(ev.target),
@@ -367,19 +376,12 @@ Appanel({
                     }]
                 ];
 
-            if (handler !== undefined) {
-                mapper.push([dialogue, 'selection:closed', function (ev) {
-                    ev.data.handler(ev);
-                }, {handler: handler}]);
-            }
+            options.data.options = options;
+            mapper.push([dialogue, 'selection:closed', function (ev, button) {
+                ev.data.options.handler(ev, button);
+            }, options.data]);
 
             Appanel.map(mapper);
-
-            if (Appanel.clock !== undefined) {
-                new Appanel.Timeout(function () {
-                    $('#panel-selection').css('zoom', Appanel.clock.ui.zoom.invertZoom);
-                }, 200);
-            }
         },
 
         disableRefresh: false,

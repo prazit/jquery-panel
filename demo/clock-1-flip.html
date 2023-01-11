@@ -297,7 +297,7 @@
             }
             if (clockYDegree !== undefined && clockYDegree !== 0) {
                 percent = (clockYDegree % 360) / maxDegree * -1;
-                console.warn('to Degree Of Y-Rotation:' + `center = ${centerX}, relative = ${centerX * percent}, percent = ${percent}, degree = ${clockYDegree}`);
+                //console.warn('to Degree Of Y-Rotation:' + `center = ${centerX}, relative = ${centerX * percent}, percent = ${percent}, degree = ${clockYDegree}`);
                 centerX += centerX * percent;
                 perspectiveX = 450 + (Math.abs(percent) * 450);
             }
@@ -322,13 +322,13 @@
                 percent;
             if (clockXDegree !== undefined && clockXDegree !== 0) {
                 percent = (clockXDegree % 360) / maxDegree * -1;
-                console.warn('to Degree Of Y-Rotation:' + `center = ${center}, relative = ${center * percent}, percent = ${percent}, degree = ${clockYDegree}`);
+                //console.warn('to Degree Of Y-Rotation:' + `center = ${center}, relative = ${center * percent}, percent = ${percent}, degree = ${clockYDegree}`);
                 centerY += center * percent;
                 perspectiveY = 450 + (Math.abs(percent) * 100);
             }
             if (clockYDegree !== undefined && clockYDegree !== 0) {
                 percent = (clockYDegree % 360) / maxDegree * -1;
-                console.warn('to Degree Of Y-Rotation:' + `center = ${center}, relative = ${center * percent}, percent = ${percent}, degree = ${clockYDegree}`);
+                //console.warn('to Degree Of Y-Rotation:' + `center = ${center}, relative = ${center * percent}, percent = ${percent}, degree = ${clockYDegree}`);
                 centerX += center * percent;
                 perspectiveX = 450 + (Math.abs(percent) * 100);
             }
@@ -444,7 +444,6 @@
                         m = flip.groups[1],
                         h = flip.groups[2],
                         $seconds = util.merge([s.topPart.find("#pad"), s.bottomPart.find("#pad"), s.topFlip.find("#pad"), s.bottomFlipPad]);
-                    console.debug('$flipSecond =', $seconds);
 
                     theme.add('flipSecond', 'fill', $seconds, 'handSecond', false);
                     theme.add('flipMinute', 'fill', util.merge([m.topPart.find("#pad"), m.bottomPart.find("#pad"), m.topFlip.find("#pad"), m.bottomFlipPad]), 'handMinute', false);

@@ -398,7 +398,9 @@
                     let zoom = this.zoom,
                         clock = Appanel.clock;
 
-                    if(zoom.currentZoom === newZoom) return;
+                    if (zoom.currentZoom === newZoom) {
+                        return;
+                    }
 
                     /*update zoom value*/
                     zoom.currentZoom = newZoom;
@@ -556,6 +558,9 @@
                 if (options != null) {
                     this.options = Object.assign(this.options, options);
                 }
+
+                this.ui.setZoom(this.options.currentZoom);
+                this.setUseSweep(this.options.useSweep);
             },
 
             saveOptions: function () {
@@ -828,27 +833,51 @@
                             Appanel.clock.rotateBackground('stop');
                             Appanel.clock.loadBackground(ev.data.index);
                         }, {name: this.backgrounds[i].name, index: i}],
-                        [saveButton, 'click', function (ev) {
+                        [/*moveClock*/saveButton, 'click', function (ev) {
                             let clock = Appanel.clock,
                                 moveTopLeft = function () {
-                                    $('#panel-selection').css('left', 150).css('top', 120);
+                                    $('#panel-selection')
+                                        .css('position', 'fixed')
+                                        .css('left', '100vw')
+                                        .css('top', '0px')
+                                        .css('min-width', '250px')
+                                        .css('transform', 'translateX(-100%)');
                                 },
-                                complete = function (ev) {
+                                complete = function (data) {
                                     Appanel.clock.saveBackground(Appanel.clock.background);
-                                    Appanel.util.info('Clock Position Saved', 'Background : ' + Appanel.clock.background)
+                                    Appanel.util.info('Clock Position ' + (data.rotated !== undefined ? ' & Rotation ' : '') + ' Saved', 'Background : ' + Appanel.clock.background)
                                 },
-                                rotate = function () {
-                                    Appanel.util.seeNMove(Appanel.clock.backgroundAttributes, 'member', ['clockXDegree', 'clockYDegree', 'clockZDegree', 'clockPerspective'], 0.5, complete);
+                                selection = function (ev, button) {
+                                    if (button.button === 'Move Clock') {
+                                        ev.data.move(ev.data);
+                                    } else if (button.button === 'Rotate Clock') {
+                                        ev.data.rotate(ev.data);
+                                    } else {
+                                        ev.data.complete(ev.data);
+                                    }
+                                },
+                                rotate = function (data) {
+                                    data.rotated = true;
+                                    Appanel.util.seeNMove(Appanel.clock.backgroundAttributes, 'member', ['clockXDegree', 'clockYDegree', 'clockZDegree', 'clockPerspective', 'clockPerspectiveXOrigin', 'clockPerspectiveYOrigin'], 0.5, {title: 'Rotate Clock', data: data, handler: data.selection, buttons: ['Move Clock', 'Save']});
                                     new Appanel.Timeout(moveTopLeft, 200);
-                                };
+                                },
+                                move = function (data) {
+                                    Appanel.util.seeNMove(clock.backgroundAttributes, 'member', ['clockXInPercent', 'clockYInPercent', 'clockWInPercent', 'clockHInPercent'], 0.001, {title: 'Move Clock', data: data, handler: data.selection, buttons: ['Rotate Clock', 'Save']});
+                                    new Appanel.Timeout(moveTopLeft, 200);
+                                },
+                                data = {move: move, rotate: rotate, complete: complete, selection: selection};
 
                             clock.loadBackground(clock.backgroundIndex(ev.data.name));
-                            Appanel.util.seeNMove(clock.backgroundAttributes, 'member', ['clockXInPercent', 'clockYInPercent', 'clockWInPercent', 'clockHInPercent'], 0.001, rotate);
-                            new Appanel.Timeout(moveTopLeft, 200);
+                            data.data = data;
+                            move(data);
+
                         }, {name: this.backgrounds[i].name, index: i}],
                         [editButton, 'click', function (ev) {
                             let clock = Appanel.clock,
+                                background,
                                 name = ev.data.name;
+                            clock.loadBackground(ev.data.index);
+                            background = clock.backgroundAttributes;
                             Appanel.util.inputs({
                                 inputs: [
                                     {
@@ -856,23 +885,46 @@
                                         placeHolder: 'unique name here',
                                         defaultValue: name,
                                         type: 'text'
+                                    },
+                                    {
+                                        label: 'Image File Name:',
+                                        placeHolder: 'file name without path',
+                                        defaultValue: background.image,
+                                        type: 'text'
+                                    },
+                                    {
+                                        label: 'Image Width:',
+                                        placeHolder: 'in pixels',
+                                        defaultValue: background.imageWidth,
+                                        type: 'number'
+                                    },
+                                    {
+                                        label: 'Image Height:',
+                                        placeHolder: 'in pixels',
+                                        defaultValue: background.imageHeight,
+                                        type: 'number'
                                     }
                                 ],
-                                title: 'Change Background Name',
+                                title: 'Edit Background',
                                 data: {clock: clock, name: name},
                                 handler: function (data, values) {
-                                    let name = data.values[0],
-                                        clock = data.clock;
-                                    if (clock.backgroundIndex(name) >= 0 && name !== data.name) {
-                                        Appanel.util.warn('Duplicate Name', 'Background with the name "' + name + '" is already exists, no background is changed');
+                                    let clock = data.clock;
+                                    if (clock.backgroundIndex(values[0]) >= 0 && name !== data.name) {
+                                        Appanel.util.warn('Duplicate Name', 'Background with the name "' + values[0] + '" is already exists, no background is changed');
                                         return;
                                     }
 
-                                    let index = clock.backgroundIndex(data.name);
-                                    clock.backgrounds[index].name = name;
-                                    clock.saveBackground(name);
-                                    ev.data.button.text('&nbsp;' + name);
-                                    Appanel.util.info('New name is "' + name + '"', 'from name "' + data.name + '"');
+                                    let index = clock.backgroundIndex(data.name),
+                                        background = clock.backgroundAttributes;
+                                    clock.backgrounds[index].name = values[0];
+                                    clock.background = values[0];
+                                    background.name = values[0];
+                                    background.image = values[1];
+                                    background.imageWidth = parseFloat(values[2]);
+                                    background.imageHeight = parseFloat(values[3]);
+                                    clock.saveBackground(values[0]);
+                                    ev.data.button.html('&nbsp;' + values[0]);
+                                    Appanel.util.info('SAVED', 'for background named "' + values[0] + '"');
                                 }
                             });
                         }, {name: this.backgrounds[i].name, index: i, button: button}],
@@ -934,12 +986,24 @@
                                     placeHolder: 'file name without path',
                                     defaultValue: '',
                                     type: 'text'
+                                },
+                                {
+                                    label: 'Image Width:',
+                                    placeHolder: 'in pixels',
+                                    defaultValue: 1366,
+                                    type: 'number'
+                                },
+                                {
+                                    label: 'Image Height:',
+                                    placeHolder: 'in pixels',
+                                    defaultValue: 768,
+                                    type: 'number'
                                 }
                             ],
                             title: 'New Background',
                             data: {clock: clock},
                             handler: function (data, values) {
-                                let name = data.values[0],
+                                let name = values[0],
                                     clock = data.clock;
                                 if (clock.backgroundIndex(name) >= 0) {
                                     Appanel.util.warn('Duplicate Name', 'Background with the name "' + attributes.name + '" is already exists, no background is added');
@@ -947,15 +1011,18 @@
                                 }
 
                                 /*create default background attributes with values*/
-                                let attributes = Object.assign({
+                                let attributes = Object.assign({}, clock.defaults.backgroundAttributes, {
                                     name: name,
-                                    image: 'img/' + data.values[1]
-                                }, clock.defaults.backgroundAttributes);
+                                    image: 'img/' + values[1],
+                                    imageWidth: parseFloat(values[2]),
+                                    imageHeight: parseFloat(values[3])
+                                });
+                                console.debug("attributes: ", attributes);
 
                                 /*push to backgrounds and then loadBackground by name*/
                                 clock.backgrounds.push(attributes);
+                                clock.loadBackground(clock.backgroundIndex(name));
                                 clock.saveBackground(name);
-                                clock.loadBackground(data.clock.backgroundIndex(name));
                                 Appanel.util.refresh();
                             }
                         });
@@ -1618,8 +1685,8 @@
                     if (combination.options !== undefined) {
                         this.options = Object.assign(this.options, combination.options);
                     }
-                    this.ui.setZoom(this.options.currentZoom);
-                    this.setUseSweep(this.options.useSweep);
+                    this.saveOptions();
+                    this.loadOptions();
 
                     Appanel.util.disableRefresh = false;
                     this.ui.refreshCurrentInfo();
@@ -1696,9 +1763,6 @@
                 if (control !== null) this.defaults.control = control;
 
                 this.loadOptions();
-                this.ui.setZoom(this.options.currentZoom);
-                this.setUseSweep(this.options.useSweep);
-
                 this.loadJSON('control', function (status) {
                     console.info('Control loaded from ' + status);
                     this.loadJSON('clocks', function (status) {
