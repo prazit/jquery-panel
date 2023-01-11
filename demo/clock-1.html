@@ -388,8 +388,8 @@
                 zoom: {
                     currentZoom: 1,
                     minZoom: 1,
-                    maxZoom: 2,
-                    maxDegree: 350,
+                    maxZoom: 3,
+                    maxDegree: 355,
                     volume: $('.zoom-ui .volume').parent(),
                     body: $('body')
                 },
@@ -554,7 +554,7 @@
             loadOptions: function () {
                 var options = Appanel.get(this.name + ':options');
 
-                this.options = this.defaults.options;
+                this.options = Object.assign({}, this.defaults.options);
                 if (options != null) {
                     this.options = Object.assign(this.options, options);
                 }
@@ -1675,18 +1675,18 @@
 
                     this.start(new Date());
 
-                    this.loadBackground(this.backgroundIndex(combination.background));
-                    $('.clock').css('display', 'block');
-
-                    Appanel.profile.load(combination.theme);
-                    $('.profile-name').text(combination.theme);
-
-                    this.options = this.defaults.options;
+                    this.options = Object.assign({}, this.defaults.options);
                     if (combination.options !== undefined) {
                         this.options = Object.assign(this.options, combination.options);
                     }
                     this.saveOptions();
                     this.loadOptions();
+
+                    this.loadBackground(this.backgroundIndex(combination.background));
+                    $('.clock').css('display', 'block');
+
+                    Appanel.profile.load(combination.theme);
+                    $('.profile-name').text(combination.theme);
 
                     Appanel.util.disableRefresh = false;
                     this.ui.refreshCurrentInfo();
