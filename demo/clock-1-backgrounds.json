@@ -1,45 +1,25 @@
 [
   {
-    "name": "Swiss Railway",
-    "image": "img/swiss-railway-clock-scaled.webp",
-    "imageWidth": 2560,
-    "imageHeight": 1707,
-    "imageFilter": 0.25,
-    "clockShape": {
-      "id": "circle"
-    },
-    "clockYInPercent": 0.313,
-    "clockXInPercent": 0.5715,
-    "clockWInPercent": 0.2475,
-    "clockHInPercent": 0.3715
-  },
-  {
     "name": "Alarm On My Hand",
     "image": "img/wallpaperaccess.com.3013992.jpg",
     "imageWidth": 1920,
     "imageHeight": 1080,
     "imageFilter": 0.25,
-    "clockShape": {
-      "id": "circle"
-    },
-    "clockXInPercent": 0.585,
-    "clockYInPercent": 0.3138,
-    "clockWInPercent": 0.2475,
-    "clockHInPercent": 0.44
+    "clockXInPercent": 0.582,
+    "clockYInPercent": 0.3088,
+    "clockWInPercent": 0.2535,
+    "clockHInPercent": 0.449
   },
   {
-    "name": "Alarm On The Yard",
-    "image": "img/wallpaperaccess.com.2779065.jpg",
-    "imageWidth": 2560,
-    "imageHeight": 1440,
+    "name": "Alarm On The Bed",
+    "imageWidth": 960,
+    "imageHeight": 720,
     "imageFilter": 0.25,
-    "clockShape": {
-      "id": "circle"
-    },
-    "clockXInPercent": 0.6173,
-    "clockYInPercent": 0.301,
-    "clockWInPercent": 0.304,
-    "clockHInPercent": 0.537
+    "clockXInPercent": 0.3143,
+    "clockYInPercent": 0.37,
+    "clockWInPercent": 0.3625,
+    "clockHInPercent": 0.4818,
+    "video": "video/pexels.com-koolshooters-7346137.mp4"
   },
   {
     "name": "Alarm On The Heaven",
@@ -47,9 +27,6 @@
     "imageWidth": 1332,
     "imageHeight": 850,
     "imageFilter": 0.25,
-    "clockShape": {
-      "id": "circle"
-    },
     "clockXInPercent": 0.16,
     "clockYInPercent": 0.343,
     "clockWInPercent": 0.292,
@@ -62,46 +39,15 @@
     "clockPerspectiveYOrigin": 90
   },
   {
-    "name": "Alarm On The Bed",
-    "video": "video/pexels.com-koolshooters-7346137.mp4",
-    "imageWidth": 960,
-    "imageHeight": 720,
+    "name": "Alarm On The Yard",
+    "image": "img/wallpaperaccess.com.2779065.jpg",
+    "imageWidth": 2560,
+    "imageHeight": 1440,
     "imageFilter": 0.25,
-    "clockShape": {
-      "id": "circle"
-    },
-    "clockXInPercent": 0.3143,
-    "clockYInPercent": 0.37,
-    "clockWInPercent": 0.3625,
-    "clockHInPercent": 0.4818
-  },
-  {
-    "name": "Wall Clock",
-    "image": "img/wallpaperaccess.com.6906966.jpg",
-    "imageWidth": 5384,
-    "imageHeight": 3536,
-    "imageFilter": 0.25,
-    "clockShape": {
-      "id": "circle"
-    },
-    "clockXInPercent": 0.2555,
-    "clockYInPercent": 0.117,
-    "clockWInPercent": 0.484,
-    "clockHInPercent": 0.737
-  },
-  {
-    "name": "Prayer Wall Clock",
-    "image": "img/wallpaperaccess.com.6906966.jpg",
-    "imageWidth": 5384,
-    "imageHeight": 3536,
-    "imageFilter": 0.25,
-    "clockShape": {
-      "id": "circle"
-    },
-    "clockXInPercent": 0.2435,
-    "clockYInPercent": 0.096,
-    "clockWInPercent": 0.51,
-    "clockHInPercent": 0.777
+    "clockXInPercent": 0.6173,
+    "clockYInPercent": 0.301,
+    "clockWInPercent": 0.304,
+    "clockHInPercent": 0.537
   },
   {
     "name": "Clock Tower in The Dark Night",
@@ -109,9 +55,6 @@
     "imageWidth": 1024,
     "imageHeight": 768,
     "imageFilter": 0.25,
-    "clockShape": {
-      "id": "circle"
-    },
     "clockXInPercent": 0.5703,
     "clockYInPercent": 0.45,
     "clockWInPercent": 0.152,
@@ -122,73 +65,6 @@
     "clockPerspective": 2000,
     "clockPerspectiveXOrigin": 225,
     "clockPerspectiveYOrigin": 180
-  },
-  {
-    "name": "Many Shard",
-    "image": "img/wallpaperaccess.com.5072490.jpg",
-    "imageWidth": 1200,
-    "imageHeight": 675,
-    "imageFilter": 0.05,
-    "clockShape": {
-      "id": "circle"
-    },
-    "clockXInPercent": 0.362,
-    "clockYInPercent": 0.282,
-    "clockWInPercent": 0.262,
-    "clockHInPercent": 0.464
-  },
-  {
-    "name": "Hand Watch on the dark",
-    "image": "img/wallpaperaccess.com.861191.jpg",
-    "imageWidth": 1280,
-    "imageHeight": 720,
-    "imageFilter": 0.25,
-    "clockShape": {
-      "id": "circle"
-    },
-    "clockXInPercent": 0.1203,
-    "clockYInPercent": 0.232,
-    "clockWInPercent": 0.3,
-    "clockHInPercent": 0.533,
-    "clockXDegree": 0,
-    "clockYDegree": 0,
-    "clockZDegree": -7.7
-  },
-  {
-    "name": "Flip Clock on The Cyber Punk Wallpaper",
-    "image": "img/wallpaperaccess.com.2099805.jpg",
-    "imageWidth": 1920,
-    "imageHeight": 1080,
-    "imageFilter": 0.25,
-    "disableRelativeY": true,
-    "clockShape": {
-      "id": "rectangle",
-      "y": 62,
-      "height": 76,
-      "rx": 10
-    },
-    "clockXInPercent": 0.096,
-    "clockYInPercent": -0.07,
-    "clockWInPercent": 0.8,
-    "clockHInPercent": 1.52
-  },
-  {
-    "name": "Miami Beach",
-    "image": "img/shutterstock-490898872.webp",
-    "imageWidth": 1430,
-    "imageHeight": 912,
-    "imageFilter": 0.0,
-    "disableRelativeY": true,
-    "clockShape": {
-      "id": "rectangle",
-      "y": 62,
-      "height": 76,
-      "rx": 10
-    },
-    "clockXInPercent": 0.096,
-    "clockYInPercent": -0.07,
-    "clockWInPercent": 0.8,
-    "clockHInPercent": 1.52
   },
   {
     "name": "Colorful Miami",
@@ -209,15 +85,61 @@
     "clockHInPercent": 1.52
   },
   {
-    "name": "Timed by Someone",
-    "imageWidth": 2056,
-    "imageHeight": 2790,
+    "name": "Concrete Wall",
+    "imageWidth": 1332,
+    "imageHeight": 850,
+    "clockXInPercent": 0.334,
+    "clockYInPercent": 0.228,
+    "clockWInPercent": 0.337,
+    "clockHInPercent": 0.528,
+    "image": "img/wallpaperaccess.com.5443800.jpg"
+  },
+  {
+    "name": "Fix It",
+    "imageWidth": 2048,
+    "imageHeight": 1536,
     "imageFilter": 0.25,
-    "clockXInPercent": 0.3995,
-    "clockYInPercent": 0.392,
-    "clockWInPercent": 0.277,
-    "clockHInPercent": 0.676,
-    "image": "img/wallpaperaccess.com.5443774.jpg"
+    "clockXInPercent": -0.0147,
+    "clockYInPercent": 0.429,
+    "clockWInPercent": 0.3755,
+    "clockHInPercent": 0.4968,
+    "clockXDegree": 0.35,
+    "clockYDegree": -0.9,
+    "clockZDegree": -2,
+    "clockPerspective": 119,
+    "clockPerspectiveXOrigin": 500,
+    "clockPerspectiveYOrigin": 500,
+    "image": "img/wallpaperaccess.com.5443809.jpg"
+  },
+  {
+    "name": "Flip Clock on The Cyber Punk Wallpaper",
+    "image": "img/wallpaperaccess.com.2099805.jpg",
+    "imageWidth": 1920,
+    "imageHeight": 1080,
+    "imageFilter": 0.25,
+    "disableRelativeY": true,
+    "clockShape": {
+      "id": "rectangle",
+      "y": 62,
+      "height": 76,
+      "rx": 10
+    },
+    "clockXInPercent": 0.096,
+    "clockYInPercent": -0.07,
+    "clockWInPercent": 0.8,
+    "clockHInPercent": 1.52
+  },
+  {
+    "name": "Hand Watch on the dark",
+    "imageWidth": 1280,
+    "imageHeight": 720,
+    "imageFilter": 0.25,
+    "clockXInPercent": 0.1203,
+    "clockYInPercent": 0.232,
+    "clockWInPercent": 0.3,
+    "clockHInPercent": 0.533,
+    "clockZDegree": -7.7,
+    "image": "img/wallpaperaccess.com.861191.jpg"
   },
   {
     "name": "Hypnotize",
@@ -229,5 +151,127 @@
     "clockWInPercent": 0.2255,
     "clockHInPercent": 0.3615,
     "image": "img/wallpaperaccess.com.3031030.jpg"
+  },
+  {
+    "name": "Hypnotize In My Hand",
+    "imageWidth": 1332,
+    "imageHeight": 850,
+    "clockXInPercent": 0.389,
+    "clockYInPercent": 0.291,
+    "clockWInPercent": 0.343,
+    "clockHInPercent": 0.541,
+    "clockXDegree": 2.5,
+    "clockYDegree": -1.5,
+    "clockZDegree": 24.5,
+    "clockPerspectiveXOrigin": 200,
+    "clockPerspectiveYOrigin": 500,
+    "image": "img/wallpaperaccess.com.5443823.jpg"
+  },
+  {
+    "name": "Many Shard",
+    "imageWidth": 1200,
+    "imageHeight": 675,
+    "imageFilter": 0.05,
+    "clockXInPercent": 0.347,
+    "clockYInPercent": 0.265,
+    "clockWInPercent": 0.278,
+    "clockHInPercent": 0.496,
+    "clockYDegree": -13,
+    "clockZDegree": -6,
+    "image": "img/wallpaperaccess.com.5072490.jpg"
+  },
+  {
+    "name": "Miami Beach",
+    "image": "img/shutterstock-490898872.webp",
+    "imageWidth": 1430,
+    "imageHeight": 912,
+    "imageFilter": 0,
+    "disableRelativeY": true,
+    "clockShape": {
+      "id": "rectangle",
+      "y": 62,
+      "height": 76,
+      "rx": 10
+    },
+    "clockXInPercent": 0.096,
+    "clockYInPercent": -0.07,
+    "clockWInPercent": 0.8,
+    "clockHInPercent": 1.52
+  },
+  {
+    "name": "Prayer Wall Clock",
+    "image": "img/wallpaperaccess.com.6906966.jpg",
+    "imageWidth": 5384,
+    "imageHeight": 3536,
+    "imageFilter": 0.25,
+    "clockShape": {
+      "id": "circle"
+    },
+    "clockXInPercent": 0.2435,
+    "clockYInPercent": 0.096,
+    "clockWInPercent": 0.51,
+    "clockHInPercent": 0.777
+  },
+  {
+    "name": "Swiss Railway",
+    "image": "img/swiss-railway-clock-scaled.webp",
+    "imageWidth": 2560,
+    "imageHeight": 1707,
+    "imageFilter": 0.25,
+    "clockShape": {
+      "id": "circle"
+    },
+    "clockYInPercent": 0.313,
+    "clockXInPercent": 0.5715,
+    "clockWInPercent": 0.2475,
+    "clockHInPercent": 0.3715
+  },
+  {
+    "name": "Time Teaches Us",
+    "imageWidth": 2560,
+    "imageHeight": 1440,
+    "clockXInPercent": 0.4565,
+    "clockYInPercent": 0.103,
+    "clockWInPercent": 0.693,
+    "clockHInPercent": 0.732,
+    "clockXDegree": 2.5,
+    "clockZDegree": -1.5,
+    "image": "img/wallpaperaccess.com.1536582.jpg"
+  },
+  {
+    "name": "TIMED BY BENRUS",
+    "imageWidth": 1242,
+    "imageHeight": 2208,
+    "clockXInPercent": 0.163,
+    "clockYInPercent": 0.326,
+    "clockWInPercent": 0.382,
+    "clockHInPercent": 0.382,
+    "clockZDegree": 0.25,
+    "image": "img/wallpaperaccess.com.5443841.jpg"
+  },
+  {
+    "name": "Timed by Someone",
+    "imageWidth": 2056,
+    "imageHeight": 2790,
+    "imageFilter": 0.25,
+    "clockXInPercent": 0.3995,
+    "clockYInPercent": 0.393,
+    "clockWInPercent": 0.203,
+    "clockHInPercent": 0.202,
+    "image": "img/wallpaperaccess.com.5443774.jpg"
+  },
+  {
+    "name": "Wall Clock",
+    "image": "img/wallpaperaccess.com.6906966.jpg",
+    "imageWidth": 5384,
+    "imageHeight": 3536,
+    "imageFilter": 0.25,
+    "clockShape": {
+      "id": "circle"
+    },
+    "clockXInPercent": 0.2555,
+    "clockYInPercent": 0.117,
+    "clockWInPercent": 0.484,
+    "clockHInPercent": 0.737
   }
 ]
