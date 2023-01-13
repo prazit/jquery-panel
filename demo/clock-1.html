@@ -128,7 +128,7 @@
 <body class="css-trans fixed background--c0 fit-width fit-height no-select" style="font-family: Arial,sans-serif;">
 
 <!-- background -->
-<div class="background-image fit-height fit-width layer-1">
+<div class="background-image fit-width fit-height layer-1">
     <!-- filter -->
     <div class="out-side on-top-left fit-width fit-height">
         <div class="on-top fixed">
@@ -156,6 +156,29 @@
                 <circle id="top-switch" class="layer-9" cx="100" cy="50" r="40"></circle>
                 <circle id="center-switch" class="layer-9" cx="100" cy="100" r="40"></circle>
             </svg>
+        </div>
+        <!-- UI:Zoom Panel -->
+        <div class="zoom-ui clock">
+            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve" viewBox="0 0 200 200" class="fit-width volume css-trans--x2">
+            <circle cx="100" cy="100" r="26"
+                    fill="black" stroke="black"
+                    stroke-opacity="1"
+                    stroke-width="1"
+                    stroke-linecap="butt"
+                    stroke-linejoin="round"
+                    stroke-dashoffset="0"
+                    stroke-dasharray="1"/>
+                <circle cx="100" cy="100" r="18"
+                        fill="red" stroke="red"
+                        stroke-opacity="1"
+                        stroke-width="3"
+                        stroke-linecap="butt"
+                        stroke-linejoin="round"
+                        stroke-dashoffset="0"
+                        stroke-dasharray="3"/>
+                <circle cx="100" cy="100" r="13" fill="black" stroke="transparent" stroke-width="1" class="opacity--x50"/>
+                <line x1="100" x2="100" y1="95" y2="88" stroke="white" stroke-width="3.5" stroke-linecap="round"></line>
+        </svg>
         </div>
     </div>
 </div>
@@ -270,6 +293,20 @@
                 </div>
             </div>
 
+            <!-- browser -->
+            <div class="browser css-trans">
+                <div class=" next button child padding--x10 opacity--x70 padding--x10 background--c3 background--c0--at text--c0 text--c3--at right-symbol sym-chevron-right">Browser Functions</div>
+                <div class="sub">
+                    <div class="inner center-text fit-height">
+                        <div class="back button child opacity--x70 padding--x10 padding--x10 background--c3 background--c0--at text--c0 text--c3--at center-text"><span class="pull-left symbol sym-chevron-left"></span>Browser Functions</div>
+
+                        <span class="full-screen button top-child border--x4 background--c3 background--c0--at opacity--x70 border--x3 border--c3 padding--x10 symbol text--c0 text--c3--at">Full Screen</span>
+                        <span class="thin-window button bottom-child border--x4 background--c3 background--c0--at opacity--x70 border--x3 border--c3 padding--x10 symbol text--c0 text--c3--at">Thin Window</span>
+
+                    </div>
+                </div>
+            </div>
+
             <!-- playground -->
             <div class="item-fit-available background--c0 opacity--x60">
                 <div class="current-info on-center no-wrap ellipsis left-text max-width--x100pc">PLAYGROUND</div>
@@ -277,32 +314,6 @@
             </div>
 
         </div>
-    </div>
-</div>
-
-<!-- UI:Zoom Panel -->
-<div class="zoom-panel cover">
-    <div class="zoom-ui clock">
-        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve" viewBox="0 0 200 200" class="fit-width volume css-trans--x2">
-            <circle cx="100" cy="100" r="26"
-                    fill="black" stroke="black"
-                    stroke-opacity="1"
-                    stroke-width="1"
-                    stroke-linecap="butt"
-                    stroke-linejoin="round"
-                    stroke-dashoffset="0"
-                    stroke-dasharray="1"/>
-            <circle cx="100" cy="100" r="18"
-                    fill="red" stroke="red"
-                    stroke-opacity="1"
-                    stroke-width="3"
-                    stroke-linecap="butt"
-                    stroke-linejoin="round"
-                    stroke-dashoffset="0"
-                    stroke-dasharray="3"/>
-            <circle cx="100" cy="100" r="13" fill="black" stroke="transparent" stroke-width="1" class="opacity--x50"/>
-            <line x1="100" x2="100" y1="95" y2="88" stroke="white" stroke-width="3.5" stroke-linecap="round"></line>
-        </svg>
     </div>
 </div>
 
@@ -390,7 +401,7 @@
                     minZoom: 1,
                     maxZoom: 3,
                     maxDegree: 355,
-                    volume: $('.zoom-ui .volume').parent(),
+                    volume: $('.zoom-ui') /*must be rotate parent of volume(svg)*/,
                     body: $('body')
                 },
 
@@ -446,7 +457,7 @@
                     /*handle switches*/
                     this.captureSwitch('top');
                     this.captureSwitch('center');
-                    this.handleSwitch('center', '.zoom-ui,.zoom-panel');
+                    this.handleSwitch('center', '.zoom-ui');
 
                     /*handle zoom volume on ui-panel*/
                     $('.zoom-ui .volume').off('mousedown')
@@ -462,6 +473,8 @@
                                 startZoom: zoom.currentZoom === undefined ? 1 : zoom.currentZoom,
                                 timeout: new Appanel.Timeout()
                             });
+
+                            /*start grabbing volume*/
                             zoom.body.addClass('grabbing')
                                 .on('mousemove', function (ev) {
                                     var ui = Appanel.clock.ui,
@@ -534,14 +547,15 @@
                     combainations: 0
                 },
                 backgroundAttributes: {
+                    imageFilter: 0.25,
                     scale: 1.0,
-                    clockShape: {
-                        "id": "circle"
-                    },
                     relativeX: 0,
                     relativeY: 0,
                     disableRelativeX: false,
                     disableRelativeY: false,
+                    clockShape: {
+                        "id": "circle"
+                    },
                     clockXDegree: 0,
                     clockYDegree: 0,
                     clockZDegree: 0,
@@ -780,13 +794,25 @@
                     theme = profile.theme,
                     themeProperty, button, saveButton, editButton, deleteButton;
 
-                // handle movement buttons
+                // handle movement buttons and browser functions
                 Appanel.map([
                     ['.analogue-move', 'click', function () {
                         Appanel.clock.setUseSweep(false);
                     }],
                     ['.smooth-move', 'click', function () {
                         Appanel.clock.setUseSweep(true);
+                    }],
+                    ['.thin-window', 'click', function () {
+                        let features = `left=${window.screenX},top=${window.screenY},width=${window.innerWidth},height=${window.innerHeight},menuber=false,scrollbars=false,status=false,titlebar=false,toolbar=false`,
+                            thinWindow;
+                        thinWindow = window.open(window.location, '_blank', features);
+                        thinWindow.parentWindow = window;
+                        thinWindow.onload = function (ev) {
+                            let thinWindow = ev.currentTarget;
+                            thinWindow.parentWindow = window;
+                            thinWindow.Appanel.util.info('This is Thin Window', 'Now, you can resize this window to the smallest size.');
+                            thinWindow.parentWindow.close();
+                        };
                     }]
                 ]);
 
@@ -1441,15 +1467,14 @@
              *      clockHInPercent: 0.37
              * });
              */
-            setAttributes: function (attributes) {
+            setAttributes: function (attrib) {
                 if (this.backgroundAttributes !== undefined) $(window).off('resize', this.backgroundAttributes.resize);
 
                 var $cover = $('.cover'),
                     $background = $('.background-image')
                         .removeClass('css-trans')
-                        .css('background-repeat', 'no-repeat');
-
-                attributes = Object.assign({}, this.defaults.backgroundAttributes, attributes);
+                        .css('background-repeat', 'no-repeat'),
+                    attributes = Object.assign({}, this.defaults.backgroundAttributes, attrib);
 
                 this.backgroundAttributes = Object.assign({
                     ui: this.ui,
@@ -1460,12 +1485,16 @@
                     clock: $cover.find('.clock'),
                     resize: function () {
                         var clock = Appanel.clock,
-                            a = clock.backgroundAttributes;
+                            a = clock.backgroundAttributes,
+                            currentZoom = '' + clock.ui.zoom.currentZoom.toPrecision(10),
+                            normalZoom = '' + (1.0).toPrecision(10),
+                            //isNormalZoom = (parseFloat(clock.ui.zoom.currentZoom) <= 1.0);
+                            isNormalZoom = (currentZoom <= normalZoom);
 
                         /* scale <= 0 when zoom == 1
                          * scale > 0 when zoom > 1
                          **/
-                        a.scale = parseFloat(clock.ui.zoom.currentZoom);
+                        a.scale = parseFloat(currentZoom);
                         a.relativeScale = a.scale - 1.0;
                         a.imageScaleWidth = a.imageWidth * a.scale;
                         a.imageScaleHeight = a.imageHeight * a.scale;
@@ -1477,7 +1506,7 @@
                         a.ratioH = a.screenH / a.imageScaleHeight;
 
                         if (a.ratioW >= a.ratioH) {
-                            if (a.scale <= 1.0) {
+                            if (isNormalZoom) {
                                 a.ui.debug('case W1:');
                                 a.imageX = 0;
                                 a.imageY = (a.screenH - (a.ratioW * a.imageHeight)) / 2;
@@ -1506,7 +1535,7 @@
                             }
 
                         } else {
-                            if (a.scale <= 1.0) {
+                            if (isNormalZoom) {
                                 a.ui.debug('case H1:');
                                 a.imageWide = a.imageWidth * a.ratioH;
                                 a.imageTall = a.imageWide * a.imageScaleWidth / a.imageScaleHeight;
@@ -1648,7 +1677,7 @@
                         .find('video').remove();
                 }
 
-                $('.out-side').css('opacity', (100 * this.backgroundAttributes.imageFilter) + '%');
+                $('.out-side').css('opacity', this.backgroundAttributes.imageFilter);
 
                 $(window).on('resize', this.backgroundAttributes.resize);
                 this.backgroundAttributes.resize();
@@ -1844,6 +1873,7 @@
 
                 // need to show after started
                 this.loadBackground(this.backgroundIndex(Appanel.get(this.name + ':background')));
+                this.loadOptions();
                 $('.clock').css('display', 'block');
 
                 if (firstTime) {
