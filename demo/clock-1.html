@@ -58,6 +58,10 @@
             display: block;
         }
 
+        .item-fit-available.scrollable {
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+
         .cover {
             position: absolute;
             width: 100vh;
@@ -73,7 +77,7 @@
         }
 
         .clock-ui {
-            height: 70vh;
+            height: calc(100vh - 20px);
         }
 
         .clock-ui .board {
@@ -82,6 +86,7 @@
 
         .clock-ui:hover .board {
             width: 350px;
+            max-width: calc(100vw - 10px);
         }
 
         .debug {
@@ -298,28 +303,22 @@
             <div class="browser css-trans">
                 <div class=" next button child padding--x10 opacity--x70 padding--x10 background--c3 background--c0--at text--c0 text--c3--at right-symbol sym-chevron-right">Browser Functions</div>
                 <div class="sub">
-                    <div class="inner center-text fit-height">
+                    <div class="inner item-container fit-height">
                         <div class="back button child opacity--x70 padding--x10 padding--x10 background--c3 background--c0--at text--c0 text--c3--at center-text"><span class="pull-left symbol sym-chevron-left"></span>Browser Functions</div>
 
-                        <span class="full-screen button top-child border--x4 background--c3 background--c0--at opacity--x70 border--x3 border--c3 padding--x10 symbol text--c0 text--c3--at left-text">Full Screen</span>
-                        <span class="thin-window button bottom-child border--x4 background--c3 background--c0--at opacity--x70 border--x3 border--c3 padding--x10 symbol text--c0 text--c3--at left-text">Thin Window</span>
+                        <div class="window-sizes ui item-fit-available scrollable">
+                            <div class="full-screen button child padding--x10 opacity--x70 background--c3 background--c0--at text--c0 text--c3--at left-text">Full Screen</div>
+                            <div class="thin-window button child padding--x10 opacity--x70 background--c3 background--c0--at text--c0 text--c3--at left-text">Thin Window</div>
 
-                        <div class="window-sizes css-trans">
-                            <div class="next button child padding--x10 opacity--x70 background--c3 background--c0--at text--c0 text--c3--at right-symbol sym-chevron-right left-text">Window Position & Sizes</div>
-                            <div class="sub">
-                                <div class="inner item-container center-text fit-height">
-                                    <div class="back button child opacity--x70 padding--x10 padding--x10 background--c3 background--c0--at text--c0 text--c3--at center-text"><span class="pull-left symbol sym-chevron-left"></span>Window Position & Sizes</div>
-
-                                    <div class="ui item-fit-available scrollable window-size-container columns">
-                                        <div class="column-8-10 window-size-item button top-padding--x10 bottom-padding--x10 background--c1 background--c0--at opacity--x70 left-text">&nbsp;window-size-name</div>
-                                        <div class="column-1-10 edit button top-padding--x10 bottom-padding--x10 background--c1 background--c0--at opacity--x70"><span class="symbol sym-edit symbol--c3 middle-text" title="Edit Window Size"></span></div>
-                                        <div class="column-1-10 delete button top-padding--x10 bottom-padding--x10 background--c1 background--c0--at opacity--x70"><span class="symbol sym-times-circle symbol--c3 middle-text" title="Delete this size"></span></div>
-                                    </div>
-
-                                    <span class="bottom-child add-window-size button background--c3 background--c0--at opacity--x70 bottom-padding--x10 top-padding--x10 center-text">+</span>
-                                </div>
+                            <div class="child padding--x10 opacity--x70 background--c3 text--c0 center-text">:: Window Position & Sizes ::</div>
+                            <div class="window-size-container columns">
+                                <div class="column-8-10 window-size-item button top-padding--x10 bottom-padding--x10 background--c1 background--c0--at opacity--x70 left-text">&nbsp;window-size-name</div>
+                                <div class="column-1-10 edit button top-padding--x10 bottom-padding--x10 background--c1 background--c0--at opacity--x70"><span class="symbol sym-edit symbol--c3 middle-text" title="Edit Window Size"></span></div>
+                                <div class="column-1-10 delete button top-padding--x10 bottom-padding--x10 background--c1 background--c0--at opacity--x70"><span class="symbol sym-times-circle symbol--c3 middle-text" title="Delete this size"></span></div>
                             </div>
                         </div>
+
+                        <span class="bottom-child add-window-size button background--c3 background--c0--at opacity--x70 bottom-padding--x10 top-padding--x10 center-text">+</span>
                     </div>
                 </div>
             </div>
@@ -431,7 +430,7 @@
                     $('.footprint').text(version);
                 },
 
-                menu: new APanel($('.clock-ui.fixed')),
+                menu: new APanel($('.clock-ui.fixed'), 56, 56),
                 menuFootPrint: new APanel($('.clock-ui.fixed .footprint'), 360, 512),
                 menuPlayGround: new APanel($('.clock-ui.fixed .current-info'), 360, 420),
                 dev: new APanel($('.debug.messages'), 310, 320, false),
@@ -550,7 +549,7 @@
                         comTemplate = this.sizeButtonTemplate === undefined ? comContainer[0].innerHTML : this.sizeButtonTemplate,
                         button, editButton, deleteButton,
                         editSize = function (ev) {
-                            let predefined = ev.data !== undefined ? ev.data : {
+                            let predefined = ev.data.index >= 0 ? ev.data.ui.sizes[ev.data.index] : {
                                     name: '',
                                     left: window.screenX,
                                     top: window.screenY,
@@ -646,7 +645,7 @@
                             [button, 'click', function (ev) {
                                 Appanel.clock.ui.loadSize(ev.data.index);
                             }, {name: this.sizes[i].name, index: i}],
-                            [editButton, 'click', editSize, this.sizes[i]],
+                            [editButton, 'click', editSize, {ui: this, index: i}],
                             [deleteButton, 'click', function (ev) {
                                 if (Appanel.clock.ui.sizes.length <= 1) {
                                     Appanel.util.warn('Requires at least one size, if you want to delete this size please add another before.', 15);
@@ -676,7 +675,7 @@
                     }
 
                     // add new size
-                    Appanel.map([[$('.add-window-size'), 'click', editSize]]);
+                    Appanel.map([[$('.add-window-size'), 'click', editSize, {ui: this, index: -1}]]);
 
                 },
 
@@ -1033,6 +1032,29 @@
                     ['.smooth-move', 'click', function () {
                         Appanel.clock.setUseSweep(true);
                     }],
+                    ['.full-screen', 'click', function (ev) {
+                        if (document.fullscreenElement) {
+                            if (document.exitFullscreen) {
+                                document.exitFullscreen();
+                            } else if (document.mozCancelFullScreen) { /* Firefox */
+                                document.mozCancelFullScreen();
+                            } else if (document.webkitExitFullscreen) { /* Chrome, Safari and Opera */
+                                document.webkitExitFullscreen();
+                            } else if (document.msExitFullscreen) { /* IE/Edge */
+                                document.msExitFullscreen();
+                            }
+                        } else {
+                            if (document.documentElement.requestFullscreen) {
+                                document.documentElement.requestFullscreen().catch(err => Appanel.util.warn(`${err.name}`, `${err.message}`));
+                            } else if (document.documentElement.mozRequestFullScreen) {
+                                document.documentElement.mozRequestFullScreen().catch(err => Appanel.util.warn(`${err.name}`, `${err.message}`));
+                            } else if (document.documentElement.webkitRequestFullscreen) {
+                                document.documentElement.webkitRequestFullscreen().catch(err => Appanel.util.warn(`${err.name}`, `${err.message}`));
+                            } else if (document.documentElement.msRequestFullscreen) {
+                                document.documentElement.msRequestFullscreen().catch(err => Appanel.util.warn(`${err.name}`, `${err.message}`));
+                            }
+                        }
+                    }],
                     ['.thin-window', 'click', function () {
                         let features = `left=${window.screenX},top=${window.screenY},width=${window.innerWidth},height=${window.innerHeight},menuber=false,scrollbars=false,status=false,titlebar=false,toolbar=false`,
                             thinWindow;
@@ -1041,7 +1063,7 @@
                         thinWindow.onload = function (ev) {
                             let thinWindow = ev.currentTarget;
                             thinWindow.parentWindow = window;
-                            thinWindow.Appanel.util.info('This is Thin Window', 'Now, you can resize this window to the smallest size.');
+                            thinWindow.Appanel.util.info('This is Thin Window', 'Now, you can resize this window to the smallest size.', 3);
                             thinWindow.parentWindow.close();
                         };
                     }]
