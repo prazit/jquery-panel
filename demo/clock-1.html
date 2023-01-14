@@ -55,6 +55,7 @@
 
         .item-fit-available {
             flex: /*available*/ 1;
+            display: block;
         }
 
         .cover {
@@ -300,16 +301,32 @@
                     <div class="inner center-text fit-height">
                         <div class="back button child opacity--x70 padding--x10 padding--x10 background--c3 background--c0--at text--c0 text--c3--at center-text"><span class="pull-left symbol sym-chevron-left"></span>Browser Functions</div>
 
-                        <span class="full-screen button top-child border--x4 background--c3 background--c0--at opacity--x70 border--x3 border--c3 padding--x10 symbol text--c0 text--c3--at">Full Screen</span>
-                        <span class="thin-window button bottom-child border--x4 background--c3 background--c0--at opacity--x70 border--x3 border--c3 padding--x10 symbol text--c0 text--c3--at">Thin Window</span>
+                        <span class="full-screen button top-child border--x4 background--c3 background--c0--at opacity--x70 border--x3 border--c3 padding--x10 symbol text--c0 text--c3--at left-text">Full Screen</span>
+                        <span class="thin-window button bottom-child border--x4 background--c3 background--c0--at opacity--x70 border--x3 border--c3 padding--x10 symbol text--c0 text--c3--at left-text">Thin Window</span>
 
+                        <div class="window-sizes css-trans">
+                            <div class="next button child padding--x10 opacity--x70 background--c3 background--c0--at text--c0 text--c3--at right-symbol sym-chevron-right left-text">Window Position & Sizes</div>
+                            <div class="sub">
+                                <div class="inner item-container center-text fit-height">
+                                    <div class="back button child opacity--x70 padding--x10 padding--x10 background--c3 background--c0--at text--c0 text--c3--at center-text"><span class="pull-left symbol sym-chevron-left"></span>Window Position & Sizes</div>
+
+                                    <div class="ui item-fit-available scrollable window-size-container columns">
+                                        <div class="column-8-10 window-size-item button top-padding--x10 bottom-padding--x10 background--c1 background--c0--at opacity--x70 left-text">&nbsp;window-size-name</div>
+                                        <div class="column-1-10 edit button top-padding--x10 bottom-padding--x10 background--c1 background--c0--at opacity--x70"><span class="symbol sym-edit symbol--c3 middle-text" title="Edit Window Size"></span></div>
+                                        <div class="column-1-10 delete button top-padding--x10 bottom-padding--x10 background--c1 background--c0--at opacity--x70"><span class="symbol sym-times-circle symbol--c3 middle-text" title="Delete this size"></span></div>
+                                    </div>
+
+                                    <span class="bottom-child add-window-size button background--c3 background--c0--at opacity--x70 bottom-padding--x10 top-padding--x10 center-text">+</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- playground -->
-            <div class="item-fit-available background--c0 opacity--x60">
-                <div class="current-info on-center no-wrap ellipsis left-text max-width--x100pc">PLAYGROUND</div>
+            <div class="playground item-fit-available background--c0 opacity--x60">
+                <div class=" on-center no-wrap ellipsis left-text max-width--x100pc"><span class="current-info">PLAYGROUND</span></div>
                 <i class="on-bottom-right footprint capital padding--x10 text--c1">Analogue Clock v1</i>
             </div>
 
@@ -336,6 +353,38 @@
 <script type="text/javascript" src="../src/jquery.theme.js?version=1"></script>
 <script type="text/javascript" src="demo-util.js?refresh=1"></script>
 <script>
+    window['APanel'] = function (panel, minWidth, minHeight, hide) {
+        this.element = panel;
+        if (minWidth !== undefined) this.minWidth = minWidth;
+        if (minHeight !== undefined) this.minHeight = minHeight;
+        if (hide !== undefined) this.hide = hide;
+    };
+    window.APanel.prototype = {
+        /* true = hide, false = zoom */
+        hide: true,
+        /* hide menu when window.innerWidth < minWidth (do same thing for Height) */
+        minWidth: 356,
+        minHeight: 320,
+        element: $('.a-panel'),
+        resize: function (width, height) {
+            Appanel.clock.ui.debug(`${this.element.selector}.resize:\nwidth=${width} height=${height}`);
+            let diffW = width - this.minWidth,
+                diffH = height - this.minHeight,
+                reach = diffW < 0 || diffH < 0;
+            if (this.hide) {
+                if (reach) {
+                    this.element.addClass('hidden');
+                } else {
+                    this.element.removeClass('hidden');
+                }
+            } else if (reach) {
+                let zoom = (diffW < 0) ? width / this.minWidth : height / this.minHeight;
+                this.element.css('zoom', zoom);
+            } else {
+                this.element.css('zoom', 1);
+            }
+        }
+    };
     Appanel({
         clock: {
 
@@ -382,18 +431,16 @@
                     $('.footprint').text(version);
                 },
 
+                menu: new APanel($('.clock-ui.fixed')),
+                menuFootPrint: new APanel($('.clock-ui.fixed .footprint'), 360, 512),
+                menuPlayGround: new APanel($('.clock-ui.fixed .current-info'), 360, 420),
+                dev: new APanel($('.debug.messages'), 310, 320, false),
+
                 resize: function () {
-                    var ui = Appanel.clock.ui;
-                    ui.timeout.set(function () {
-
-                        /* menu-items scroll-board need maxHeight */
-                        /*var maxHeight = window.innerHeight * 0.5;
-                        $('.ui.scrollable').css('max-height', maxHeight);*/
-
-                        /* need to update position for current zoom */
-                        //ui.setZoom(ui.zoom.currentZoom);
-
-                    }, 1000);
+                    this.menu.resize(window.innerWidth, window.innerHeight);
+                    this.menuFootPrint.resize(window.innerWidth, window.innerHeight);
+                    this.menuPlayGround.resize(window.innerWidth, window.innerHeight);
+                    this.dev.resize(window.innerWidth, window.innerHeight);
                 },
 
                 zoom: {
@@ -432,7 +479,7 @@
                     $('.wrapper > .glass #' + switchPosition + '-switch')
                         .off('mouseenter')
                         .on('mouseenter', function () {
-                            console.debug('clock:' + switchPosition + '-switch');
+                            //console.debug('clock:' + switchPosition + '-switch');
                             $(Appanel.clock).trigger('clock:' + switchPosition + '-switch');
                         })
                 },
@@ -453,11 +500,192 @@
                     ;
                 },
 
+                sizeIndex: function (name) {
+                    var sizes = this.sizes;
+                    for (var i = 0; i < sizes.length; i++) {
+                        if (sizes[i].name === name) return i;
+                    }
+                    return -1;
+                },
+
+                loadSizes: function () {
+                    this.sizes = Appanel.get(Appanel.clock.name + ':sizes');
+                    if (this.sizes == null) {
+                        this.sizes = [];
+                    }
+                },
+
+                loadSize: function (index) {
+                    let size = this.sizes[index];
+                    if (size === undefined) {
+                        Appanel.util.warn(`Index(${index}) out of bound(${this.sizes.length}), window size has not changed`);
+                        return;
+                    }
+                    window.moveTo(size.left, size.top);
+                    window.resizeTo(size.width, size.height);
+                },
+
+                saveSize: function (name, left, top, width, height) {
+                    if (name !== undefined) {
+                        let index = this.sizeIndex(name);
+                        if (index < 0) {
+                            index = this.sizes.length;
+                            this.sizes.push({});
+                        }
+                        this.sizes[index] = {
+                            name: name,
+                            left: left,
+                            top: top,
+                            width: width,
+                            height: height
+                        };
+                    }
+                    Appanel.set(Appanel.clock.name + ':sizes', this.sizes);
+                },
+
+                handleSizes: function () {
+
+                    // handle size buttons
+                    let comContainer = $('.window-size-container'),
+                        comTemplate = this.sizeButtonTemplate === undefined ? comContainer[0].innerHTML : this.sizeButtonTemplate,
+                        button, editButton, deleteButton,
+                        editSize = function (ev) {
+                            let predefined = ev.data !== undefined ? ev.data : {
+                                    name: '',
+                                    left: window.screenX,
+                                    top: window.screenY,
+                                    width: window.outerWidth,
+                                    height: window.outerHeight
+                                },
+                                inputsOpen = function (ev) {
+                                    let panel = $(ev.currentTarget),
+                                        inputs = panel.find('input[type=number]'),
+                                        button = $('<div class="button background--c3 background--c0--at symbol sym-refresh"></div>'),
+                                        buttons;
+
+                                    /* add refresh button */
+                                    panel.find('label').parent().after(button);
+                                    buttons = panel.find('.sym-refresh');
+
+                                    /* handle reset button */
+                                    Appanel.map([[buttons, 'click', function (ev) {
+                                        let inputs = ev.data.inputs;
+                                        inputs[0].value = window.screenX;
+                                        inputs[1].value = window.screenY;
+                                        inputs[2].value = window.outerWidth;
+                                        inputs[3].value = window.outerHeight;
+                                    }, {inputs: inputs, predefined: ev.data.predefined}]]);
+                                },
+                                inputs = {
+                                    title: 'Window Position & Size',
+                                    inputs: [
+                                        {
+                                            label: 'Name:',
+                                            placeHolder: 'unique name here',
+                                            defaultValue: predefined.name,
+                                            type: 'text'
+                                        },
+                                        {
+                                            label: 'Left:',
+                                            placeHolder: '',
+                                            defaultValue: predefined.left,
+                                            type: 'number'
+                                        },
+                                        {
+                                            label: 'Top:',
+                                            placeHolder: '',
+                                            defaultValue: predefined.top,
+                                            type: 'number'
+                                        },
+                                        {
+                                            label: 'Width:',
+                                            placeHolder: '',
+                                            defaultValue: predefined.width,
+                                            type: 'number'
+                                        },
+                                        {
+                                            label: 'Height:',
+                                            placeHolder: '',
+                                            defaultValue: predefined.height,
+                                            type: 'number'
+                                        }
+                                    ],
+                                    data: {
+                                        ui: Appanel.clock.ui,
+                                        predefined: predefined
+                                    },
+                                    handler: function (data, enteredValues) {
+                                        let name = enteredValues[0].trim();
+                                        if (name === '') {
+                                            Appanel.util.warn('The name can not be blank', '', 5);
+                                            for (let i = 1; i < 5; i++) {
+                                                data.inputs.inputs[i].defaultValue = enteredValues[i];
+                                            }
+                                            Appanel.map([[Appanel.util.inputs(data.inputs), 'selection:open', inputsOpen, {predefined: {name: data.predefined.name, left: enteredValues[1], top: enteredValues[2], width: enteredValues[3], height: enteredValues[4]}}]]);
+                                        } else if (data.predefined.name === '' && data.ui.sizeIndex(name) >= 0) {
+                                            Appanel.util.warn('The name ' + name + ' already exists!', 'Try new one that not appear in the list.', 10);
+                                        } else {
+                                            data.ui.saveSize(name, enteredValues[1], enteredValues[2], enteredValues[3], enteredValues[4]);
+                                            Appanel.util.info('SAVED', 'New window size named "' + name + '" is saved');
+                                            if (data.predefined.name === '') data.ui.handleSizes();
+                                        }
+                                    }
+                                };
+                            inputs.data.inputs = inputs;
+                            Appanel.map([[Appanel.util.inputs(inputs), 'selection:open', inputsOpen, {predefined: predefined}]]);
+                        };
+                    this.sizeButtonTemplate = comTemplate;
+
+                    comContainer[0].innerHTML = "";
+                    for (let i = 0; i < this.sizes.length; i++) {
+                        comContainer.append(comTemplate.replace('window-size-name', this.sizes[i].name));
+                        button = comContainer.find('.window-size-item').removeClass('window-size-item');
+                        editButton = comContainer.find('.edit').removeClass('edit');
+                        deleteButton = comContainer.find('.delete').removeClass('delete');
+                        Appanel.map([
+                            [button, 'click', function (ev) {
+                                Appanel.clock.ui.loadSize(ev.data.index);
+                            }, {name: this.sizes[i].name, index: i}],
+                            [editButton, 'click', editSize, this.sizes[i]],
+                            [deleteButton, 'click', function (ev) {
+                                if (Appanel.clock.ui.sizes.length <= 1) {
+                                    Appanel.util.warn('Requires at least one size, if you want to delete this size please add another before.', 15);
+                                    return;
+                                }
+
+                                let dialogue = Appanel.selection('question', 'Delete Size', 'Are you sure you want to delete size "' + ev.data.name + '" this can not undo?', {buttons: ['Yes', 'No']});
+                                Appanel.map([[dialogue, 'selection:closed', function (ev, button) {
+                                    if (button.button === 'Yes') {
+                                        let name = ev.data.name,
+                                            ui = Appanel.clock.ui,
+                                            index = ui.sizeIndex(name),
+                                            buttons = ev.data.buttons;
+
+                                        ui.sizes.splice(index, 1);
+                                        for (let i in buttons) {
+                                            buttons[i].remove();
+                                        }
+                                        ui.saveSize();
+
+                                        Appanel.util.info('DELETED', 'Size "' + ev.data.name + '" is deleted.');
+                                    }
+                                }, ev.data]]);
+
+                            }, {name: this.sizes[i].name, index: i, buttons: [button, editButton, deleteButton]}]
+                        ]);
+                    }
+
+                    // add new size
+                    Appanel.map([[$('.add-window-size'), 'click', editSize]]);
+
+                },
+
                 handle: function () {
                     /*handle switches*/
                     this.captureSwitch('top');
                     this.captureSwitch('center');
                     this.handleSwitch('center', '.zoom-ui');
+                    this.handleSizes();
 
                     /*handle zoom volume on ui-panel*/
                     $('.zoom-ui .volume').off('mousedown')
@@ -509,7 +737,9 @@
                                 });
                         });
 
-                    $(window).on('resize', this.resize);
+                    $(window).on('resize', function () {
+                        Appanel.clock.ui.resize.call(Appanel.clock.ui)
+                    });
                 },
 
                 initDrilldown: function () {
@@ -525,6 +755,7 @@
                     this.timeout = new Appanel.Timeout();
                     this.initDrilldown();
                     this.resize();
+                    this.loadSizes();
                     this.handle();
                 }
             },
@@ -960,7 +1191,7 @@
                                 return;
                             }
 
-                            let dialogue = Appanel.selection('question', 'Confirm to Delete Background', 'Are you sure you want to delete background "' + ev.data.name + '" this can not undo?', {buttons: ['Yes', 'No']});
+                            let dialogue = Appanel.selection('question', 'Delete Background', 'Are you sure you want to delete background "' + ev.data.name + '" this can not undo?', {buttons: ['Yes', 'No']});
                             Appanel.map([[dialogue, 'selection:closed', function (ev, button) {
                                 if (button.button === 'Yes') {
                                     let name = ev.data.name,

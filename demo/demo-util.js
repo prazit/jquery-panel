@@ -213,6 +213,8 @@ Appanel({
             new Appanel.Timeout(function () {
                 $('#panel-selection').css('zoom', o.zoom);
             }, 200);
+
+            return dialogue;
         },
 
         inputs: function (options) {
@@ -260,7 +262,6 @@ Appanel({
                         $inputs = $panel.find(o.inputSelector);
 
                     $panel.find(o.labelSelector).each(function (i, e) {
-                        console.debug('each.i:', i, ', each.e:', e);
                         $(e).text(o.inputs[i].label);
                     });
                     $inputs.each(function (i, e) {
@@ -297,6 +298,8 @@ Appanel({
             new Appanel.Timeout(function () {
                 $('#panel-selection').css('zoom', o.zoom);
             }, 200);
+
+            return dialogue;
         },
 
         /**
