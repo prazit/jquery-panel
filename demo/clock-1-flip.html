@@ -143,7 +143,7 @@
             <rect x="0" y="0" width="300" height="150"></rect>
         </clipPath>
         <rect id="pad" x="205" y="110" width="80" height="80" rx="10" clip-path="url(#top-mask)"></rect>
-        <text id="number" x="205" y="178" stroke-width="0" clip-path="url(#top-mask)"></text>
+        <text id="number" x="205" y="178" stroke-width="0" clip-path="url(#top-mask)" class="fnumbers"></text>
     </svg>
     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
          viewBox="0 0 300 300"
@@ -151,20 +151,41 @@
         <clipPath id="bottom-mask" clipPathUnits="userSpaceOnUse">
             <rect x="0" y="150" width="300" height="150"></rect>
         </clipPath>
+        <linearGradient id="light" x1="50%" y1="50%" x2="50%" y2="100%">
+            <stop offset="0%" stop-color="rgba(255,255,255,0.25)"/>
+            <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+            <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+        </linearGradient>
+        <linearGradient id="white" x1="50%" y1="60%" x2="50%" y2="100%">
+            <stop offset="0%" stop-color="rgba(255,255,255,0.25)"/>
+            <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+        </linearGradient>
+        <linearGradient id="dark" x1="50%" y1="50%" x2="50%" y2="100%">
+            <stop offset="0%" stop-color="rgba(0,0,0,0)"/>
+            <stop offset="100%" stop-color="rgba(0,0,0,0.35)"/>
+        </linearGradient>
         <rect id="pad" x="205" y="110" width="80" height="80" rx="10" clip-path="url(#bottom-mask)"></rect>
-        <text id="number" x="205" y="178" stroke-width="0" clip-path="url(#bottom-mask)"></text>
+        <text id="number" x="205" y="178" stroke-width="0" clip-path="url(#bottom-mask)" class="fnumbers"></text>
+        <text id="number" x="205" y="178" stroke-width="0" clip-path="url(#bottom-mask)" stroke="transparent" fill="rgba(0,0,0,0.25)"></text>
+        <text id="number" x="205" y="178" stroke-width="0" clip-path="url(#bottom-mask)" stroke="transparent" fill="url(#light)"></text>
+        <rect id="whitelight" x="205" y="110" width="80" height="80" rx="10" clip-path="url(#bottom-mask)" stroke="transparent" fill="url(#white)"></rect>
+        <rect id="darklight" x="205" y="110" width="80" height="80" rx="10" clip-path="url(#bottom-mask)" stroke="transparent" fill="url(#dark)"></rect>
     </svg>
     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
          viewBox="0 0 300 300"
          id="top-flip" class="hidden ani-reset-top-flip">
         <rect id="pad" x="205" y="110" width="80" height="80" rx="10" clip-path="url(#top-mask)"></rect>
-        <text id="number" x="205" y="178" stroke-width="0" clip-path="url(#top-mask)"></text>
+        <text id="number" x="205" y="178" stroke-width="0" clip-path="url(#top-mask)" class="fnumbers"></text>
     </svg>
     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
          viewBox="0 0 300 300"
          id="bottom-flip" class="hidden ani-reset-bottom-flip">
         <rect id="pad" x="205" y="110" width="80" height="80" rx="10" clip-path="url(#bottom-mask)"></rect>
-        <text id="number" x="205" y="178" stroke-width="0" clip-path="url(#bottom-mask)"></text>
+        <text id="number" x="205" y="178" stroke-width="0" clip-path="url(#bottom-mask)" class="fnumbers"></text>
+        <text id="number" x="205" y="178" stroke-width="0" clip-path="url(#bottom-mask)" stroke="transparent" fill="rgba(0,0,0,0.25)"></text>
+        <text id="number" x="205" y="178" stroke-width="0" clip-path="url(#bottom-mask)" stroke="transparent" fill="url(#light)"></text>
+        <rect id="whitelight" x="205" y="110" width="80" height="80" rx="10" clip-path="url(#bottom-mask)" stroke="transparent" fill="url(#white)"></rect>
+        <rect id="darklight" x="205" y="110" width="80" height="80" rx="10" clip-path="url(#bottom-mask)" stroke="transparent" fill="url(#dark)"></rect>
     </svg>
     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
          viewBox="0 0 300 300"
@@ -178,25 +199,33 @@
          viewBox="0 0 300 300"
          id="top-part">
         <rect id="pad" x="110" y="110" width="80" height="80" rx="10" clip-path="url(#top-mask)"></rect>
-        <text id="number" x="109.5" y="178" stroke-width="0" clip-path="url(#top-mask)"></text>
+        <text id="number" x="109.5" y="178" stroke-width="0" clip-path="url(#top-mask)" class="fnumbers"></text>
     </svg>
     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
          viewBox="0 0 300 300"
          id="bottom-part">
         <rect id="pad" x="110" y="110" width="80" height="80" rx="10" clip-path="url(#bottom-mask)"></rect>
-        <text id="number" x="109.5" y="178" stroke-width="0" clip-path="url(#bottom-mask)"></text>
+        <text id="number" x="109.5" y="178" stroke-width="0" clip-path="url(#bottom-mask)" class="fnumbers"></text>
+        <text id="number" x="109.5" y="178" stroke-width="0" clip-path="url(#bottom-mask)" stroke="transparent" fill="rgba(0,0,0,0.25)"></text>
+        <text id="number" x="109.5" y="178" stroke-width="0" clip-path="url(#bottom-mask)" stroke="transparent" fill="url(#light)"></text>
+        <rect id="whitelight" x="110" y="110" width="80" height="80" rx="10" clip-path="url(#bottom-mask)" stroke="transparent" fill="url(#white)"></rect>
+        <rect id="darklight" x="110" y="110" width="80" height="80" rx="10" clip-path="url(#bottom-mask)" stroke="transparent" fill="url(#dark)"></rect>
     </svg>
     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
          viewBox="0 0 300 300"
          id="top-flip" class="hidden ani-reset-top-flip">
         <rect id="pad" x="110" y="110" width="80" height="80" rx="10" clip-path="url(#top-mask)"></rect>
-        <text id="number" x="109.5" y="178" stroke-width="0" clip-path="url(#top-mask)"></text>
+        <text id="number" x="109.5" y="178" stroke-width="0" clip-path="url(#top-mask)" class="fnumbers"></text>
     </svg>
     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
          viewBox="0 0 300 300"
          id="bottom-flip" class="hidden ani-reset-bottom-flip">
         <rect id="pad" x="110" y="110" width="80" height="80" rx="10" clip-path="url(#bottom-mask)"></rect>
-        <text id="number" x="109.5" y="178" stroke-width="0" clip-path="url(#bottom-mask)"></text>
+        <text id="number" x="109.5" y="178" stroke-width="0" clip-path="url(#bottom-mask)" class="fnumbers"></text>
+        <text id="number" x="109.5" y="178" stroke-width="0" clip-path="url(#bottom-mask)" stroke="transparent" fill="rgba(0,0,0,0.25)"></text>
+        <text id="number" x="109.5" y="178" stroke-width="0" clip-path="url(#bottom-mask)" stroke="transparent" fill="url(#light)"></text>
+        <rect id="whitelight" x="110" y="110" width="80" height="80" rx="10" clip-path="url(#bottom-mask)" stroke="transparent" fill="url(#white)"></rect>
+        <rect id="darklight" x="110" y="110" width="80" height="80" rx="10" clip-path="url(#bottom-mask)" stroke="transparent" fill="url(#dark)"></rect>
     </svg>
     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
          viewBox="0 0 300 300"
@@ -210,25 +239,33 @@
          viewBox="0 0 300 300"
          id="top-part">
         <rect id="pad" x="15" y="110" width="80" height="80" rx="10" clip-path="url(#top-mask)"></rect>
-        <text id="number" x="14.5" y="178" stroke-width="0" clip-path="url(#top-mask)"></text>
+        <text id="number" x="14.5" y="178" stroke-width="0" clip-path="url(#top-mask)" class="fnumbers"></text>
     </svg>
     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
          viewBox="0 0 300 300"
          id="bottom-part">
         <rect id="pad" x="15" y="110" width="80" height="80" rx="10" clip-path="url(#bottom-mask)"></rect>
-        <text id="number" x="14.5" y="178" stroke-width="0" clip-path="url(#bottom-mask)"></text>
+        <text id="number" x="14.5" y="178" stroke-width="0" clip-path="url(#bottom-mask)" class="fnumbers"></text>
+        <text id="number" x="14.5" y="178" stroke-width="0" clip-path="url(#bottom-mask)" stroke="transparent" fill="rgba(0,0,0,0.25)"></text>
+        <text id="number" x="14.5" y="178" stroke-width="0" clip-path="url(#bottom-mask)" stroke="transparent" fill="url(#light)"></text>
+        <rect id="whitelight" x="15" y="110" width="80" height="80" rx="10" clip-path="url(#bottom-mask)" stroke="transparent" fill="url(#white)"></rect>
+        <rect id="darklight" x="15" y="110" width="80" height="80" rx="10" clip-path="url(#bottom-mask)" stroke="transparent" fill="url(#dark)"></rect>
     </svg>
     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
          viewBox="0 0 300 300"
          id="top-flip" class="hidden ani-reset-top-flip">
         <rect id="pad" x="15" y="110" width="80" height="80" rx="10" clip-path="url(#top-mask)"></rect>
-        <text id="number" x="14.5" y="178" stroke-width="0" clip-path="url(#top-mask)"></text>
+        <text id="number" x="14.5" y="178" stroke-width="0" clip-path="url(#top-mask)" class="fnumbers"></text>
     </svg>
     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
          viewBox="0 0 300 300"
          id="bottom-flip" class="hidden ani-reset-bottom-flip">
         <rect id="pad" x="15" y="110" width="80" height="80" rx="10" clip-path="url(#bottom-mask)"></rect>
-        <text id="number" x="14.5" y="178" stroke-width="0" clip-path="url(#bottom-mask)"></text>
+        <text id="number" x="14.5" y="178" stroke-width="0" clip-path="url(#bottom-mask)" class="fnumbers"></text>
+        <text id="number" x="14.5" y="178" stroke-width="0" clip-path="url(#bottom-mask)" stroke="transparent" fill="rgba(0,0,0,0.25)"></text>
+        <text id="number" x="14.5" y="178" stroke-width="0" clip-path="url(#bottom-mask)" stroke="transparent" fill="url(#light)"></text>
+        <rect id="whitelight" x="15" y="110" width="80" height="80" rx="10" clip-path="url(#bottom-mask)" stroke="transparent" fill="url(#white)"></rect>
+        <rect id="darklight" x="15" y="110" width="80" height="80" rx="10" clip-path="url(#bottom-mask)" stroke="transparent" fill="url(#dark)"></rect>
     </svg>
     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
          viewBox="0 0 300 300"
@@ -449,9 +486,10 @@
                     theme.add('flipMinute', 'fill', util.merge([m.topPart.find("#pad"), m.bottomPart.find("#pad"), m.topFlip.find("#pad"), m.bottomFlipPad]), 'handMinute', false);
                     theme.add('flipHour', 'fill', util.merge([h.topPart.find("#pad"), h.bottomPart.find("#pad"), h.topFlip.find("#pad"), h.bottomFlipPad]), 'handHour', false);
                     theme.add('fnumbers', ['fill', 'stroke'], util.merge([
-                        s.topPartNumber, s.bottomPartNumber, s.topFlipNumber, s.bottomFlipNumber,
+                        s.$.find('.fnumbers'), m.$.find('.fnumbers'), h.$.find('.fnumbers')
+                        /*s.topPartNumber, s.bottomPartNumber, s.topFlipNumber, s.bottomFlipNumber,
                         m.topPartNumber, m.bottomPartNumber, m.topFlipNumber, m.bottomFlipNumber,
-                        h.topPartNumber, h.bottomPartNumber, h.topFlipNumber, h.bottomFlipNumber
+                        h.topPartNumber, h.bottomPartNumber, h.topFlipNumber, h.bottomFlipNumber*/
                     ]), 'numbers', false);
                     theme.add('fline', 'fill', util.merge([s.$.find('#center-line'), m.$.find('#center-line'), h.$.find('#center-line')]), 'background', false);
 

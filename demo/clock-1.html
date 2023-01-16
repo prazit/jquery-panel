@@ -1747,7 +1747,8 @@
                         /* scale <= 0 when zoom == 1
                          * scale > 0 when zoom > 1
                          **/
-                        a.scale = parseFloat(currentZoom);
+                        if (isNormalZoom) a.scale = parseFloat(normalZoom);
+                        else a.scale = parseFloat(currentZoom);
                         a.relativeScale = a.scale - 1.0;
                         a.imageScaleWidth = a.imageWidth * a.scale;
                         a.imageScaleHeight = a.imageHeight * a.scale;
@@ -1764,12 +1765,13 @@
                                 a.imageX = 0;
                                 a.imageY = (a.screenH - (a.ratioW * a.imageHeight)) / 2;
                                 a.imageWide = a.screenW;
-                                a.imageTall = a.imageWide * a.imageScaleWidth / a.imageScaleHeight;
+                                a.imageTall = a.imageHeight * a.ratioW;
                                 a.backgroundSize = a.imageWide;
                                 a.coverX = a.clockXInPercent * a.screenW;
                                 a.coverY = a.imageY + (a.ratioW * a.imageHeight * a.clockYInPercent);
                                 /*Notice: a.coverSize = (100 * a.clockWInPercent) + 'vw';*/
-                                a.coverSize = (100 * a.clockWInPercent) * a.screenW * 0.01;
+                                //a.coverSize = (100 * a.clockWInPercent) * a.screenW * 0.01;
+                                a.coverSize = (100 * a.clockHInPercent) * a.imageTall * 0.01;
                             } else {
                                 a.ui.debug('case W2:');
                                 a.scale = a.ratioW /* this ratioW is max of real scale when the user scale === 1 */ + a.relativeScale;
