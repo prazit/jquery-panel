@@ -533,7 +533,13 @@
             play: function (groupIndex) {
                 var group = this.groups[groupIndex];
                 group.bottomFlipNumber.text(group.number);
-                group.$.sweep(group.sweeper);
+
+                if (group.played === undefined) {
+                    group.$.sweep(group.sweeper);
+                    group.played = true;
+                } else {
+                    group.$.trigger('sweep:ready');
+                }
             },
 
             /**
