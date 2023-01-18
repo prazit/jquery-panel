@@ -210,10 +210,11 @@ Appanel({
         shortHand: $('.short-hand'),
 
         nextTick: function () {
-            var focus = Appanel.focus,
+            let focus = Appanel.focus,
                 tick, hand, ratio, degree,
                 maxTick = focus.maxTick,
-                maxHand = focus.maxHand;
+                maxHand = focus.maxHand,
+            length,current;
 
             focus.debugFunc.call(this);
 
@@ -227,7 +228,15 @@ Appanel({
                 focus.hand.css('stroke-dashoffset', 0);
             }
 
-            ratio = focus.number / (focus.targetMax - focus.zeroNumber + 1);
+            /*Notice: start from zero unit*/
+            length = focus.targetMax - focus.zeroNumber;
+            current = focus.number - focus.zeroNumber;
+
+            /*Notice: start from one unit*/
+            /*length = focus.targetMax - focus.zeroNumber + 1;
+            current = focus.number - focus.zeroNumber + 1;*/
+
+            ratio = current / length;
             tick = ratio * maxTick;
             focus.ticktock.css('stroke-dashoffset', maxTick - tick);
 
@@ -485,7 +494,7 @@ Appanel({
                 this.max = max >= this.numbers.length ? this.numbers.length - 1 : max;
             }
             $(".max-number").html(this.max);
-            this.maxTick = this.zeroNumber;
+            this.maxTick = 0;
         },
 
         setTargetMax: function (targetMax) {
