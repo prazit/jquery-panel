@@ -214,7 +214,7 @@ Appanel({
                 tick, hand, ratio, degree,
                 maxTick = focus.maxTick,
                 maxHand = focus.maxHand,
-            length,current;
+                length, current;
 
             focus.debugFunc.call(this);
 
@@ -373,7 +373,13 @@ Appanel({
              * step-start
              * steps
              **/
-            var animations = [
+
+            let timingSets = [
+                    ['linear', 'linear'],
+                    ['ease-in', 'ease-out']
+                ],
+                timings = timingSets[0],
+                animations = [
                     {},
                     {},
                     {
@@ -385,23 +391,23 @@ Appanel({
                             remove: 'hidden',
                             sweep: [{/* 1 */
                                 duration: this.out,
-                                timing: 'ease-in',
+                                timing: timings[0],
                                 play: 'ani-c-goOut',
                                 run: this.debugFunc,
                                 sweep: [{/* 2 */
                                     duration: this.afterOut,
-                                    timing: 'ease-out',
+                                    timing: timings[1],
                                     play: 'ani-c-after-goOut',
                                     /*run: this.debugFunc,*/
                                     run: this.nextTick,
                                     sweep: [{/* 3 */
                                         duration: this.in,
-                                        timing: 'ease-in',
+                                        timing: timings[0],
                                         play: 'ani-c-comeIn',
                                         run: this.debugFunc,
                                         sweep: [{/* 4 */
                                             duration: this.afterIn,
-                                            timing: 'ease-out',
+                                            timing: timings[1],
                                             play: 'ani-c-after-comeIn',
                                             run: this.nextNumber[counterIndex],
                                             sweep: [/* loop */'go-out']
@@ -640,12 +646,12 @@ Appanel({
                     this.setZeroNumber(profile.zeroNumber);
                     this.setMaxNumber(profile.max);
                     this.setTargetMax(profile.targetMax);
-                    this.setSpeedX(profile.speed);
-                    this.setCountDirection(profile.countDown);
-                    this.setLoop(profile.loop);
                 }
 
                 if (loadIndexes) {
+                    this.setSpeedX(profile.speed);
+                    this.setCountDirection(profile.countDown);
+                    this.setLoop(profile.loop);
                     this.setAnimationIndex(profile.animationIndex, profile.counterIndex);
                 }
 
@@ -836,11 +842,11 @@ Appanel({
             $numbers.find('.durations .zoom').css('zoom', 1 - (durations.length * 0.02));
 
             $numbers.find('.number-range')[0].innerText = (profile.numbers === undefined || profile.numbers.length === 0)
-                ? (profile.zeroNumber + '|' + profile.max + '\n' + toPrecision(profile.speed) + 'x')
-                : (profile.numbers[0] + '|' + profile.numbers[profile.numbers.length - 1] + '\n' + toPrecision(profile.speed) + 'x');
+                ? (profile.zeroNumber + '|' + profile.max)
+                : (profile.numbers[0] + '|' + profile.numbers[profile.numbers.length - 1]);
             $numbers.find('.range .zoom').css('zoom', 1 - (durations.length * 0.03));
 
-            $numbers.find('.number-indexes')[0].innerText = profile.animationIndex + '|' + profile.counterIndex;
+            $numbers.find('.number-indexes')[0].innerText = +toPrecision(profile.speed) + 'x\n' + profile.animationIndex + '|' + profile.counterIndex;
             $numbers.find('.indexes .zoom').css('zoom', 1 - (durations.length * 0.01));
         },
 
