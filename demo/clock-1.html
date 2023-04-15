@@ -148,10 +148,33 @@
     <div class="clock wrapper rounded--x20">
         <div class="clock background">
             <!-- store all shapes for clock background and frame -->
-            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve" viewBox="0 0 200 200" stroke="red" fill="black" class="fit-width">
-                <polygon id="none" points="0,0 1,0 1,1 0,1" stroke-opacity="1" stroke-width="2" stroke-linecap="butt" class="shape hidden"></polygon>
-                <circle id="circle" cx="100" cy="100" r="98" stroke-opacity="1" stroke-width="2" stroke-linecap="butt" class="shape hidden"></circle>
-                <rect id="rectangle" x="1" y="0" width="198" height="200" rx="10" stroke-opacity="1" stroke-width="2" stroke-linecap="butt" class="shape hidden"></rect>
+            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve" viewBox="0 0 200 200" stroke="red" stroke-width="2" fill="black" class="fit-width">
+                <defs>
+                    <filter id="drop-shadow-right">
+                        <feGaussianBlur in="SourceAlpha" stdDeviation="0.5"/>
+                        <feOffset dx="2" dy="2" result="offsetblur"/>
+                        <feFlood flood-color="rgba(0,0,0,0.5)"/>
+                        <feComposite in2="offsetblur" operator="in"/>
+                        <feMerge>
+                            <feMergeNode/>
+                            <feMergeNode in="SourceGraphic"/>
+                        </feMerge>
+                    </filter>
+                    <filter id="drop-shadow-left">
+                        <feGaussianBlur in="SourceAlpha" stdDeviation="0.5"/>
+                        <feOffset dx="-2" dy="-2" result="offsetblur"/>
+                        <feFlood flood-color="rgba(0,0,0,0.5)"/>
+                        <feComposite in2="offsetblur" operator="in"/>
+                        <feMerge>
+                            <feMergeNode/>
+                            <feMergeNode in="SourceGraphic"/>
+                        </feMerge>
+                    </filter>
+                </defs>
+
+                <polygon id="none" points="0,0 1,0 1,1 0,1" stroke-opacity="1" stroke-linecap="square" class="shape hidden"></polygon>
+                <circle id="circle" cx="100" cy="100" r="98" stroke-opacity="1" stroke-linecap="square" class="shape hidden"></circle>
+                <rect id="rectangle" x="1" y="0" width="198" height="200" rx="10" stroke-opacity="1" stroke-linecap="square" class="shape hidden"></rect>
             </svg>
         </div>
         <div class="clock foreground">
@@ -164,7 +187,7 @@
             </svg>
         </div>
         <!-- UI:Zoom Panel -->
-        <div class="zoom-ui clock">
+        <div class="clock zoom-ui">
             <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve" viewBox="0 0 200 200" class="fit-width volume css-trans--x2">
             <circle cx="100" cy="100" r="26"
                     fill="black" stroke="black"
@@ -242,16 +265,17 @@
 
                                     <div class="colors item-fit-available">
                                         <div class="ui scrollable fit-height">
-                                            <span class="color-handSecond button child background--c1 background--c0--at opacity--x70 padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Second Hand</span>
-                                            <span class="color-handMinute button child background--c1 background--c0--at opacity--x70 padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Minute Hand</span>
-                                            <span class="color-handHour button child background--c1 background--c0--at opacity--x70 padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Hour Hand</span>
-                                            <span class="color-numbers button child background--c1 background--c0--at opacity--x70 padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Numbers</span>
-                                            <span class="color-timer button child background--c1 background--c0--at opacity--x70 padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Timer</span>
-                                            <span class="color-minutes button child background--c1 background--c0--at opacity--x70 padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Minutes</span>
-                                            <span class="color-fiveMinutes button child background--c1 background--c0--at opacity--x70 padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Five Minutes</span>
-                                            <span class="color-frame button child background--c1 background--c0--at opacity--x70 padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Frame</span>
-                                            <span class="color-background button child background--c1 background--c0--at opacity--x70 padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Background</span>
-                                            <span class="color-outSide button child background--c1 background--c0--at opacity--x70 padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Outside</span>
+                                            <span class="color-handSecond button child background--c1 background--c0--at opacity--x70 padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Second Hand Color</span>
+                                            <span class="color-handMinute button child background--c1 background--c0--at opacity--x70 padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Minute Hand Color</span>
+                                            <span class="color-handHour button child background--c1 background--c0--at opacity--x70 padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Hour Hand Color</span>
+                                            <span class="color-numbers button child background--c1 background--c0--at opacity--x70 padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Numbers Color</span>
+                                            <span class="color-timer button child background--c1 background--c0--at opacity--x70 padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Timer Color</span>
+                                            <span class="color-minutes button child background--c1 background--c0--at opacity--x70 padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Minutes Color</span>
+                                            <span class="color-fiveMinutes button child background--c1 background--c0--at opacity--x70 padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Five Minutes Color</span>
+                                            <span class="color-background button child background--c1 background--c0--at opacity--x70 padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Background Color</span>
+                                            <span class="color-frame button child background--c1 background--c0--at opacity--x70 padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Border Color</span>
+                                            <span class="color-border button child background--c1 background--c0--at opacity--x70 padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Border Size</span>
+                                            <span class="color-outSide button child background--c1 background--c0--at opacity--x70 padding--x10 left-text symbol sym-dot-circle-o symbol--c3"> Filter Color</span>
                                         </div>
                                     </div>
                                 </div>
@@ -834,6 +858,16 @@
                 }
             },
 
+            shadow: function ($element, percent) {
+                let id;
+                if (percent > 0.98) id = 'drop-shadow-top';
+                else if (percent > 0.52) id = 'drop-shadow-left';
+                else if (percent > 0.48) id = 'drop-shadow-bottom';
+                else if (percent > 0.02) id = 'drop-shadow-right';
+                else id = 'drop-shadow-top';
+                $element.find('.shadow').attr('filter', 'url(#' + id + ')');
+            },
+
             setSecond: function (second) {
                 this.percentSecond = second / 60;
                 if (!this.options.useSweep) {
@@ -856,6 +890,7 @@
                     }
                 }
                 this.second = second;
+                this.shadow(this.$second, this.percentSecond);
             },
 
             setMinute: function (minute) {
@@ -886,11 +921,13 @@
                     if (this.hour !== undefined) this.setHour(this.hour);
                 }
                 this.minute = minute;
+                this.shadow(this.$minute, this.percentMinute);
             },
 
             setHour: function (hour) {
+                this.percentHour = (hour + this.percentMinute) / 12;
                 if (!this.options.useSweep) {
-                    this.hourDegree = ((hour + this.percentMinute) / 12) * 360;
+                    this.hourDegree = this.percentHour * 360;
                     if (hour === 11) {
                         if (this.hour !== hour) {
                             /*console.debug('setHour: in case of 11');*/
@@ -912,6 +949,7 @@
                     }
                 }
                 this.hour = hour;
+                this.shadow(this.$hour, this.percentHour > 1 ? Math.abs(this.percentHour - 1) : this.percentHour);
             },
 
             twoDigit: function (number) {
@@ -971,6 +1009,7 @@
                 this.addProperty(theme, 'fiveMinutes', ['stroke', 'fill'], $('.five.minutes svg'));
                 this.addProperty(theme, 'frame', 'stroke', $('.wrapper > .background svg'));
                 this.addProperty(theme, 'background', 'fill', $('.wrapper > .background svg'));
+                this.addProperty(theme, 'border', 'stroke-width', $('.wrapper > .background svg'));
                 this.addProperty(theme, 'outSide', 'background-color', $('.out-side'));
 
                 theme.add('chandSecond', 'background-color', $('.color-handSecond'), 'handSecond');
@@ -1384,7 +1423,9 @@
                     title = button[0].innerText;
                     Appanel.map([
                         [button, 'click', function (ev) {
-                            Appanel.util.input({title: ev.data.title}, 'Enter color value:', ev.data.property.get(),
+                            let property = ev.data.property,
+                                propertyName = property.prop;
+                            Appanel.util.input({title: ev.data.title}, 'Enter ' + propertyName + ' attribute value:', property.get(),
                                 function (data, color) {
                                     data.property.set(color);
                                     Appanel.profile.save(Appanel.profile.current);
@@ -2143,7 +2184,7 @@
 
         ready: function () {
             Appanel.clock.init();
-            Appanel.util.refreshEvery(3600, Appanel.clock.activated, Appanel.clock);
+            Appanel.util.refreshEvery(300, Appanel.clock.activated, Appanel.clock);
         }
     });
 </script>

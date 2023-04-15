@@ -272,7 +272,17 @@ Appanel({
                     });
 
                     $inputs.on('keyup keydown keypress', function (ev) {
-                        ev.stopPropagation();
+                        if (ev.type === 'keyup' && ev.key === 'Enter') {
+                            console.debug('Entered');
+                            ev.currentTarget.dispatchEvent(new KeyboardEvent("keydown", {
+                                bubbles: true,
+                                cancelable: false,
+                                key: "Tab",
+                                code: 9,
+                            }));
+                        }else{
+                            ev.stopPropagation();
+                        }
                     });
                     if ($inputs.length > 0) $inputs[0].select();
                     $($inputs[0]).focus();
